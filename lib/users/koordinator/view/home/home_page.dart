@@ -1,22 +1,18 @@
-import 'package:barry_callebaut/users/petugas/model/m_progress_ims.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+import '../../../petugas/model/m_progress_ims.dart';
+import '../../../theme/colors.dart';
+import '../../../theme/padding.dart';
+
+class HomePageKoordinator extends StatefulWidget {
+  const HomePageKoordinator({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePageKoordinator> createState() => _HomePageKoordinatorState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
+class _HomePageKoordinatorState extends State<HomePageKoordinator> {
   List<ModelProgressIms> data = [
     ModelProgressIms('Jan', 35),
     ModelProgressIms('Feb', 28),
@@ -24,31 +20,15 @@ class _HomePageState extends State<HomePage>
     ModelProgressIms('Apr', 32),
     ModelProgressIms('May', 40)
   ];
-
-  String? uid;
-  String? username;
-
-  @override
-  void initState() {
-    _tabController = TabController(length: 2, vsync: this);
-    getUser();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       body: SizedBox(
-        width: size.width,
         height: size.height,
+        width: size.width,
         child: Stack(
           children: [
             CustomScrollView(
@@ -69,16 +49,16 @@ class _HomePageState extends State<HomePage>
                     padding: const EdgeInsets.only(top: padding),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: const [
                           Text(
-                            "$username",
-                            style: const TextStyle(
+                            "Miswar Al-Qadri",
+                            style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: kWhite),
                           ),
-                          const Text(
-                            "Internal Management",
+                          Text(
+                            "Koordinator",
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: kWhite,
@@ -161,32 +141,114 @@ class _HomePageState extends State<HomePage>
   Widget title() {
     return Positioned(
         left: 16,
-        right: 0,
+        right: 16,
         top: 380,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              "Data Petani",
+          children: [
+            const Text(
+              "Data Petugas",
               style: TextStyle(
                   fontWeight: FontWeight.w600, fontSize: 20, color: kBlack6),
             ),
+            search(),
+            profil()
           ],
         ));
   }
 
-  Future<dynamic> getUser() async {
-    await FirebaseFirestore.instance
-        .collection('petugas')
-        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((result) {
-      if (result.docs.isNotEmpty) {
-        setState(() {
-          uid = result.docs[0].data()['uid'];
-          username = result.docs[0].data()['username'];
-        });
-      }
-    });
+  Widget search() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 16,),
+      width: double.infinity,
+      height: 40,
+      decoration: BoxDecoration(
+          color: kGreySearch, borderRadius: BorderRadius.circular(5)),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: const [
+          Text(
+            "Cari",
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w500, color: kGrey5),
+          ),
+          Icon(
+            Icons.search,
+            color: kBlack,
+          )
+        ],
+      ),
+    );
   }
+
+  Widget profil() {
+    return Card(
+      child: ListTile(
+        minVerticalPadding: padding,
+        leading: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  image: const DecorationImage(
+                      image: NetworkImage(
+                          "http://learnyzen.com/wp-content/uploads/2017/08/test1-481x385.png"))),
+            ),
+            const SizedBox(height: 8,),
+          ],
+        ),
+        title: const Text(
+          "Irwan Deku",
+          style:
+              TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: kBlack),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Image.asset("assets/pin.png"),
+                const SizedBox(
+                  width: 4,
+                ),
+                const Text(
+                  "Dusun Lapejang",
+                  style: TextStyle(color: kBlack, fontWeight: FontWeight.w400),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: 80,
+              height: 20,
+              decoration: BoxDecoration(
+                  color: kGreen2.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(5)),
+              child: const Center(
+                child: Text(
+                  "0684837365",
+                  style: TextStyle(
+                    color: kBlack,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        trailing: const Icon(
+          Icons.create,
+          color: kGreen,
+        ),
+      ),
+    );
+  }
+
 }

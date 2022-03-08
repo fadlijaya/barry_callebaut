@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "135872619448",
-    "project_id": "barrycallebaut-dc07f",
-    "storage_bucket": "barrycallebaut-dc07f.appspot.com"
+    "project_number": "587311349092",
+    "project_id": "skripsiapp-e833e",
+    "storage_bucket": "skripsiapp-e833e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:135872619448:android:c14265d552750b0d52a54d",
+        "mobilesdk_app_id": "1:587311349092:android:3b40b53116e9a8d4f34e71",
         "android_client_info": {
           "package_name": "com.example.barry_callebaut"
         }
       },
       "oauth_client": [
         {
-          "client_id": "135872619448-up9bbakf30udgv9vfgdakn1ch9bp0m9r.apps.googleusercontent.com",
+          "client_id": "587311349092-5d43buqgcfaaspsi5cbr4a4bsvpir0a8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC6wHtoNstbyaj0jPH9uf7n6v4pMNL8CIU"
+          "current_key": "AIzaSyBgwer_tznBq7UyjEx1fkBLa2aOle0hLbI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "135872619448-up9bbakf30udgv9vfgdakn1ch9bp0m9r.apps.googleusercontent.com",
+              "client_id": "587311349092-5d43buqgcfaaspsi5cbr4a4bsvpir0a8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

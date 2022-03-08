@@ -1,5 +1,6 @@
 import 'package:barry_callebaut/users/opsi_login_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,15 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
+  String? uid;
+  String? username;
+
+  @override
+  void initState() {
+    getUser();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -55,9 +65,9 @@ class _ProfilPageState extends State<ProfilPage> {
           const SizedBox(
             height: 12,
           ),
-          const Text(
-            'Miswar Al-Qadri',
-            style: TextStyle(
+          Text(
+            "$username",
+            style: const TextStyle(
                 color: kWhite, fontWeight: FontWeight.bold, fontSize: 20),
           )
         ],
@@ -97,7 +107,7 @@ class _ProfilPageState extends State<ProfilPage> {
             thickness: 1,
           ),
           GestureDetector(
-            onTap: (){},
+            onTap: exitDialog,
             child: ListTile(
               leading: const Icon(Icons.exit_to_app),
               title: Row(
@@ -123,6 +133,52 @@ class _ProfilPageState extends State<ProfilPage> {
         ],
       ),
     );
+  }
+
+  exitDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Konfirmasi'),
+            content: const Text('Ingin Keluar ?'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Batal',
+                    style: TextStyle(color: Colors.grey),
+                  )),
+              ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(kGreen2),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)))),
+                  onPressed: signOut,
+                  child: const Text(
+                    'Ya',
+                    style: TextStyle(color: kWhite),
+                  )),
+            ],
+          );
+        });
+  }
+
+  Future<dynamic> getUser() async {
+    await FirebaseFirestore.instance
+        .collection('petugas')
+        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((result) {
+      if (result.docs.isNotEmpty) {
+        setState(() {
+          uid = result.docs[0].data()['uid'];
+          username = result.docs[0].data()['username'];
+        });
+      }
+    });
   }
 
   Future<void> signOut() async {

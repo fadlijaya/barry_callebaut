@@ -1,5 +1,8 @@
+import 'package:barry_callebaut/users/petugas/view/initial_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -19,6 +22,8 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
   final TextEditingController _controllerConfirmPass = TextEditingController();
 
   late bool _showPassword = true;
+  late bool _showRePassword = true;
+  final bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,18 +91,21 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
               ),
               Container(
                 width: double.infinity,
-                height: 48,
+                height: 56,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8), color: kGrey2),
                 padding: const EdgeInsets.only(
-                    left: 8, right: 8, top: 12, bottom: 4),
+                  left: 8,
+                  right: 8,
+                  top: 12,
+                ),
                 child: TextFormField(
                   controller: _controllerUsername,
                   cursorColor: kGreen,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress,
-                  decoration:
-                      const InputDecoration.collapsed(hintText: 'Irwan Deku'),
+                  decoration: const InputDecoration.collapsed(
+                      border: InputBorder.none, hintText: 'Irwan Deku'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Masukkan User Name";
@@ -106,7 +114,7 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
                   },
                 ),
               ),
-               const SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               const Text(
@@ -118,11 +126,10 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
               ),
               Container(
                 width: double.infinity,
-                height: 48,
+                height: 56,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8), color: kGrey2),
-                padding: const EdgeInsets.only(
-                    left: 8, right: 8, top: 12, bottom: 4),
+                padding: const EdgeInsets.only(left: 8, right: 8, top: 12),
                 child: TextFormField(
                   controller: _controllerIdNumber,
                   cursorColor: kGreen,
@@ -149,20 +156,25 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
               ),
               Container(
                 width: double.infinity,
-                height: 48,
+                height: 56,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8), color: kGrey2),
-                padding: const EdgeInsets.only(
-                    left: 8, right: 8, top: 12, bottom: 4),
+                padding: const EdgeInsets.only(left: 8, right: 8, top: 12),
                 child: TextFormField(
                   controller: _controllerPassword,
                   obscureText: _showPassword,
                   cursorColor: kGreen,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
-                    hintText: '********',
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
+                    hintText: 'xxxxxxx',
+                    border:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
+                    enabledBorder:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
+                    focusedBorder:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
+                    errorBorder:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
                     suffixIcon: GestureDetector(
                       onTap: togglePasswordVisibility,
                       child: _showPassword
@@ -196,23 +208,32 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
               ),
               Container(
                 width: double.infinity,
-                height: 48,
+                height: 56,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8), color: kGrey2),
                 padding: const EdgeInsets.only(
-                    left: 8, right: 8, top: 12, bottom: 4),
+                  left: 8,
+                  right: 8,
+                  top: 12,
+                ),
                 child: TextFormField(
                   controller: _controllerConfirmPass,
-                  obscureText: _showPassword,
+                  obscureText: _showRePassword,
                   cursorColor: kGreen,
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
-                    hintText: '********',
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
+                    hintText: 'xxxxxxx',
+                    border:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
+                    enabledBorder:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
+                    focusedBorder:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
+                    errorBorder:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
                     suffixIcon: GestureDetector(
-                      onTap: togglePasswordVisibility,
-                      child: _showPassword
+                      onTap: toggleRePasswordVisibility,
+                      child: _showRePassword
                           ? const Icon(
                               Icons.visibility_off,
                               color: kGrey5,
@@ -225,7 +246,9 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "Masukkan Password";
+                      return "Masukkan Re-enter Password";
+                    } else if (value != _controllerPassword.text) {
+                      return "Password Tidak Sama";
                     }
                     return null;
                   },
@@ -234,7 +257,7 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
               const SizedBox(
                 height: 24,
               ),
-              buttonLogin(),
+              buttonRegister(),
             ],
           )),
     );
@@ -246,13 +269,19 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
     });
   }
 
-  Widget buttonLogin() {
+  void toggleRePasswordVisibility() {
+    setState(() {
+      _showRePassword = !_showRePassword;
+    });
+  }
+
+  Widget buttonRegister() {
     return ElevatedButton(
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(kGreen),
           shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))),
-      onPressed: () {},
+      onPressed: register,
       child: Container(
         margin: const EdgeInsets.only(left: 24, right: 24),
         width: double.infinity,
@@ -265,5 +294,72 @@ class _RegisterPagePetugasState extends State<RegisterPagePetugas> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> register() async {
+    if (!_isLoading) {
+      if (_formKey.currentState!.validate()) {
+        String idNumber = _controllerIdNumber.text;
+        String email = "$idNumber@gmail.com";
+        
+        try {
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: email, password: _controllerPassword.text);
+
+          User? user = FirebaseAuth.instance.currentUser;
+
+          await FirebaseFirestore.instance
+              .collection("petugas")
+              .doc(user!.uid)
+              .set({
+            'uid': user.uid,
+            'username': _controllerUsername.text,
+            'email': email,
+            'idNumber': idNumber
+          });
+
+          registerDialog();
+        } catch (e) {
+          return e.toString();
+        }
+      }
+    }
+  }
+
+  registerDialog() {
+    return showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.check_circle,
+                  color: kGreen,
+                  size: 72,
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Center(child: Text('Register Berhasil')),
+              ],
+            ),
+            actions: [
+              Center(
+                  child: TextButton(
+                      onPressed: () => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const InitialPage()),
+                          (route) => false),
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(color: kGreen),
+                      )))
+            ],
+          );
+        });
   }
 }

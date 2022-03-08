@@ -1,3 +1,4 @@
+import 'package:barry_callebaut/users/koordinator/view/home/home_page.dart';
 import 'package:barry_callebaut/users/petugas/view/initial_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
@@ -176,7 +177,7 @@ class _LoginPageKoordinatorState extends State<LoginPageKoordinator> {
           backgroundColor: MaterialStateProperty.all(kGreen),
           shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))),
-      onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const InitialPage()), (route) => false),
+      onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePageKoordinator()), (route) => false),
       child: Container(
         margin: const EdgeInsets.only(left: 24, right: 24),
         width: double.infinity,
