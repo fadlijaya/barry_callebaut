@@ -1,5 +1,4 @@
 import 'package:barry_callebaut/users/koordinator/view/home/home_page.dart';
-import 'package:barry_callebaut/users/petugas/view/initial_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:flutter/material.dart';

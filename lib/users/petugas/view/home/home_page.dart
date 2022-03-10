@@ -2,7 +2,7 @@ import 'package:barry_callebaut/users/petugas/model/m_progress_ims.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart'; 
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

@@ -1,4 +1,5 @@
 import 'package:barry_callebaut/users/opsi_login_page.dart';
+import 'package:barry_callebaut/users/petugas/view/profil/data_pribadi_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,16 @@ class ProfilPage extends StatefulWidget {
 class _ProfilPageState extends State<ProfilPage> {
   String? uid;
   String? username;
+  String? fullname;
+  String? email;
+  String? idNumber;
+  String? nik;
+  String? nomorHp;
+  String? lokasiKerja;
+  String? jekel;
+  String? agama;
+  String? tglLahir;
+  String? alamat;
 
   @override
   void initState() {
@@ -83,7 +94,24 @@ class _ProfilPageState extends State<ProfilPage> {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DataPribadiPage(
+                          uid: uid.toString(),
+                          username: username.toString(),
+                          fullname: fullname.toString(),
+                          email: email.toString(),
+                          idNumber: idNumber.toString(),
+                          nik: nik.toString(),
+                          nomorHp: nomorHp.toString(),
+                          lokasiKerja: lokasiKerja.toString(),
+                          jekel: jekel.toString(),
+                          agama: agama.toString(),
+                          tglLahir: tglLahir.toString(),
+                          alamat: alamat.toString(),
+                          isEdit: true,
+                        ))),
             child: ListTile(
               leading: const Icon(Icons.account_circle_rounded),
               title: Row(
@@ -153,7 +181,8 @@ class _ProfilPageState extends State<ProfilPage> {
                   )),
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(kGreen2),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(kGreen2),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)))),
                   onPressed: signOut,
@@ -175,7 +204,17 @@ class _ProfilPageState extends State<ProfilPage> {
       if (result.docs.isNotEmpty) {
         setState(() {
           uid = result.docs[0].data()['uid'];
+          fullname = result.docs[0].data()['nama lengkap'];
           username = result.docs[0].data()['username'];
+          email = result.docs[0].data()['email'];
+          idNumber = result.docs[0].data()['idNumber'];
+          nik = result.docs[0].data()['nik'];
+          nomorHp = result.docs[0].data()['nomor hp'];
+          lokasiKerja = result.docs[0].data()['lokasi kerja'];
+          jekel = result.docs[0].data()['jenis kelamin'];
+          agama = result.docs[0].data()['agama'];
+          tglLahir = result.docs[0].data()['tanggal lahir'];
+          alamat = result.docs[0].data()['alamat'];
         });
       }
     });

@@ -255,7 +255,7 @@ class _PetaniPageState extends State<PetaniPage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       child: Container(
         width: double.infinity,
-        height: 300,
+        height: 260,
         padding: const EdgeInsets.all(padding),
         child: Form(
             key: _formKey2,
