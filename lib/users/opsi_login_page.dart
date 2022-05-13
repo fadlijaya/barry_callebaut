@@ -16,14 +16,14 @@ class _OpsiLoginPageState extends State<OpsiLoginPage> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: kGrey,
+        backgroundColor: kGrey,
         body: SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Stack(
-        children: [header(), body()],
-      ),
-    ));
+          width: size.width,
+          height: size.height,
+          child: Stack(
+            children: [header(), body()],
+          ),
+        ));
   }
 
   Widget header() {
@@ -56,7 +56,7 @@ class _OpsiLoginPageState extends State<OpsiLoginPage> {
         width: double.infinity,
         height: 360,
         padding: const EdgeInsets.all(padding),
-       decoration: const BoxDecoration(
+        decoration: const BoxDecoration(
             color: kWhite,
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
@@ -64,9 +64,13 @@ class _OpsiLoginPageState extends State<OpsiLoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             textDeskripsi(),
-            const SizedBox(height: 48,),
+            const SizedBox(
+              height: 48,
+            ),
             buttonLoginPetugas(),
-            const SizedBox(height: 16,),
+            const SizedBox(
+              height: 16,
+            ),
             buttonLoginKoordinator()
           ],
         ),
@@ -75,7 +79,11 @@ class _OpsiLoginPageState extends State<OpsiLoginPage> {
   }
 
   Widget textDeskripsi() {
-    return const Text("Welcome Back!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: kBlack),);
+    return const Text(
+      "Welcome Back!",
+      style:
+          TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: kBlack),
+    );
   }
 
   //button login petugas

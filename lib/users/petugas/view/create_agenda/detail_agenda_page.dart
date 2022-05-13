@@ -1,17 +1,17 @@
-import 'package:barry_callebaut/users/petugas/view/add_agenda/add_petani/add_petani_page.dart';
+import 'package:barry_callebaut/users/petugas/view/create_agenda/petani/add_petani_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
-class DetailAddAgendaPage extends StatefulWidget {
-  const DetailAddAgendaPage({Key? key}) : super(key: key);
+class DetailAgendaPage extends StatefulWidget {
+  const DetailAgendaPage({Key? key}) : super(key: key);
 
   @override
-  _DetailAddAgendaPageState createState() => _DetailAddAgendaPageState();
+  _DetailAgendaPageState createState() => _DetailAgendaPageState();
 }
 
-class _DetailAddAgendaPageState extends State<DetailAddAgendaPage> {
+class _DetailAgendaPageState extends State<DetailAgendaPage> {
   String titlePage = "Sensus Kec. Tapango";
   
   @override

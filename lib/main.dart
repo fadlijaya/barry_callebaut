@@ -1,10 +1,12 @@
 import 'package:barry_callebaut/users/koordinator/view/login_page.dart';
 import 'package:barry_callebaut/users/opsi_login_page.dart';
 import 'package:barry_callebaut/users/petugas/view/agenda/agenda_page.dart';
+import 'package:barry_callebaut/users/petugas/view/create_agenda/create_agenda_page.dart';
 import 'package:barry_callebaut/users/petugas/view/login_page.dart';
-import 'package:barry_callebaut/users/petugas/view/add_agenda/add_agenda_page.dart';
 import 'package:barry_callebaut/users/petugas/view/initial_page.dart';
 import 'package:barry_callebaut/users/petugas/view/register_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
         '/registerPagePetugas': (_) =>  const RegisterPagePetugas(),
         '/initialPage': (_) =>  const InitialPage(),
         '/agendaPage': (_) => const AgendaPage(),
-        '/addAgendaPage': (_) =>  const AddAgendaPage()
+        //'/addAgendaPage': (_) =>  const CreateAgendaPage()
       },
       home: const OpsiLoginPage(),
     );

@@ -1,4 +1,4 @@
-import 'package:barry_callebaut/users/petugas/view/add_agenda/add_petani/petani_page.dart';
+import 'package:barry_callebaut/users/petugas/view/create_agenda/petani/petani_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:flutter/material.dart';

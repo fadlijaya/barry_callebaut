@@ -1,8 +1,10 @@
 import 'package:barry_callebaut/users/petugas/model/m_progress_ims.dart';
+import 'package:barry_callebaut/users/petugas/view/create_agenda/create_agenda_page.dart';
+import 'package:barry_callebaut/users/petugas/view/profil/profil_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -56,12 +58,19 @@ class _HomePageState extends State<HomePage>
                 SliverAppBar(
                   expandedHeight: 160,
                   backgroundColor: kGreen2,
-                  leading: Padding(
-                    padding: const EdgeInsets.only(left: padding, top: padding),
-                    child: ClipOval(
-                      child: Image.network(
-                        "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
-                        fit: BoxFit.cover,
+                  leading: GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        (MaterialPageRoute(
+                            builder: (context) => const ProfilPage()))),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: padding, top: padding),
+                      child: ClipOval(
+                        child: Image.network(
+                          "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -101,6 +110,7 @@ class _HomePageState extends State<HomePage>
             ),
             progressIms(),
             title(),
+            createAgenda()
           ],
         ),
       ),
@@ -122,7 +132,7 @@ class _HomePageState extends State<HomePage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Progress ims",
+                "Akumulasi 100%",
                 style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.w600, color: kBlack6),
               ),
@@ -167,12 +177,38 @@ class _HomePageState extends State<HomePage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             Text(
-              "Data Petani",
+              "Data Sensus Petani",
               style: TextStyle(
                   fontWeight: FontWeight.w600, fontSize: 20, color: kBlack6),
             ),
           ],
         ));
+  }
+
+  Widget createAgenda() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(padding),
+        child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(kGreen2),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))
+          ),
+          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAgendaPage(uid: uid.toString(), username: username.toString()))), child: SizedBox(
+            height: 48,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text("Buat Agenda", style: TextStyle(color: kWhite),),
+                SizedBox(width: 4,),
+                Icon(Icons.add_circle_rounded, color: kWhite,)
+              ],
+            )
+        )),
+      ));
   }
 
   Future<dynamic> getUser() async {

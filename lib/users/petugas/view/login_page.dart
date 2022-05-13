@@ -1,4 +1,4 @@
-import 'package:barry_callebaut/users/petugas/view/initial_page.dart';
+import 'package:barry_callebaut/users/petugas/view/home/home_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -173,8 +173,6 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
                 height: 24,
               ),
               buttonLogin(),
-              const SizedBox(height: 12),
-              signUp()
             ],
           )),
     );
@@ -211,28 +209,10 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
         height: 48,
         child: const Center(
           child: Text(
-            'Login',
+            'Login', 
             style: TextStyle(color: kWhite, fontSize: 16.0),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget signUp() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, '/registerPagePetugas'),
-              child: const Text(
-                'Register',
-                style: TextStyle(color: kGreen, fontWeight: FontWeight.w500),
-              ))
-        ],
       ),
     );
   }
@@ -254,7 +234,7 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
           if (user != null) {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const InitialPage()),
+                MaterialPageRoute(builder: (context) => const HomePage()),
                 (route) => false);
           }
         } on FirebaseAuthException catch (e) {
