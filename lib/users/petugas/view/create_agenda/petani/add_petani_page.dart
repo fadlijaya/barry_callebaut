@@ -18,82 +18,28 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: SizedBox(
+      appBar: AppBar(
+        title: Text(titlePage),
+        centerTitle: true,
+        backgroundColor: kGreen2,
+        actions: const [
+          Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: Icon(
+                Icons.search,
+                color: kWhite,
+              ))
+        ],
+      ),
+      body: Container(
         width: size.width,
         height: size.height,
-        child: SafeArea(
-          child: Column(
-            children: [
-              header(),
-              const SizedBox(
-                height: 24,
-              ),
-              search(),
-              list(),
-            ],
-          ),
+        padding: const EdgeInsets.all(padding),
+        child: Column(
+          children: [
+            list(),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget header() {
-    return Container(
-      width: double.infinity,
-      height: 90,
-      color: kGrey,
-      padding: const EdgeInsets.symmetric(horizontal: padding),
-      child: Row(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-                color: kWhite, borderRadius: BorderRadius.circular(15)),
-            padding: const EdgeInsets.only(left: 8),
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                size: 20,
-                color: kBlack,
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 24,
-          ),
-          Text(
-            titlePage,
-            style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w700, color: kBlack),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget search() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      width: double.infinity,
-      height: 40,
-      decoration: BoxDecoration(
-          color: kGreySearch, borderRadius: BorderRadius.circular(5)),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Text(
-            "Cari",
-            style: TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w500, color: kGrey5),
-          ),
-          Icon(
-            Icons.search,
-            color: kBlack,
-          )
-        ],
       ),
     );
   }
@@ -108,7 +54,6 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
           GestureDetector(
             onTap: () {},
             child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: padding),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5)),
               child: ListTile(
@@ -142,7 +87,10 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
                     ],
                   ),
                   trailing: ElevatedButton(
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PetaniPage())),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PetaniPage())),
                     child: const Text(
                       "Tambah",
                       style: TextStyle(fontWeight: FontWeight.w600),

@@ -1,5 +1,4 @@
-import 'dart:html';
-
+import 'package:barry_callebaut/users/petugas/view/create_agenda/detail_agenda_page.dart';
 import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,6 +28,7 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
   DateTime _selectedDate2 = DateTime.now();
 
   String get uid => widget.uid;
+  String? docId;
 
   final Stream<QuerySnapshot> _streamAgendaSensus = FirebaseFirestore.instance
       .collection("petugas")
@@ -72,26 +72,36 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
                 return ListView.builder(
                     itemCount: data.length,
                     itemBuilder: (context, i) {
-                      return Card(
-                        child: ListTile(
-                          title: Text(data[i]['lokasi sensus']),
-                          subtitle: Row(
-                            children: [
-                              const Icon(
-                                Icons.timer,
-                                color: kGrey,
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                data[i]['mulai tanggal'],
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                              const Text(" / "),
-                              Text(data[i]['sampai tanggal'],
-                                  style: const TextStyle(fontSize: 12)),
-                            ],
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailAgendaPage(
+                                      lokasiSensus: data[i]['lokasi sensus'],
+                                      docId: docId.toString()
+                                    ))),
+                        child: Card(
+                          child: ListTile(
+                            title: Text(data[i]['lokasi sensus']),
+                            subtitle: Row(
+                              children: [
+                                const Icon(
+                                  Icons.timer,
+                                  color: kBlack6,
+                                  size: 16,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  data[i]['mulai tanggal'],
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                                const Text(" - "),
+                                Text(data[i]['sampai tanggal'],
+                                    style: const TextStyle(fontSize: 12)),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -293,7 +303,7 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
   }
 
   Future<dynamic> createAgendaToFirebase() async {
-    await FirebaseFirestore.instance
+    docId = await FirebaseFirestore.instance
         .collection("petugas")
         .doc(uid)
         .collection("agenda_sensus")

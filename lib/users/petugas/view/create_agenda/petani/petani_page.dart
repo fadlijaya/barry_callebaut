@@ -32,61 +32,28 @@ class _PetaniPageState extends State<PetaniPage> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(titlePage),
+        centerTitle: true,
+        backgroundColor: kGreen2,
+      ),
       body: SizedBox(
         width: size.width,
         height: size.height,
-        child: SafeArea(
-            child: Column(
+        child: Column(
           children: [
-            header(),
-            Expanded(
-                child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  profil(),
-                  formInformasiKebun(),
-                  formInformasiKeluarga()
-                ],
-              ),
-            ))
+        Expanded(
+            child: SingleChildScrollView(
+          child: Column(
+            children: [
+              profil(),
+              formInformasiKebun(),
+              formInformasiKeluarga()
+            ],
+          ),
+        ))
           ],
-        )),
-      ),
-    );
-  }
-
-  Widget header() {
-    return Container(
-      width: double.infinity,
-      height: 90,
-      color: kGrey,
-      padding: const EdgeInsets.symmetric(horizontal: padding),
-      child: Row(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-                color: kWhite, borderRadius: BorderRadius.circular(15)),
-            padding: const EdgeInsets.only(left: 8),
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                size: 20,
-                color: kBlack,
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 24,
-          ),
-          Text(
-            titlePage,
-            style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w700, color: kBlack),
-          )
-        ],
+        ),
       ),
     );
   }
