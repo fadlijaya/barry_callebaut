@@ -5,6 +5,7 @@ import 'package:barry_callebaut/users/petugas/view/create_agenda/create_agenda_p
 import 'package:barry_callebaut/users/petugas/view/login_page.dart';
 import 'package:barry_callebaut/users/petugas/view/initial_page.dart';
 import 'package:barry_callebaut/users/petugas/view/register_page.dart';
+import 'package:barry_callebaut/users/petugas/view/sensus/sensus_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/initialPage': (_) =>  const InitialPage(),
         '/agendaPage': (_) => const AgendaPage(),
         //'/addAgendaPage': (_) =>  const CreateAgendaPage()
+        '/sensusPage': (_) => const SensusPage()
       },
       home: const OpsiLoginPage(),
     );

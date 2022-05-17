@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../theme/colors.dart';
@@ -10,7 +11,7 @@ class PetaniPage extends StatefulWidget {
   _PetaniPageState createState() => _PetaniPageState();
 }
 
-class _PetaniPageState extends State<PetaniPage> {
+class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
   String titlePage = "Data Personal Petani";
 
   final _formKey = GlobalKey<FormState>();
@@ -27,6 +28,9 @@ class _PetaniPageState extends State<PetaniPage> {
   final TextEditingController _controllerAnak1 = TextEditingController();
   final TextEditingController _controllerAnak2 = TextEditingController();
 
+  late final TabController _tabController =
+      TabController(length: 2, vsync: this);
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -40,19 +44,14 @@ class _PetaniPageState extends State<PetaniPage> {
       body: SizedBox(
         width: size.width,
         height: size.height,
-        child: Column(
-          children: [
-        Expanded(
-            child: SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Column(
             children: [
               profil(),
-              formInformasiKebun(),
-              formInformasiKeluarga()
+              tabBar(),
+              tabBarView()
             ],
           ),
-        ))
-          ],
         ),
       ),
     );
@@ -115,6 +114,42 @@ class _PetaniPageState extends State<PetaniPage> {
       trailing: const Icon(
         Icons.create,
         color: kGreen,
+      ),
+    );
+  }
+
+  Widget tabBar() {
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      alignment: Alignment.center,
+      child: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          indicatorColor: kOrange,
+          labelColor: kBlack,
+          unselectedLabelColor: Colors.black26,
+          labelPadding: const EdgeInsets.only(left: 40, right: 40, bottom: 8),
+          tabs: const [Text("Sensus"), Text("Inspeksi")]),
+    );
+  }
+
+  Widget tabBarView() {
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      width: double.maxFinite,
+      height: 480,
+      child: TabBarView(controller: _tabController, children: [
+        //tabBarViewSensus(),
+        addSensus(),
+        const Center(child: Text("Inspeksi"))
+      ]),
+    );
+  }
+
+  Widget tabBarViewSensus() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [formInformasiKebun(), formInformasiKeluarga()],
       ),
     );
   }
@@ -294,6 +329,51 @@ class _PetaniPageState extends State<PetaniPage> {
               ],
             )),
       ),
+    );
+  }
+
+  Widget addSensus() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: padding),
+          child: DottedBorder(
+            borderType: BorderType.RRect,
+            dashPattern: const [10, 4],
+            radius: const Radius.circular(8),
+            strokeCap: StrokeCap.round,
+            color: Colors.grey.shade300,
+            child: Container(
+              height: 150,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade50.withOpacity(.3),
+                  borderRadius: BorderRadius.circular(10)),
+              child: GestureDetector(
+                onTap: () => Navigator.pushNamed(context, '/sensusPage'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.add_circle_rounded,
+                      color: kGreen,
+                      size: 40,
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'Mulai melakukan sensus',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, color: kGrey5),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
