@@ -1,14 +1,14 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:barry_callebaut/custom_icons_icons.dart';
-import 'package:barry_callebaut/users/petugas/view/agenda/agenda_page.dart';
-import 'package:barry_callebaut/users/petugas/view/home/home_page.dart';
-import 'package:barry_callebaut/users/petugas/view/profil/profil_page.dart';
-import 'package:barry_callebaut/users/petugas/view/sensus/sensus_page.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../../theme/colors.dart';
+import 'agenda/agenda_page.dart';
+import 'home/home_page.dart';
+import 'profil/profil_page.dart';
 
 class InitialPage extends StatefulWidget {
   const InitialPage({Key? key}) : super(key: key);
@@ -52,7 +52,6 @@ class _CategoryPageState extends State<CategoryPage>
   final widgetList = <Widget>[
     const HomePage(),
     const AgendaPage(),
-    const SensusPage(),
     const ProfilPage()
   ];
 

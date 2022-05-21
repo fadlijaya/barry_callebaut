@@ -1,8 +1,9 @@
+import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/inspeksi/inspeksi_page.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../theme/colors.dart';
-import '../../../../theme/padding.dart';
+import '../../../../../theme/colors.dart';
+import '../../../../../theme/padding.dart';
 
 class PetaniPage extends StatefulWidget {
   const PetaniPage({Key? key}) : super(key: key);
@@ -141,7 +142,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
       child: TabBarView(controller: _tabController, children: [
         //tabBarViewSensus(),
         addSensus(),
-        const Center(child: Text("Inspeksi"))
+        addInspeksi()
       ]),
     );
   }
@@ -373,6 +374,22 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  addInspeksi() {
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: padding),
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: kOrange,
+              child: IconButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => InspeksiPage())), icon: const Icon(Icons.add, color: kWhite,))),
+          ))
       ],
     );
   }

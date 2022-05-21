@@ -1,10 +1,11 @@
-import 'package:barry_callebaut/users/petugas/view/create_agenda/petani/add_petani_page.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../theme/colors.dart';
+import '../../../../theme/padding.dart';
+import 'petani/add_petani_page.dart';
 
 class DetailAgendaPage extends StatefulWidget {
   final String lokasiSensus;

@@ -1,11 +1,11 @@
-import 'package:barry_callebaut/users/opsi_login_page.dart';
-import 'package:barry_callebaut/users/petugas/view/profil/data_pribadi_page.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
+import 'package:barry_callebaut/opsi_login_users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../../theme/padding.dart';
+import '../../../../theme/colors.dart';
+import '../../../../theme/padding.dart';
+import 'data_pribadi_page.dart';
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({Key? key}) : super(key: key);
@@ -224,7 +224,7 @@ class _ProfilPageState extends State<ProfilPage> {
     await FirebaseAuth.instance.signOut();
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const OpsiLoginPage()),
+        MaterialPageRoute(builder: (context) => const OpsiLoginUsers()),
         (route) => false);
   }
 }

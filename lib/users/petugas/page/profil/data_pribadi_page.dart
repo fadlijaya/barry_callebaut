@@ -1,7 +1,8 @@
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../theme/colors.dart';
+import '../../../../theme/padding.dart';
 
 class DataPribadiPage extends StatefulWidget {
   final String uid;

@@ -1,8 +1,10 @@
-import 'package:barry_callebaut/users/koordinator/view/home/home_page.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
+import 'package:barry_callebaut/users/koordinator/page/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../theme/colors.dart';
+import '../../../theme/padding.dart';
+import 'home/home_page.dart';
 
 class LoginPageKoordinator extends StatefulWidget {
   const LoginPageKoordinator({Key? key}) : super(key: key);

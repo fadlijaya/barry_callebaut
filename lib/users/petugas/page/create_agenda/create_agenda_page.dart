@@ -1,10 +1,11 @@
-import 'package:barry_callebaut/users/petugas/view/create_agenda/detail_agenda_page.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../../../theme/colors.dart';
+import '../../../../theme/padding.dart';
+import 'detail_agenda_page.dart';
 
 class CreateAgendaPage extends StatefulWidget {
   final String uid;

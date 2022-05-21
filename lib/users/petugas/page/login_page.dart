@@ -1,9 +1,10 @@
-import 'package:barry_callebaut/users/petugas/view/home/home_page.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../theme/colors.dart';
+import '../../../theme/padding.dart';
+import 'home/home_page.dart';
 
 class LoginPagePetugas extends StatefulWidget {
   const LoginPagePetugas({Key? key}) : super(key: key);
@@ -20,6 +21,22 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
 
   late bool _showPassword = true;
   late final bool _isLoading = false;
+
+  @override
+  void initState() {
+    if (FirebaseAuth.instance.currentUser != null) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const HomePage(),
+          ),
+          (route) => false,
+        );
+      });
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,11 +1,14 @@
 import 'package:barry_callebaut/users/petugas/model/m_info_umum.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:intl/intl.dart';
+
+import '../../../../../../theme/colors.dart';
+import '../../../../../../theme/padding.dart';
+import '../../create_agenda_page.dart';
 
 enum JenisKelamin { pria, wanita }
 
@@ -22,9 +25,10 @@ class _SensusPageState extends State<SensusPage> {
   final _formKey = GlobalKey<FormState>();
 
   int _activeStep = 0;
-  final int _upperBound = 3;
+  final int _upperBound = 5;
 
   String? uid;
+  String? username;
 
   JenisKelamin? _jekel = JenisKelamin.pria;
 
@@ -47,8 +51,7 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJekel = TextEditingController();
   final TextEditingController _controllerTglLahir = TextEditingController();
   final TextEditingController _controllerStatusNikah = TextEditingController();
-  final TextEditingController _controllerStatusPendidikan =
-      TextEditingController();
+  final TextEditingController _controllerStatusPendidikan = TextEditingController();
   final TextEditingController _controllerKelompok = TextEditingController();
 
   //form2
@@ -57,16 +60,12 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerDesa = TextEditingController();
   final TextEditingController _controllerKecamatan = TextEditingController();
   final TextEditingController _controllerKabupaten = TextEditingController();
-  final TextEditingController _controllerNamaSuamiIstri =
-      TextEditingController();
-  final TextEditingController _controllerTglLahirSuamiIstri =
-      TextEditingController();
-  final TextEditingController _controllerPendAkhirSuamiIstri =
-      TextEditingController();
+  final TextEditingController _controllerNamaSuamiIstri = TextEditingController();
+  final TextEditingController _controllerTglLahirSuamiIstri = TextEditingController();
+  final TextEditingController _controllerPendAkhirSuamiIstri = TextEditingController();
   final TextEditingController _controllerNamaAnak = TextEditingController();
   final TextEditingController _controllerTglLahirAnak = TextEditingController();
-  final TextEditingController _controllerPendAkhirAnak =
-      TextEditingController();
+  final TextEditingController _controllerPendAkhirAnak = TextEditingController();
 
   //form3
   final TextEditingController _controllerLuas = TextEditingController();
@@ -78,10 +77,8 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJarakTanam = TextEditingController();
 
   //form4
-  final TextEditingController _controllerPendapatanLain =
-      TextEditingController();
-  final TextEditingController _controllerPendapatanBulan =
-      TextEditingController();
+  final TextEditingController _controllerPendapatanLain = TextEditingController();
+  final TextEditingController _controllerPendapatanBulan = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -886,37 +883,260 @@ class _SensusPageState extends State<SensusPage> {
   Widget formSensus5() {
     return Form(
       key: _formKey,
-      child: Column(
+      child: Stack(
         children: [
-          Card(
-            margin: const EdgeInsets.symmetric(horizontal: padding),
-            color: kWhite,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: padding, vertical: padding),
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Alat transportasi petani saat membawa kakao",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                  Card(
+                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8, horizontal: padding),
+                          child: Text(
+                            "Alat transportasi petani saat membawa kakao",
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 360,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: padding, vertical: padding),
+                          child: ListView.builder(
+                              itemCount: staticData1.length,
+                              itemBuilder: (context, i) {
+                                Map data = staticData1[i];
+                                return ListTile(
+                                  title: Text(
+                                    "${data['nama']}",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Card(
+                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    color: kWhite,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8, horizontal: padding),
+                          child: Text(
+                            "Material utama rumah petani",
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 370,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: padding, vertical: padding),
+                          child: ListView.builder(
+                              itemCount: staticData2.length,
+                              itemBuilder: (context, i) {
+                                Map data = staticData2[i];
+                                return ListTile(
+                                  title: Text(
+                                    "${data['nama']}",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Card(
+                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    color: kWhite,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8, horizontal: padding),
+                          child: Text(
+                            "Alat yang digunakan petani untuk memasak",
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 320,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: padding, vertical: padding),
+                          child: ListView.builder(
+                              itemCount: staticData3.length,
+                              itemBuilder: (context, i) {
+                                Map data = staticData3[i];
+                                return ListTile(
+                                  title: Text(
+                                    "${data['nama']}",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Card(
+                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    color: kWhite,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8, horizontal: padding),
+                          child: Text(
+                            "Barang yang ada di rumah petani",
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 320,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: padding, vertical: padding),
+                          child: ListView.builder(
+                              itemCount: staticData4.length,
+                              itemBuilder: (context, i) {
+                                Map data = staticData4[i];
+                                return ListTile(
+                                  title: Text(
+                                    "${data['nama']}",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Card(
+                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    color: kWhite,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8, horizontal: padding),
+                          child: Text(
+                            "Toilet yang digunakan petani",
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 260,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: padding, vertical: padding),
+                          child: ListView.builder(
+                              itemCount: staticData5.length,
+                              itemBuilder: (context, i) {
+                                Map data = staticData5[i];
+                                return ListTile(
+                                  title: Text(
+                                    "${data['nama']}",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  addPhoto(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  buttonSubmit(),
+                  const SizedBox(
+                    height: 20,
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          buttonNext(),
-          const SizedBox(
-            height: 40,
-          ),
         ],
       ),
+    );
+  }
+
+  Widget addPhoto() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: padding),
+          child: DottedBorder(
+            borderType: BorderType.RRect,
+            dashPattern: const [10, 4],
+            radius: const Radius.circular(8),
+            strokeCap: StrokeCap.round,
+            color: Colors.grey.shade300,
+            child: Container(
+              height: 150,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade50.withOpacity(.3),
+                  borderRadius: BorderRadius.circular(10)),
+              child: GestureDetector(
+                onTap: () => Navigator.pushNamed(context, '/sensusPage'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.add_a_photo,
+                      color: kGreen,
+                      size: 40,
+                    ),
+                    Text(
+                      'Ambil Gambar',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, color: kGrey5),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -941,7 +1161,7 @@ class _SensusPageState extends State<SensusPage> {
           height: 48,
           child: Center(
             child: Text(
-              'Submit',
+              'Simpan',
               style: TextStyle(color: kWhite, fontWeight: FontWeight.w600),
             ),
           ),
@@ -959,6 +1179,7 @@ class _SensusPageState extends State<SensusPage> {
       if (result.docs.isNotEmpty) {
         setState(() {
           uid = result.docs[0].data()['uid'];
+          username = result.docs[0].data()['username'];
         });
       }
     });
@@ -1015,7 +1236,7 @@ class _SensusPageState extends State<SensusPage> {
             ),
             actions: [
               ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/agendaPage'),
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAgendaPage(uid: uid.toString(), username: username.toString(),))),
                   style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(kGreen2),

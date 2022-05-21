@@ -1,12 +1,13 @@
 import 'package:barry_callebaut/users/petugas/model/m_progress_ims.dart';
-import 'package:barry_callebaut/users/petugas/view/create_agenda/create_agenda_page.dart';
-import 'package:barry_callebaut/users/petugas/view/profil/profil_page.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
+import '../../../../theme/colors.dart';
+import '../../../../theme/padding.dart';
+import '../create_agenda/create_agenda_page.dart';
+import '../profil/profil_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

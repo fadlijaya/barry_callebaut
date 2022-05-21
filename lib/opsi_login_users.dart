@@ -1,16 +1,17 @@
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class OpsiLoginPage extends StatefulWidget {
-  const OpsiLoginPage({Key? key}) : super(key: key);
+import 'theme/colors.dart';
+import 'theme/padding.dart';
+
+class OpsiLoginUsers extends StatefulWidget {
+  const OpsiLoginUsers({Key? key}) : super(key: key);
 
   @override
-  State<OpsiLoginPage> createState() => _OpsiLoginPageState();
+  State<OpsiLoginUsers> createState() => _OpsiLoginUsersState();
 }
 
-class _OpsiLoginPageState extends State<OpsiLoginPage> {
+class _OpsiLoginUsersState extends State<OpsiLoginUsers> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

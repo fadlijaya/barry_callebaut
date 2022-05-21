@@ -1,10 +1,11 @@
-import 'package:barry_callebaut/users/petugas/view/initial_page.dart';
-import 'package:barry_callebaut/users/theme/colors.dart';
-import 'package:barry_callebaut/users/theme/padding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../theme/colors.dart';
+import '../../../theme/padding.dart';
+import 'initial_page.dart';
 
 class RegisterPagePetugas extends StatefulWidget {
   const RegisterPagePetugas({Key? key}) : super(key: key);
