@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:im_stepper/stepper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../../../../../../theme/colors.dart';
 import '../../../../../../theme/padding.dart';
@@ -23,6 +27,8 @@ class _InspeksiPageState extends State<InspeksiPage> {
   int _activeStep = 0;
   final int _upperBound = 3;
   DateTime _dateTime = DateTime.now();
+  var _imageFile;
+  String? _imageUrl;
 
   Pilihan? _pilihan1 = Pilihan.ya;
   Pilihan? _pilihan2 = Pilihan.ya;
@@ -46,6 +52,33 @@ class _InspeksiPageState extends State<InspeksiPage> {
       TextEditingController();
   final TextEditingController _controllerHama = TextEditingController();
   final TextEditingController _controllerPenyakit = TextEditingController();
+
+  Future pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _imageFile = File(image!.path);
+      uploadImageToFirebase();
+    });
+  }
+
+  Future uploadImageToFirebase() async {
+    File file = File(_imageFile.path);
+
+    if (_imageFile != null) {
+      firebase_storage.TaskSnapshot snapshot = await firebase_storage
+          .FirebaseStorage.instance
+          .ref('$_imageFile')
+          .putFile(file);
+
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        _imageUrl = downloadUrl;
+      });
+    } else {
+      print('Tidak dapat ditampilkan');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -686,7 +719,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
           const SizedBox(
             height: 16,
           ),
-          addPhoto(),
+          _imageFile != null ? viewPhoto() : addPhoto(),
           const SizedBox(
             height: 20,
           ),
@@ -696,6 +729,19 @@ class _InspeksiPageState extends State<InspeksiPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget viewPhoto() {
+    return Container(
+      width: double.infinity,
+      height: 150,
+      padding: const EdgeInsets.all(padding),
+      child: ClipRRect(
+        child: Center(
+          child: Image.file(_imageFile)
+        ),
+      )
     );
   }
 
@@ -717,7 +763,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                   color: Colors.blue.shade50.withOpacity(.3),
                   borderRadius: BorderRadius.circular(10)),
               child: GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/sensusPage'),
+                onTap: pickImage,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [

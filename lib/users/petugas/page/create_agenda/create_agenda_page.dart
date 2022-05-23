@@ -78,9 +78,8 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => DetailAgendaPage(
-                                      lokasiSensus: data[i]['lokasi sensus'],
-                                      docId: docId.toString()
-                                    ))),
+                                    lokasiSensus: data[i]['lokasi sensus'],
+                                    docId: docId.toString()))),
                         child: Card(
                           child: ListTile(
                             title: Text(data[i]['lokasi sensus']),
@@ -304,12 +303,21 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
   }
 
   Future<dynamic> createAgendaToFirebase() async {
-    docId = await FirebaseFirestore.instance
+    final docId = FirebaseFirestore.instance
         .collection("petugas")
         .doc(uid)
         .collection("agenda_sensus")
-        .add({
+        .doc()
+        .id;
+
+    await FirebaseFirestore.instance
+        .collection("petugas")
+        .doc(uid)
+        .collection("agenda_sensus")
+        .doc(docId)
+        .set({
       'uid': uid,
+      'docId': docId,
       'username': widget.username,
       'lokasi sensus': _lokasiController.text,
       'mulai tanggal': _tanggal1Controller.text,

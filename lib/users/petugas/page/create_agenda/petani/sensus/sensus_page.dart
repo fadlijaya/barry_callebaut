@@ -51,7 +51,8 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJekel = TextEditingController();
   final TextEditingController _controllerTglLahir = TextEditingController();
   final TextEditingController _controllerStatusNikah = TextEditingController();
-  final TextEditingController _controllerStatusPendidikan = TextEditingController();
+  final TextEditingController _controllerStatusPendidikan =
+      TextEditingController();
   final TextEditingController _controllerKelompok = TextEditingController();
 
   //form2
@@ -60,12 +61,16 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerDesa = TextEditingController();
   final TextEditingController _controllerKecamatan = TextEditingController();
   final TextEditingController _controllerKabupaten = TextEditingController();
-  final TextEditingController _controllerNamaSuamiIstri = TextEditingController();
-  final TextEditingController _controllerTglLahirSuamiIstri = TextEditingController();
-  final TextEditingController _controllerPendAkhirSuamiIstri = TextEditingController();
+  final TextEditingController _controllerNamaSuamiIstri =
+      TextEditingController();
+  final TextEditingController _controllerTglLahirSuamiIstri =
+      TextEditingController();
+  final TextEditingController _controllerPendAkhirSuamiIstri =
+      TextEditingController();
   final TextEditingController _controllerNamaAnak = TextEditingController();
   final TextEditingController _controllerTglLahirAnak = TextEditingController();
-  final TextEditingController _controllerPendAkhirAnak = TextEditingController();
+  final TextEditingController _controllerPendAkhirAnak =
+      TextEditingController();
 
   //form3
   final TextEditingController _controllerLuas = TextEditingController();
@@ -77,8 +82,10 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJarakTanam = TextEditingController();
 
   //form4
-  final TextEditingController _controllerPendapatanLain = TextEditingController();
-  final TextEditingController _controllerPendapatanBulan = TextEditingController();
+  final TextEditingController _controllerPendapatanLain =
+      TextEditingController();
+  final TextEditingController _controllerPendapatanBulan =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +109,7 @@ class _SensusPageState extends State<SensusPage> {
   Widget header() {
     return Container(
       width: double.infinity,
-      height: 160,
+      height: 140,
       margin: const EdgeInsets.only(bottom: 20),
       color: kGreen2,
       child: Column(
@@ -121,18 +128,6 @@ class _SensusPageState extends State<SensusPage> {
           const SizedBox(
             height: 16,
           ),
-          Row(
-            children: const [
-              Padding(
-                padding: EdgeInsets.only(left: 24),
-                child: Text(
-                  "Info Petani",
-                  style: TextStyle(
-                      color: kWhite, fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          )
         ],
       ),
     );
@@ -198,6 +193,18 @@ class _SensusPageState extends State<SensusPage> {
   Widget formSensus() {
     return Column(
       children: [
+        Row(
+          children: const [
+            Padding(
+              padding: EdgeInsets.only(left: 24, bottom: 12),
+              child: Text(
+                "Info Petani",
+                style: TextStyle(
+                    color: kGreen2, fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
         Card(
           color: kWhite,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -363,7 +370,7 @@ class _SensusPageState extends State<SensusPage> {
         ),
         buttonNext(),
         const SizedBox(
-          height: 40,
+          height: 20,
         ),
       ],
     );
@@ -437,6 +444,20 @@ class _SensusPageState extends State<SensusPage> {
       key: _formKey,
       child: Column(
         children: [
+          Row(
+            children: const [
+              Padding(
+                padding: EdgeInsets.only(left: 24, bottom: 12),
+                child: Text(
+                  "Info Petani",
+                  style: TextStyle(
+                      color: kGreen2,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
           Card(
             margin: const EdgeInsets.symmetric(horizontal: padding),
             color: kWhite,
@@ -654,7 +675,7 @@ class _SensusPageState extends State<SensusPage> {
           ),
           buttonNext(),
           const SizedBox(
-            height: 40,
+            height: 20,
           ),
         ],
       ),
@@ -692,6 +713,20 @@ class _SensusPageState extends State<SensusPage> {
       key: _formKey,
       child: Column(
         children: [
+          Row(
+            children: const [
+              Padding(
+                padding: EdgeInsets.only(left: 24, bottom: 12),
+                child: Text(
+                  "Info Kebun",
+                  style: TextStyle(
+                      color: kGreen2,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
           Card(
             margin: const EdgeInsets.symmetric(horizontal: padding),
             color: kWhite,
@@ -810,7 +845,7 @@ class _SensusPageState extends State<SensusPage> {
           ),
           buttonNext(),
           const SizedBox(
-            height: 40,
+            height: 20,
           ),
         ],
       ),
@@ -822,6 +857,20 @@ class _SensusPageState extends State<SensusPage> {
       key: _formKey,
       child: Column(
         children: [
+          Row(
+            children: const [
+              Padding(
+                padding: EdgeInsets.only(left: 24, bottom: 12),
+                child: Text(
+                  "Info Keuangan",
+                  style: TextStyle(
+                      color: kGreen2,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
           Card(
             margin: const EdgeInsets.symmetric(horizontal: padding),
             color: kWhite,
@@ -889,6 +938,20 @@ class _SensusPageState extends State<SensusPage> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  Row(
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.only(left: 24, bottom: 12),
+                        child: Text(
+                          "Info Umum",
+                          style: TextStyle(
+                              color: kGreen2,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
                   Card(
                     margin: const EdgeInsets.symmetric(horizontal: padding * 2),
                     child: Column(
@@ -1236,7 +1299,13 @@ class _SensusPageState extends State<SensusPage> {
             ),
             actions: [
               ElevatedButton(
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAgendaPage(uid: uid.toString(), username: username.toString(),))),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateAgendaPage(
+                                uid: uid.toString(),
+                                username: username.toString(),
+                              ))),
                   style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(kGreen2),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../theme/colors.dart';
@@ -13,6 +14,9 @@ class AddPetaniPage extends StatefulWidget {
 
 class _AddPetaniPageState extends State<AddPetaniPage> {
   String titlePage = "Tambah Petani";
+
+  final Stream<QuerySnapshot> _streamDataPetani =
+      FirebaseFirestore.instance.collection("data_petani").snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +40,81 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
         width: size.width,
         height: size.height,
         padding: const EdgeInsets.all(padding),
-        child: Column(
-          children: [
-            list(),
-          ],
-        ),
-      ),
+        child: streamBuilder()),
     );
+  }
+
+  Widget streamBuilder() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _streamDataPetani,
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text("Belum Ada Data"),
+            );
+          }
+
+          var document = snapshot.data!.docs;
+
+          return ListView.builder(
+              itemCount: document.length,
+              itemBuilder: (context, i) {
+                return Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  child: ListTile(
+                      leading: ClipOval(
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.network(
+                          "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
+                          width: 32,
+                          height: 32,
+                        ),
+                      ),
+                      title: Text(
+                        document[i]["nama_petani"],
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: kBlack),
+                      ),
+                      subtitle: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              document[i]["desa_kelurahan"],
+                              style: const TextStyle(
+                                  color: kGrey3, fontWeight: FontWeight.w400,),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                        ],
+                      ),
+                      trailing: ElevatedButton(
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PetaniPage())),
+                        child: const Text(
+                          "Tambah",
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                        ),
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(kGreen2),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)))),
+                      )),
+                );
+              });
+        });
   }
 
   Widget list() {
