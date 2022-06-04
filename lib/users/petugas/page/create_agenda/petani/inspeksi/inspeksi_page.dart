@@ -719,7 +719,11 @@ class _InspeksiPageState extends State<InspeksiPage> {
           const SizedBox(
             height: 16,
           ),
-          _imageFile != null ? viewPhoto() : addPhoto(),
+          _imageFile != null ? viewPhoto() : Container(),
+          const SizedBox(
+            height: 20,
+          ),
+          addPhoto(),
           const SizedBox(
             height: 20,
           ),

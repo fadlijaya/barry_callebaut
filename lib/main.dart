@@ -7,7 +7,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'opsi_login_users.dart';
-import 'users/petugas/page/create_agenda/petani/sensus/sensus_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,8 +29,6 @@ class MyApp extends StatelessWidget {
         '/registerPagePetugas': (_) => const RegisterPagePetugas(),
         '/initialPage': (_) => const InitialPage(),
         '/agendaPage': (_) => const AgendaPage(),
-        //'/addAgendaPage': (_) =>  const CreateAgendaPage()
-        '/sensusPage': (_) => const SensusPage()
       },
       home: const OpsiLoginUsers(),
     );

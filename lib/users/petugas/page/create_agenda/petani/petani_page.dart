@@ -1,4 +1,5 @@
 import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/inspeksi/inspeksi_page.dart';
+import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/sensus/sensus_page.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,19 @@ import '../../../../../theme/colors.dart';
 import '../../../../../theme/padding.dart';
 
 class PetaniPage extends StatefulWidget {
-  const PetaniPage({Key? key}) : super(key: key);
+  final String docId;
+  final String docIdPetani;
+  final String namaPetani;
+  final String desaKelurahan;
+  final String noHp;
+  const PetaniPage(
+      {Key? key,
+      required this.docId,
+      required this.docIdPetani,
+      required this.namaPetani,
+      required this.desaKelurahan,
+      required this.noHp})
+      : super(key: key);
 
   @override
   _PetaniPageState createState() => _PetaniPageState();
@@ -47,11 +60,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
         height: size.height,
         child: SingleChildScrollView(
           child: Column(
-            children: [
-              profil(),
-              tabBar(),
-              tabBarView()
-            ],
+            children: [profil(), tabBar(), tabBarView()],
           ),
         ),
       ),
@@ -70,10 +79,10 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                 image: NetworkImage(
                     "http://learnyzen.com/wp-content/uploads/2017/08/test1-481x385.png"))),
       ),
-      title: const Text(
-        "Irwan Deku",
-        style:
-            TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: kBlack),
+      title: Text(
+        widget.namaPetani,
+        style: const TextStyle(
+            fontSize: 20, fontWeight: FontWeight.w600, color: kBlack),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,9 +93,10 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
               const SizedBox(
                 width: 4,
               ),
-              const Text(
-                "Dusun Lapejang",
-                style: TextStyle(color: kBlack, fontWeight: FontWeight.w400),
+              Text(
+                widget.desaKelurahan,
+                style:
+                    const TextStyle(color: kBlack, fontWeight: FontWeight.w400),
               )
             ],
           ),
@@ -99,10 +109,10 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
             decoration: BoxDecoration(
                 color: kGreen2.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(5)),
-            child: const Center(
+            child: Center(
               child: Text(
-                "0684837365",
-                style: TextStyle(
+                widget.noHp,
+                style: const TextStyle(
                   color: kBlack,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -351,7 +361,10 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                   color: Colors.blue.shade50.withOpacity(.3),
                   borderRadius: BorderRadius.circular(10)),
               child: GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/sensusPage'),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SensusPage(docId: widget.docId, docIdPetani: widget.docIdPetani))),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
@@ -382,14 +395,22 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
     return Stack(
       children: [
         Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: padding),
-            child: CircleAvatar(
-              radius: 30,
-              backgroundColor: kOrange,
-              child: IconButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => InspeksiPage())), icon: const Icon(Icons.add, color: kWhite,))),
-          ))
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: padding),
+              child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: kOrange,
+                  child: IconButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => InspeksiPage())),
+                      icon: const Icon(
+                        Icons.add,
+                        color: kWhite,
+                      ))),
+            ))
       ],
     );
   }

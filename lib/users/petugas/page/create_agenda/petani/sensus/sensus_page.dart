@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:barry_callebaut/users/petugas/model/m_info_umum.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:im_stepper/stepper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../theme/colors.dart';
@@ -13,7 +17,10 @@ import '../../create_agenda_page.dart';
 enum JenisKelamin { pria, wanita }
 
 class SensusPage extends StatefulWidget {
-  const SensusPage({Key? key}) : super(key: key);
+  final String docId;
+  final String docIdPetani;
+  const SensusPage({Key? key, required this.docId, required this.docIdPetani})
+      : super(key: key);
 
   @override
   _SensusPageState createState() => _SensusPageState();
@@ -37,12 +44,19 @@ class _SensusPageState extends State<SensusPage> {
   final List<String> _listStatus = ['Lajang', 'Menikah', 'Duda', 'Janda'];
 
   String? _selectedStatus;
+  var _imageFile;
+  String? _imageUrl;
 
-  List<Map> staticData1 = InfoUmum.data1;
-  List<Map> staticData2 = InfoUmum.data2;
-  List<Map> staticData3 = InfoUmum.data3;
-  List<Map> staticData4 = InfoUmum.data4;
-  List<Map> staticData5 = InfoUmum.data5;
+  final List<CheckBoxListTileModel1> _listTileModel1 =
+      CheckBoxListTileModel1.getInfoUmum();
+  final List<CheckBoxListTileModel2> _listTileModel2 =
+      CheckBoxListTileModel2.getInfoUmum();
+  final List<CheckBoxListTileModel3> _listTileModel3 =
+      CheckBoxListTileModel3.getInfoUmum();
+  final List<CheckBoxListTileModel4> _listTileModel4 =
+      CheckBoxListTileModel4.getInfoUmum();
+  final List<CheckBoxListTileModel5> _listTileModel5 =
+      CheckBoxListTileModel5.getInfoUmum();
 
   //form1
   final TextEditingController _controllerTglSensus = TextEditingController();
@@ -86,6 +100,33 @@ class _SensusPageState extends State<SensusPage> {
       TextEditingController();
   final TextEditingController _controllerPendapatanBulan =
       TextEditingController();
+
+  Future pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _imageFile = File(image!.path);
+      uploadImageToFirebase();
+    });
+  }
+
+  Future uploadImageToFirebase() async {
+    File file = File(_imageFile.path);
+
+    if (_imageFile != null) {
+      firebase_storage.TaskSnapshot snapshot = await firebase_storage
+          .FirebaseStorage.instance
+          .ref('$_imageFile')
+          .putFile(file);
+
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        _imageUrl = downloadUrl;
+      });
+    } else {
+      print('Tidak dapat ditampilkan');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -971,15 +1012,17 @@ class _SensusPageState extends State<SensusPage> {
                           margin: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
-                              itemCount: staticData1.length,
+                              itemCount: _listTileModel1.length,
                               itemBuilder: (context, i) {
-                                Map data = staticData1[i];
-                                return ListTile(
-                                  title: Text(
-                                    "${data['nama']}",
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                );
+                                return CheckboxListTile(
+                                    title: Text(
+                                      "${_listTileModel1[i].name}",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    value: _listTileModel1[i].isCheck,
+                                    onChanged: (bool? val) {
+                                      itemChange1(val, i);
+                                    });
                               }),
                         ),
                       ],
@@ -1010,15 +1053,17 @@ class _SensusPageState extends State<SensusPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
-                              itemCount: staticData2.length,
+                              itemCount: _listTileModel2.length,
                               itemBuilder: (context, i) {
-                                Map data = staticData2[i];
-                                return ListTile(
-                                  title: Text(
-                                    "${data['nama']}",
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                );
+                                return CheckboxListTile(
+                                    title: Text(
+                                      "${_listTileModel2[i].name}",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    value: _listTileModel2[i].isCheck,
+                                    onChanged: (bool? val) {
+                                      itemChange2(val, i);
+                                    });
                               }),
                         ),
                       ],
@@ -1049,15 +1094,17 @@ class _SensusPageState extends State<SensusPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
-                              itemCount: staticData3.length,
+                              itemCount: _listTileModel3.length,
                               itemBuilder: (context, i) {
-                                Map data = staticData3[i];
-                                return ListTile(
-                                  title: Text(
-                                    "${data['nama']}",
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                );
+                                return CheckboxListTile(
+                                    title: Text(
+                                      "${_listTileModel3[i].name}",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    value: _listTileModel3[i].isCheck,
+                                    onChanged: (bool? val) {
+                                      itemChange3(val, i);
+                                    });
                               }),
                         ),
                       ],
@@ -1088,15 +1135,14 @@ class _SensusPageState extends State<SensusPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
-                              itemCount: staticData4.length,
+                              itemCount: _listTileModel4.length,
                               itemBuilder: (context, i) {
-                                Map data = staticData4[i];
-                                return ListTile(
-                                  title: Text(
-                                    "${data['nama']}",
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                );
+                                return CheckboxListTile(
+                                    title: Text("${_listTileModel4[i].name}", style: const TextStyle(fontSize: 14)),
+                                    value: _listTileModel4[i].isCheck,
+                                    onChanged: (bool? val) {
+                                      itemChange4(val, i);
+                                    });
                               }),
                         ),
                       ],
@@ -1123,24 +1169,30 @@ class _SensusPageState extends State<SensusPage> {
                         ),
                         Container(
                           width: double.infinity,
-                          height: 260,
+                          height: 300,
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
-                              itemCount: staticData5.length,
+                              itemCount: _listTileModel5.length,
                               itemBuilder: (context, i) {
-                                Map data = staticData5[i];
-                                return ListTile(
-                                  title: Text(
-                                    "${data['nama']}",
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                );
+                                return CheckboxListTile(
+                                    title: Text(
+                                      "${_listTileModel5[i].name}",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    value: _listTileModel5[i].isCheck,
+                                    onChanged: (bool? val) {
+                                      itemChange5(val, i);
+                                    });
                               }),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  _imageFile != null ? viewPhoto() : Container(),
                   const SizedBox(
                     height: 20,
                   ),
@@ -1161,9 +1213,50 @@ class _SensusPageState extends State<SensusPage> {
     );
   }
 
+  void itemChange1(bool? val, int i) {
+    setState(() {
+      _listTileModel1[i].isCheck = val;
+    });
+  }
+
+  void itemChange2(bool? val, int i) {
+    setState(() {
+      _listTileModel2[i].isCheck = val;
+    });
+  }
+
+  void itemChange3(bool? val, int i) {
+    setState(() {
+      _listTileModel3[i].isCheck = val;
+    });
+  }
+
+  void itemChange4(bool? val, int i) {
+    setState(() {
+      _listTileModel4[i].isCheck = val;
+    });
+  }
+
+  void itemChange5(bool? val, int i) {
+    setState(() {
+      _listTileModel5[i].isCheck = val;
+    });
+  }
+
+  Widget viewPhoto() {
+    return Container(
+      width: double.infinity,
+      height: 150,
+      padding: const EdgeInsets.all(padding),
+      child: ClipRRect(
+        child: Image.file(_imageFile),
+      )
+    );
+  }
+
   Widget addPhoto() {
     return Column(
-      children: [
+      children: [        
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: padding),
           child: DottedBorder(
@@ -1179,7 +1272,7 @@ class _SensusPageState extends State<SensusPage> {
                   color: Colors.blue.shade50.withOpacity(.3),
                   borderRadius: BorderRadius.circular(10)),
               child: GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/sensusPage'),
+                onTap: pickImage,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
@@ -1253,9 +1346,13 @@ class _SensusPageState extends State<SensusPage> {
       await FirebaseFirestore.instance
           .collection("petugas")
           .doc(uid)
-          .collection("petani")
+          .collection("agenda_sensus")
+          .doc(widget.docId)
+          .collection("data_petani")
+          .doc(widget.docIdPetani)
+          .collection("sensus")
           .add({
-        //data personal
+        //info petani
         'uid': uid,
         'tanggal sensus': _controllerTglSensus.text,
         'nama': _controllerNama.text,
@@ -1267,9 +1364,33 @@ class _SensusPageState extends State<SensusPage> {
         'kelompok': _controllerKelompok.text,
 
         'alamat': _controllerAlamat.text,
+        'dusun': _controllerDusun.text,
         'desa': _controllerDesa.text,
         'kecamatan': _controllerKecamatan.text,
-        'kabupaten': _controllerKabupaten.text
+        'kabupaten': _controllerKabupaten.text,
+
+        'nama suami/istri': _controllerNamaSuamiIstri.text,
+        'tgl.lahir suami/istri': _controllerTglLahirSuamiIstri.text,
+        'pend.akhir suami/istri': _controllerPendAkhirSuamiIstri.text,
+
+        'nama anak': _controllerNamaAnak.text,
+        'tgl.lahir anak': _controllerTglLahirAnak.text,
+        'pend.akhir anak': _controllerPendAkhirAnak.text,
+
+        //info kebun
+        'luas kebun': _controllerLuas.text,
+        'koordinat': _controllerKoordinat.text,
+        'lokal': _controllerLokal.text,
+        's1': _controllerS1.text,
+        's2': _controllerS2.text,
+        'lain-lain': _controllerLain.text,
+        'jarak tanam': _controllerJarakTanam.text,
+
+        //info keuangan
+        'pendapatan lain': _controllerPendapatanLain.text,
+        'pendapatan bulan': _controllerPendapatanBulan.text,
+
+        //info umum
       });
 
       alertNotif();

@@ -1,3 +1,4 @@
+import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/petani_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +24,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    final Stream<QuerySnapshot> _streamPetani = FirebaseFirestore.instance
+    final Stream<QuerySnapshot> _streamDataPetani = FirebaseFirestore.instance
         .collection("petugas")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("agenda_sensus")
@@ -50,7 +51,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
           height: size.height,
           padding: const EdgeInsets.all(padding),
           child: StreamBuilder<QuerySnapshot>(
-              stream: _streamPetani,
+              stream: _streamDataPetani,
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -67,74 +68,86 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                   );
                 }
 
-                var data = snapshot.data!.docs;
+                var document = snapshot.data!.docs;
 
                 return Stack(
                   children: [
-                    ListView.builder(
-                        itemCount: data.length,
-                        itemBuilder: (context, i) {
-                          return Card(
-                            margin:
-                                const EdgeInsets.symmetric(horizontal: padding),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            child: ListTile(
-                              leading: ClipOval(
-                                clipBehavior: Clip.antiAlias,
-                                child: Image.network(
-                                  "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
-                                  width: 32,
-                                  height: 32,
-                                ),
-                              ),
-                              title: const Text(
-                                "Irwan Deku",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: kBlack),
-                              ),
-                              subtitle: Row(
-                                children: [
-                                  const Flexible(
-                                    child: Text(
-                                      "Dusun Lapejang",
-                                      style: TextStyle(
-                                          color: kGrey3,
-                                          fontWeight: FontWeight.w400),
+                    addPetani(),
+                    Container(
+                      margin: const EdgeInsets.only(top: 166),
+                      child: ListView.builder(
+                          itemCount: document.length,
+                          itemBuilder: (context, i) {
+                            return GestureDetector(
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PetaniPage(
+                                docId: widget.docId,
+                                docIdPetani: document[i]["docId"],
+                                namaPetani: document[i]["nama_petani"],
+                                desaKelurahan: document[i]["desa_kelurahan"],
+                                noHp: document[i]["no_hp"]
+                              ))),
+                              child: Card(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: padding),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: ListTile(
+                                  leading: ClipOval(
+                                    clipBehavior: Clip.antiAlias,
+                                    child: Image.network(
+                                      "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
+                                      width: 32,
+                                      height: 32,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 4,
+                                  title: Text(
+                                    document[i]['nama_petani'],
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: kBlack),
                                   ),
-                                  Container(
-                                    width: 80,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                        color: kGreen2.withOpacity(0.3),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: const Center(
-                                      child: Text(
-                                        "0684837365",
-                                        style: TextStyle(
-                                          color: kBlack,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
+                                  subtitle: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          document[i]["desa_kelurahan"],
+                                          style: const TextStyle(
+                                              color: kGrey3,
+                                              fontWeight: FontWeight.w400),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                ],
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                      Container(
+                                        width: 80,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                            color: kGreen2.withOpacity(0.3),
+                                            borderRadius: BorderRadius.circular(5)),
+                                        child: Center(
+                                          child: Text(
+                                            document[i]["no_hp"],
+                                            style: const TextStyle(
+                                              color: kBlack,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  trailing: const Icon(
+                                    Icons.timelapse,
+                                    color: kGreen,
+                                  ),
+                                ),
                               ),
-                              trailing: const Icon(
-                                Icons.timelapse,
-                                color: kGreen,
-                              ),
-                            ),
-                          );
-                        }),
-                    addPetani()
+                            );
+                          }),
+                    ),
                   ],
                 );
               }),
@@ -161,7 +174,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AddPetaniPage())),
+                      builder: (context) => AddPetaniPage(docId: widget.docId))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [

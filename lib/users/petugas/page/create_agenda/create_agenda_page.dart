@@ -29,7 +29,6 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
   DateTime _selectedDate2 = DateTime.now();
 
   String get uid => widget.uid;
-  String? docId;
 
   final Stream<QuerySnapshot> _streamAgendaSensus = FirebaseFirestore.instance
       .collection("petugas")
@@ -64,25 +63,25 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
                   );
                 } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(
-                    child: Text("Belum Ada Data!"),
+                    child: Text("Belum Ada document!"),
                   );
                 }
 
-                var data = snapshot.data!.docs;
+                var document = snapshot.data!.docs;
 
                 return ListView.builder(
-                    itemCount: data.length,
+                    itemCount: document.length,
                     itemBuilder: (context, i) {
                       return GestureDetector(
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => DetailAgendaPage(
-                                    lokasiSensus: data[i]['lokasi sensus'],
-                                    docId: docId.toString()))),
+                                    lokasiSensus: document[i]['lokasi sensus'],
+                                    docId: document[i]["docId"]))),
                         child: Card(
                           child: ListTile(
-                            title: Text(data[i]['lokasi sensus']),
+                            title: Text(document[i]['lokasi sensus']),
                             subtitle: Row(
                               children: [
                                 const Icon(
@@ -94,11 +93,11 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
                                   width: 8,
                                 ),
                                 Text(
-                                  data[i]['mulai tanggal'],
+                                  document[i]['mulai tanggal'],
                                   style: const TextStyle(fontSize: 12),
                                 ),
                                 const Text(" - "),
-                                Text(data[i]['sampai tanggal'],
+                                Text(document[i]['sampai tanggal'],
                                     style: const TextStyle(fontSize: 12)),
                               ],
                             ),
@@ -322,7 +321,7 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
       'lokasi sensus': _lokasiController.text,
       'mulai tanggal': _tanggal1Controller.text,
       'sampai tanggal': _tanggal2Controller.text
-    }).then((data) {
+    }).then((_) {
       Navigator.pop(context);
       alertDialogSukses();
     });
