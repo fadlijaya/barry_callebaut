@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../theme/colors.dart';
 import 'agenda/agenda_page.dart';
-import 'home/home_page.dart';
+import 'home/home_page_petugas.dart';
 import 'profil/profil_page.dart';
 
 class InitialPage extends StatefulWidget {
@@ -50,7 +50,7 @@ class _CategoryPageState extends State<CategoryPage>
   ];
 
   final widgetList = <Widget>[
-    const HomePage(),
+    const HomePagePetugas(),
     const AgendaPage(),
     const ProfilPage()
   ];

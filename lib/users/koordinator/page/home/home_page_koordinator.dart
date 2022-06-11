@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -13,6 +15,9 @@ class HomePageKoordinator extends StatefulWidget {
 }
 
 class _HomePageKoordinatorState extends State<HomePageKoordinator> {
+  String? uid;
+  String? username;
+
   List<ModelProgressIms> data = [
     ModelProgressIms('Jan', 35),
     ModelProgressIms('Feb', 28),
@@ -20,7 +25,31 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
     ModelProgressIms('Apr', 32),
     ModelProgressIms('May', 40)
   ];
-  
+
+  Future<dynamic> getUserKoordinator() async {
+    await FirebaseFirestore.instance
+        .collection('koordinator')
+        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((result) {
+      if (result.docs.isNotEmpty) {
+        setState(() {
+          uid = result.docs[0].data()['uid'];
+          username = result.docs[0].data()['username'];
+        });
+      }
+    });
+  }
+
+  final Stream<QuerySnapshot> _streamPetugas =
+      FirebaseFirestore.instance.collection("petugas").snapshots();
+
+  @override
+  void initState() {
+    getUserKoordinator();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -49,15 +78,15 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
                     padding: const EdgeInsets.only(top: padding),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
-                            "Miswar Al-Qadri",
-                            style: TextStyle(
+                            "$username",
+                            style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: kWhite),
                           ),
-                          Text(
+                          const Text(
                             "Koordinator",
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
@@ -79,7 +108,7 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
                 ),
               ],
             ),
-            progressIms(),
+            akumulasi(),
             title(),
           ],
         ),
@@ -87,7 +116,7 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
     );
   }
 
-  Widget progressIms() {
+  Widget akumulasi() {
     return Positioned(
       left: 0,
       right: 0,
@@ -102,7 +131,7 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Progress ims",
+                "Akumulasi 100%",
                 style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.w600, color: kBlack6),
               ),
@@ -159,7 +188,9 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
 
   Widget search() {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 16,),
+      margin: const EdgeInsets.symmetric(
+        vertical: 16,
+      ),
       width: double.infinity,
       height: 40,
       decoration: BoxDecoration(
@@ -182,6 +213,104 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
     );
   }
 
+  Widget listPetugas() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _streamPetugas,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text("Error!"),
+            );
+          } else if (!snapshot.hasData && snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text("Data is Empty!"),
+            );
+          }
+
+          var document = snapshot.data!.docs;
+
+          return ListView.builder(
+              itemCount: document.length,
+              itemBuilder: (context, i) {
+                return Card(
+                  child: ListTile(
+                    minVerticalPadding: padding,
+                    leading: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              image: const DecorationImage(
+                                  image: NetworkImage(""))),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                      ],
+                    ),
+                    title: const Text(
+                      "Irwan Deku",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: kBlack),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset("assets/pin.png"),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            const Text(
+                              "Dusun Lapejang",
+                              style: TextStyle(
+                                  color: kBlack, fontWeight: FontWeight.w400),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Container(
+                          width: 80,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              color: kGreen2.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: const Center(
+                            child: Text(
+                              "0684837365",
+                              style: TextStyle(
+                                color: kBlack,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    trailing: const Icon(
+                      Icons.create,
+                      color: kGreen,
+                    ),
+                  ),
+                );
+              });
+        });
+  }
+
   Widget profil() {
     return Card(
       child: ListTile(
@@ -190,21 +319,22 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 96,
-              height: 96,
+              width: 48,
+              height: 48,
+              padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  image: const DecorationImage(
-                      image: NetworkImage(
-                          "http://learnyzen.com/wp-content/uploads/2017/08/test1-481x385.png"))),
+                  image: const DecorationImage(image: NetworkImage("https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg"))),
             ),
-            const SizedBox(height: 8,),
+            const SizedBox(
+              height: 8,
+            ),
           ],
         ),
         title: const Text(
           "Irwan Deku",
-          style:
-              TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: kBlack),
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w600, color: kBlack),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,5 +380,4 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
       ),
     );
   }
-
 }

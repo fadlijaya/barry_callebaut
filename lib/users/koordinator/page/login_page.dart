@@ -1,10 +1,11 @@
-import 'package:barry_callebaut/users/koordinator/page/home/home_page.dart';
+import 'package:barry_callebaut/users/koordinator/page/home/home_page_koordinator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../theme/colors.dart';
 import '../../../theme/padding.dart';
-import 'home/home_page.dart';
+import 'home/home_page_koordinator.dart';
 
 class LoginPageKoordinator extends StatefulWidget {
   const LoginPageKoordinator({Key? key}) : super(key: key);
@@ -16,11 +17,27 @@ class LoginPageKoordinator extends StatefulWidget {
 class _LoginPageKoordinatorState extends State<LoginPageKoordinator> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerIdKoordinator = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
   late bool _showPassword = true;
-  //late final bool _isLoading = false;
+  late final bool _isLoading = false;
+
+  @override
+  void initState() {
+    if (FirebaseAuth.instance.currentUser != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const HomePageKoordinator(),
+          ),
+          (route) => false,
+        );
+      });
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +101,12 @@ class _LoginPageKoordinatorState extends State<LoginPageKoordinator> {
                 padding: const EdgeInsets.only(
                     left: 8, right: 8, top: 12, bottom: 4),
                 child: TextFormField(
-                  controller: _controllerEmail,
+                  controller: _controllerIdKoordinator,
                   cursorColor: kGreen,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration.collapsed(
-                      hintText: '@34restuwidya'),
+                      hintText: '34restuwidya'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Masukkan Id Koordinator";
@@ -178,7 +195,7 @@ class _LoginPageKoordinatorState extends State<LoginPageKoordinator> {
           backgroundColor: MaterialStateProperty.all(kGreen),
           shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))),
-      onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePageKoordinator()), (route) => false),
+      onPressed: login,
       child: Container(
         margin: const EdgeInsets.only(left: 24, right: 24),
         width: double.infinity,
@@ -191,5 +208,40 @@ class _LoginPageKoordinatorState extends State<LoginPageKoordinator> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> login() async {
+    final String idKoordinator = _controllerIdKoordinator.text.trim();
+    final String email = '$idKoordinator@gmail.com';
+    final String password = _controllerPassword.text.trim();
+
+    if (!_isLoading) {
+      if (_formKey.currentState!.validate()) {
+        displaySnackBar('Mohon Tunggu..');
+
+        try {
+          UserCredential user = await FirebaseAuth.instance
+              .signInWithEmailAndPassword(email: email, password: password);
+
+          // ignore: unnecessary_null_comparison
+          if (user != null) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePageKoordinator()),
+                (route) => false);
+          }
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'user-not-found') {
+            //print('No user found for that email.');
+          } else if (e.code == 'wrong-password') {
+            //print('Wrong password provided for that user.');
+          }
+        }
+      }
+    }
+  }
+
+  displaySnackBar(text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 }

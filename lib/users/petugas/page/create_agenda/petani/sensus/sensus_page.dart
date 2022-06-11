@@ -732,7 +732,7 @@ class _SensusPageState extends State<SensusPage> {
         lastDate: today);
     if (_datePicker != null) {
       _dateTime = _datePicker;
-      _controllerTglSensus.text = DateFormat('dd/MM/yyyy').format(_dateTime);
+      _controllerTglLahirSuamiIstri.text = DateFormat('dd/MM/yyyy').format(_dateTime);
     }
   }
 
@@ -745,7 +745,7 @@ class _SensusPageState extends State<SensusPage> {
         lastDate: today);
     if (_datePicker != null) {
       _dateTime = _datePicker;
-      _controllerTglLahir.text = DateFormat('dd/MM/yyyy').format(_dateTime);
+      _controllerTglLahirAnak.text = DateFormat('dd/MM/yyyy').format(_dateTime);
     }
   }
 
@@ -788,7 +788,8 @@ class _SensusPageState extends State<SensusPage> {
                     controller: _controllerLuas,
                     cursorColor: kGreen,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Luas'),
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(hintText: 'Luas (m2)'),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Masukkan Luas";
@@ -869,6 +870,7 @@ class _SensusPageState extends State<SensusPage> {
                     controller: _controllerJarakTanam,
                     cursorColor: kGreen,
                     textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.number,
                     decoration: const InputDecoration(hintText: 'Jarak Tanam'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -945,6 +947,7 @@ class _SensusPageState extends State<SensusPage> {
                     controller: _controllerPendapatanBulan,
                     cursorColor: kGreen,
                     textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.number,
                     decoration:
                         const InputDecoration(hintText: 'Pendapatan/Bulan'),
                     validator: (value) {
@@ -1352,6 +1355,7 @@ class _SensusPageState extends State<SensusPage> {
           .doc(widget.docIdPetani)
           .collection("sensus")
           .add({
+
         //info petani
         'uid': uid,
         'tanggal sensus': _controllerTglSensus.text,
@@ -1391,6 +1395,11 @@ class _SensusPageState extends State<SensusPage> {
         'pendapatan bulan': _controllerPendapatanBulan.text,
 
         //info umum
+        'alat transportasi petani': _listTileModel1,
+        'material utama rumah petani': _listTileModel2,
+        'alat petani untuk memasak': _listTileModel3,
+        'barang di rumah petani': _listTileModel4,
+        'toilet petani': _listTileModel5
       });
 
       alertNotif();

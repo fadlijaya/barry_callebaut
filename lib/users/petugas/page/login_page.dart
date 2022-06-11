@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../theme/colors.dart';
 import '../../../theme/padding.dart';
-import 'home/home_page.dart';
+import 'home/home_page_petugas.dart';
 
 class LoginPagePetugas extends StatefulWidget {
   const LoginPagePetugas({Key? key}) : super(key: key);
@@ -25,11 +25,11 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
   @override
   void initState() {
     if (FirebaseAuth.instance.currentUser != null) {
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => const HomePage(),
+            builder: (BuildContext context) => const HomePagePetugas(),
           ),
           (route) => false,
         );
@@ -117,7 +117,7 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
                   cursorColor: kGreen,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration.collapsed(
-                      hintText: '@34restuwidya'),
+                      hintText: '34restuwidya'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Masukkan Id Petugas";
@@ -226,7 +226,7 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
         height: 48,
         child: const Center(
           child: Text(
-            'Login', 
+            'Login',
             style: TextStyle(color: kWhite, fontSize: 16.0),
           ),
         ),
@@ -251,7 +251,8 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
           if (user != null) {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(
+                    builder: (context) => const HomePagePetugas()),
                 (route) => false);
           }
         } on FirebaseAuthException catch (e) {

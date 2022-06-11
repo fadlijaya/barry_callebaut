@@ -9,14 +9,14 @@ import '../../../../theme/padding.dart';
 import '../create_agenda/create_agenda_page.dart';
 import '../profil/profil_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePagePetugas extends StatefulWidget {
+  const HomePagePetugas({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePagePetugasState createState() => _HomePagePetugasState();
 }
 
-class _HomePageState extends State<HomePage>
+class _HomePagePetugasState extends State<HomePagePetugas>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -31,10 +31,25 @@ class _HomePageState extends State<HomePage>
   String? uid;
   String? username;
 
+  Future<dynamic> getUserPetugas() async {
+    await FirebaseFirestore.instance
+        .collection('petugas')
+        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((result) {
+      if (result.docs.isNotEmpty) {
+        setState(() {
+          uid = result.docs[0].data()['uid'];
+          username = result.docs[0].data()['username'];
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    getUser();
+    getUserPetugas();
     super.initState();
   }
 
@@ -188,42 +203,39 @@ class _HomePageState extends State<HomePage>
 
   Widget createAgenda() {
     return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(padding),
-        child: ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(kGreen2),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)))
-          ),
-          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAgendaPage(uid: uid.toString(), username: username.toString()))), child: SizedBox(
-            height: 48,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text("Buat Agenda", style: TextStyle(color: kWhite),),
-                SizedBox(width: 4,),
-                Icon(Icons.add_circle_rounded, color: kWhite,)
-              ],
-            )
-        )),
-      ));
-  }
-
-  Future<dynamic> getUser() async {
-    await FirebaseFirestore.instance
-        .collection('petugas')
-        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((result) {
-      if (result.docs.isNotEmpty) {
-        setState(() {
-          uid = result.docs[0].data()['uid'];
-          username = result.docs[0].data()['username'];
-        });
-      }
-    });
+        left: 0,
+        right: 0,
+        bottom: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(padding),
+          child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(kGreen2),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)))),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateAgendaPage(
+                          uid: uid.toString(), username: username.toString()))),
+              child: SizedBox(
+                  height: 48,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        "Buat Agenda",
+                        style: TextStyle(color: kWhite),
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Icon(
+                        Icons.add_circle_rounded,
+                        color: kWhite,
+                      )
+                    ],
+                  ))),
+        ));
   }
 }
