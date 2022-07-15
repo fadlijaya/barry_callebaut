@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:barry_callebaut/users/petugas/model/m_info_umum.dart';
+import 'package:barry_callebaut/users/petugas/models/m_info_umum.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -58,6 +58,12 @@ class _SensusPageState extends State<SensusPage> {
   final List<CheckBoxListTileModel5> _listTileModel5 =
       CheckBoxListTileModel5.getInfoUmum();
 
+  var _isChecklistTileModel1;
+  var _isChecklistTileModel2;
+  var _isChecklistTileModel3;
+  var _isChecklistTileModel4;
+  var _isChecklistTileModel5;
+
   //form1
   final TextEditingController _controllerTglSensus = TextEditingController();
   final TextEditingController _controllerNama = TextEditingController();
@@ -65,8 +71,7 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJekel = TextEditingController();
   final TextEditingController _controllerTglLahir = TextEditingController();
   final TextEditingController _controllerStatusNikah = TextEditingController();
-  final TextEditingController _controllerStatusPendidikan =
-      TextEditingController();
+  final TextEditingController _controllerStatusPendidikan = TextEditingController();
   final TextEditingController _controllerKelompok = TextEditingController();
 
   //form2
@@ -75,16 +80,12 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerDesa = TextEditingController();
   final TextEditingController _controllerKecamatan = TextEditingController();
   final TextEditingController _controllerKabupaten = TextEditingController();
-  final TextEditingController _controllerNamaSuamiIstri =
-      TextEditingController();
-  final TextEditingController _controllerTglLahirSuamiIstri =
-      TextEditingController();
-  final TextEditingController _controllerPendAkhirSuamiIstri =
-      TextEditingController();
+  final TextEditingController _controllerNamaSuamiIstri = TextEditingController();
+  final TextEditingController _controllerTglLahirSuamiIstri = TextEditingController();
+  final TextEditingController _controllerPendAkhirSuamiIstri = TextEditingController();
   final TextEditingController _controllerNamaAnak = TextEditingController();
   final TextEditingController _controllerTglLahirAnak = TextEditingController();
-  final TextEditingController _controllerPendAkhirAnak =
-      TextEditingController();
+  final TextEditingController _controllerPendAkhirAnak = TextEditingController();
 
   //form3
   final TextEditingController _controllerLuas = TextEditingController();
@@ -96,10 +97,8 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJarakTanam = TextEditingController();
 
   //form4
-  final TextEditingController _controllerPendapatanLain =
-      TextEditingController();
-  final TextEditingController _controllerPendapatanBulan =
-      TextEditingController();
+  final TextEditingController _controllerPendapatanLain = TextEditingController();
+  final TextEditingController _controllerPendapatanBulan = TextEditingController();
 
   Future pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -500,13 +499,13 @@ class _SensusPageState extends State<SensusPage> {
             ],
           ),
           Card(
-            margin: const EdgeInsets.symmetric(horizontal: padding),
+            margin: const EdgeInsets.symmetric(
+                horizontal: padding, vertical: padding),
             color: kWhite,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: Container(
               width: double.infinity,
-              height: 430,
               padding: const EdgeInsets.symmetric(
                   horizontal: padding, vertical: padding),
               child: Column(
@@ -581,17 +580,14 @@ class _SensusPageState extends State<SensusPage> {
               ),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
           Card(
-            margin: const EdgeInsets.symmetric(horizontal: padding),
+            margin: const EdgeInsets.symmetric(
+                horizontal: padding, vertical: padding),
             color: kWhite,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: Container(
               width: double.infinity,
-              height: 280,
               padding: const EdgeInsets.symmetric(
                   horizontal: padding, vertical: padding),
               child: Column(
@@ -646,17 +642,14 @@ class _SensusPageState extends State<SensusPage> {
               ),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
           Card(
-            margin: const EdgeInsets.symmetric(horizontal: padding),
+            margin: const EdgeInsets.symmetric(
+                horizontal: padding, vertical: padding),
             color: kWhite,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: Container(
               width: double.infinity,
-              height: 280,
               padding: const EdgeInsets.symmetric(
                   horizontal: padding, vertical: padding),
               child: Column(
@@ -711,9 +704,6 @@ class _SensusPageState extends State<SensusPage> {
               ),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
           buttonNext(),
           const SizedBox(
             height: 20,
@@ -732,7 +722,8 @@ class _SensusPageState extends State<SensusPage> {
         lastDate: today);
     if (_datePicker != null) {
       _dateTime = _datePicker;
-      _controllerTglLahirSuamiIstri.text = DateFormat('dd/MM/yyyy').format(_dateTime);
+      _controllerTglLahirSuamiIstri.text =
+          DateFormat('dd/MM/yyyy').format(_dateTime);
     }
   }
 
@@ -997,7 +988,8 @@ class _SensusPageState extends State<SensusPage> {
                     ],
                   ),
                   Card(
-                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: padding * 2, vertical: padding / 2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1011,12 +1003,15 @@ class _SensusPageState extends State<SensusPage> {
                         ),
                         Container(
                           width: double.infinity,
-                          height: 360,
+                          height: 340,
                           margin: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: _listTileModel1.length,
                               itemBuilder: (context, i) {
+                                _isChecklistTileModel1 =
+                                    _listTileModel1[i].isCheck;
                                 return CheckboxListTile(
                                     title: Text(
                                       "${_listTileModel1[i].name}",
@@ -1024,18 +1019,18 @@ class _SensusPageState extends State<SensusPage> {
                                     ),
                                     value: _listTileModel1[i].isCheck,
                                     onChanged: (bool? val) {
-                                      itemChange1(val, i);
+                                      setState(() {
+                                        _listTileModel1[i].isCheck = val;
+                                      });
                                     });
                               }),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
                   Card(
-                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: padding * 2, vertical: padding / 2),
                     color: kWhite,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
@@ -1056,6 +1051,7 @@ class _SensusPageState extends State<SensusPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: _listTileModel2.length,
                               itemBuilder: (context, i) {
                                 return CheckboxListTile(
@@ -1072,11 +1068,9 @@ class _SensusPageState extends State<SensusPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
                   Card(
-                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: padding * 2, vertical: padding / 2),
                     color: kWhite,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
@@ -1097,6 +1091,7 @@ class _SensusPageState extends State<SensusPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: _listTileModel3.length,
                               itemBuilder: (context, i) {
                                 return CheckboxListTile(
@@ -1113,11 +1108,9 @@ class _SensusPageState extends State<SensusPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
                   Card(
-                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: padding * 2, vertical: padding / 2),
                     color: kWhite,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
@@ -1138,10 +1131,12 @@ class _SensusPageState extends State<SensusPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: _listTileModel4.length,
                               itemBuilder: (context, i) {
                                 return CheckboxListTile(
-                                    title: Text("${_listTileModel4[i].name}", style: const TextStyle(fontSize: 14)),
+                                    title: Text("${_listTileModel4[i].name}",
+                                        style: const TextStyle(fontSize: 14)),
                                     value: _listTileModel4[i].isCheck,
                                     onChanged: (bool? val) {
                                       itemChange4(val, i);
@@ -1151,11 +1146,9 @@ class _SensusPageState extends State<SensusPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
                   Card(
-                    margin: const EdgeInsets.symmetric(horizontal: padding * 2),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: padding * 2, vertical: padding / 2),
                     color: kWhite,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
@@ -1176,6 +1169,7 @@ class _SensusPageState extends State<SensusPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
                           child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: _listTileModel5.length,
                               itemBuilder: (context, i) {
                                 return CheckboxListTile(
@@ -1191,9 +1185,6 @@ class _SensusPageState extends State<SensusPage> {
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
                   ),
                   _imageFile != null ? viewPhoto() : Container(),
                   const SizedBox(
@@ -1248,18 +1239,17 @@ class _SensusPageState extends State<SensusPage> {
 
   Widget viewPhoto() {
     return Container(
-      width: double.infinity,
-      height: 150,
-      padding: const EdgeInsets.all(padding),
-      child: ClipRRect(
-        child: Image.file(_imageFile),
-      )
-    );
+        width: double.infinity,
+        height: 150,
+        padding: const EdgeInsets.all(padding),
+        child: ClipRRect(
+          child: Image.file(_imageFile),
+        ));
   }
 
   Widget addPhoto() {
     return Column(
-      children: [        
+      children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: padding),
           child: DottedBorder(
@@ -1348,16 +1338,14 @@ class _SensusPageState extends State<SensusPage> {
     if (_formKey.currentState!.validate()) {
       await FirebaseFirestore.instance
           .collection("petugas")
-          .doc(uid)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection("agenda_sensus")
           .doc(widget.docId)
           .collection("data_petani")
           .doc(widget.docIdPetani)
           .collection("sensus")
           .add({
-
         //info petani
-        'uid': uid,
         'tanggal sensus': _controllerTglSensus.text,
         'nama': _controllerNama.text,
         'no.telephone': _controllerNoTelp.text,
@@ -1367,16 +1355,15 @@ class _SensusPageState extends State<SensusPage> {
         'status pendidikan': _controllerStatusPendidikan.text,
         'kelompok': _controllerKelompok.text,
 
+        //info petani
         'alamat': _controllerAlamat.text,
         'dusun': _controllerDusun.text,
         'desa': _controllerDesa.text,
         'kecamatan': _controllerKecamatan.text,
         'kabupaten': _controllerKabupaten.text,
-
         'nama suami/istri': _controllerNamaSuamiIstri.text,
         'tgl.lahir suami/istri': _controllerTglLahirSuamiIstri.text,
         'pend.akhir suami/istri': _controllerPendAkhirSuamiIstri.text,
-
         'nama anak': _controllerNamaAnak.text,
         'tgl.lahir anak': _controllerTglLahirAnak.text,
         'pend.akhir anak': _controllerPendAkhirAnak.text,
@@ -1395,11 +1382,14 @@ class _SensusPageState extends State<SensusPage> {
         'pendapatan bulan': _controllerPendapatanBulan.text,
 
         //info umum
-        'alat transportasi petani': _listTileModel1,
-        'material utama rumah petani': _listTileModel2,
-        'alat petani untuk memasak': _listTileModel3,
-        'barang di rumah petani': _listTileModel4,
-        'toilet petani': _listTileModel5
+        'alat transportasi petani': _isChecklistTileModel1,
+        'material utama rumah petani': _isChecklistTileModel2.toString(),
+        'alat petani untuk memasak': _isChecklistTileModel3.toString(),
+        'barang di rumah petani': _isChecklistTileModel4.toString(),
+        'toilet petani': _isChecklistTileModel5.toString(),
+
+        //gambar
+        'gambar': _imageUrl.toString(),
       });
 
       alertNotif();

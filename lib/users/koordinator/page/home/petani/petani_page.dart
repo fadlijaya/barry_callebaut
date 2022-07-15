@@ -1,10 +1,10 @@
-import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/inspeksi/inspeksi_page.dart';
-import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/sensus/sensus_page.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../theme/colors.dart';
 import '../../../../../theme/padding.dart';
+import '../../../../petugas/page/create_agenda/petani/inspeksi/inspeksi_page.dart';
+import '../../../../petugas/page/create_agenda/petani/sensus/sensus_page.dart';
 
 class PetaniPage extends StatefulWidget {
   final String docId;
@@ -121,10 +121,6 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
             ),
           )
         ],
-      ),
-      trailing: const Icon(
-        Icons.create,
-        color: kGreen,
       ),
     );
   }

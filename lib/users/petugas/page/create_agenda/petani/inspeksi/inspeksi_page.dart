@@ -40,16 +40,11 @@ class _InspeksiPageState extends State<InspeksiPage> {
   //formInspeksi
   final TextEditingController _controllerSubjek = TextEditingController();
   final TextEditingController _controllerTglSubjek = TextEditingController();
-  final TextEditingController _controllerJumlahKakaoLokal =
-      TextEditingController();
-  final TextEditingController _controllerJumlahKakaoS1 =
-      TextEditingController();
-  final TextEditingController _controllerJumlahKakaoS2 =
-      TextEditingController();
-  final TextEditingController _controllerFrekuensiBerat =
-      TextEditingController();
-  final TextEditingController _controllerFrekuensiRingan =
-      TextEditingController();
+  final TextEditingController _controllerJumlahKakaoLokal = TextEditingController();
+  final TextEditingController _controllerJumlahKakaoS1 = TextEditingController();
+  final TextEditingController _controllerJumlahKakaoS2 = TextEditingController();
+  final TextEditingController _controllerFrekuensiBerat = TextEditingController();
+  final TextEditingController _controllerFrekuensiRingan = TextEditingController();
   final TextEditingController _controllerHama = TextEditingController();
   final TextEditingController _controllerPenyakit = TextEditingController();
 

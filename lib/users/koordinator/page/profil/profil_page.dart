@@ -1,17 +1,17 @@
-import 'package:barry_callebaut/opsi_login_users.dart';
+import 'package:barry_callebaut/users/koordinator/page/profil/data_pribadi_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../opsi_login_users.dart';
 import '../../../../theme/colors.dart';
 import '../../../../theme/padding.dart';
-import 'data_pribadi_page.dart';
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({Key? key}) : super(key: key);
 
   @override
-  _ProfilPageState createState() => _ProfilPageState();
+  State<ProfilPage> createState() => _ProfilPageState();
 }
 
 class _ProfilPageState extends State<ProfilPage> {
@@ -28,9 +28,9 @@ class _ProfilPageState extends State<ProfilPage> {
   String? tglLahir;
   String? alamat;
 
-  Future<dynamic> getUserPetugas() async {
+  Future<dynamic> getUserKoordinator() async {
     await FirebaseFirestore.instance
-        .collection('petugas')
+        .collection('koordinator')
         .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((result) {
@@ -56,7 +56,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   @override
   void initState() {
-    getUserPetugas();
+    getUserKoordinator();
     super.initState();
   }
 

@@ -1,11 +1,14 @@
+import 'package:barry_callebaut/users/koordinator/page/home/detail_petugas_page.dart';
+import 'package:barry_callebaut/users/koordinator/page/profil/profil_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../../../theme/colors.dart';
 import '../../../../theme/padding.dart';
-import '../../../petugas/model/m_progress_ims.dart';
+import '../../../petugas/models/m_progress_ims.dart';
 
 class HomePageKoordinator extends StatefulWidget {
   const HomePageKoordinator({Key? key}) : super(key: key);
@@ -14,7 +17,8 @@ class HomePageKoordinator extends StatefulWidget {
   State<HomePageKoordinator> createState() => _HomePageKoordinatorState();
 }
 
-class _HomePageKoordinatorState extends State<HomePageKoordinator> {
+class _HomePageKoordinatorState extends State<HomePageKoordinator>
+    with SingleTickerProviderStateMixin {
   String? uid;
   String? username;
 
@@ -55,135 +59,152 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: SizedBox(
-        height: size.height,
-        width: size.width,
-        child: Stack(
-          children: [
-            CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  expandedHeight: 160,
-                  backgroundColor: kGreen2,
-                  leading: Padding(
-                    padding: const EdgeInsets.only(left: padding, top: padding),
-                    child: ClipOval(
-                      child: Image.network(
-                        "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.only(top: padding),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "$username",
-                            style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: kWhite),
-                          ),
-                          const Text(
-                            "Koordinator",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: kWhite,
-                                fontSize: 12),
-                          )
-                        ]),
-                  ),
-                  actions: const [
-                    Padding(
-                      padding: EdgeInsets.only(right: padding, top: padding),
-                      child: Icon(
-                        Icons.notifications,
-                        color: kWhite,
-                      ),
-                    )
-                  ],
-                  flexibleSpace: const FlexibleSpaceBar(),
-                ),
+      body: SafeArea(
+        child: SizedBox(
+          height: size.height,
+          width: size.width,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                headerAccount(),
+                statisticAkumulasi(),
+                titleDataPetugas(),
+                listPetugas()
               ],
             ),
-            akumulasi(),
-            title(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget akumulasi() {
-    return Positioned(
-      left: 0,
-      right: 0,
-      top: 120,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: Container(
-          height: 240,
-          padding: const EdgeInsets.all(padding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Akumulasi 100%",
-                style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w600, color: kBlack6),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              Expanded(
-                child: SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    //title: ChartTitle(text: 'Half yearly sales analysis'),
-                    legend: Legend(isVisible: true),
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<ModelProgressIms, String>>[
-                      LineSeries<ModelProgressIms, String>(
-                          color: kGreen,
-                          dataSource: data,
-                          xValueMapper:
-                              (ModelProgressIms modelProgressIms, _) =>
-                                  modelProgressIms.year,
-                          yValueMapper:
-                              (ModelProgressIms modelProgressIms, _) =>
-                                  modelProgressIms.sales,
-                          name: '',
-                          // Enable data label
-                          dataLabelSettings:
-                              const DataLabelSettings(isVisible: true))
-                    ]),
-              ),
-            ],
           ),
         ),
       ),
     );
   }
 
-  Widget title() {
-    return Positioned(
-        left: 16,
-        right: 16,
-        top: 380,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Data Petugas",
-              style: TextStyle(
-                  fontWeight: FontWeight.w600, fontSize: 20, color: kBlack6),
+  Widget headerAccount() {
+    return Container(
+      width: double.infinity,
+      height: 80,
+      color: kGreen2,
+      padding:
+          const EdgeInsets.symmetric(vertical: padding, horizontal: padding),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ProfilPage())),
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: ClipOval(
+                child: Image.network(
+                  "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-            search(),
-            profil()
-          ],
-        ));
+          ),
+          const SizedBox(
+            width: 12,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "$username",
+                style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.w700, color: kWhite),
+              ),
+              const Text(
+                "Koordinator",
+                style: TextStyle(
+                    fontWeight: FontWeight.w400, color: kWhite, fontSize: 12),
+              )
+            ],
+          ),
+          const Spacer(),
+          const Icon(
+            Icons.notifications,
+            color: kWhite,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget statisticAkumulasi() {
+    return SizedBox(
+      width: double.infinity,
+      height: 280,
+      child: Stack(
+        children: [
+          Container(width: double.infinity, height: 100, color: kGreen2),
+          Card(
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            child: Container(
+              height: 240,
+              padding: const EdgeInsets.all(padding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Akumulasi 100%",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: kBlack6),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Expanded(
+                    child: SfCartesianChart(
+                        primaryXAxis: CategoryAxis(),
+                        //title: ChartTitle(text: 'Half yearly sales analysis'),
+                        legend: Legend(isVisible: true),
+                        tooltipBehavior: TooltipBehavior(enable: true),
+                        series: <ChartSeries<ModelProgressIms, String>>[
+                          LineSeries<ModelProgressIms, String>(
+                              color: kGreen,
+                              dataSource: data,
+                              xValueMapper:
+                                  (ModelProgressIms modelProgressIms, _) =>
+                                      modelProgressIms.year,
+                              yValueMapper:
+                                  (ModelProgressIms modelProgressIms, _) =>
+                                      modelProgressIms.sales,
+                              name: '',
+                              // Enable data label
+                              dataLabelSettings:
+                                  const DataLabelSettings(isVisible: true))
+                        ]),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget titleDataPetugas() {
+    return Container(
+      width: double.infinity,
+      height: 110,
+      padding: const EdgeInsets.symmetric(horizontal: padding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Data Petugas",
+            style: TextStyle(
+                fontWeight: FontWeight.w600, fontSize: 18, color: kBlack6),
+          ),
+          search(),
+          //listPetugas()
+        ],
+      ),
+    );
   }
 
   Widget search() {
@@ -233,151 +254,140 @@ class _HomePageKoordinatorState extends State<HomePageKoordinator> {
 
           var document = snapshot.data!.docs;
 
-          return ListView.builder(
-              itemCount: document.length,
-              itemBuilder: (context, i) {
-                return Card(
-                  child: ListTile(
-                    minVerticalPadding: padding,
-                    leading: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          return Container(
+            width: double.infinity,
+            height: 480,
+            padding: const EdgeInsets.symmetric(horizontal: padding),
+            child: ListView.builder(
+                itemCount: document.length,
+                itemBuilder: (context, i) {
+                  return Card(
+                    child: Column(
                       children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              image: const DecorationImage(
-                                  image: NetworkImage(""))),
+                        ListTile(
+                          leading: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 48,
+                                height: 48,
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: const DecorationImage(
+                                        image: NetworkImage(
+                                            "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg"))),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                          title: Text(
+                            "${document[i]['username']}",
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: kBlack),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Image.asset("assets/pin.png"),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      "${document[i]['lokasi kerja']}",
+                                      style: const TextStyle(
+                                          color: kBlack,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Container(
+                                width: 80,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                    color: kGreen2.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Center(
+                                  child: Text(
+                                    "${document[i]['nomor hp']}",
+                                    style: const TextStyle(
+                                      color: kBlack,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                      ],
-                    ),
-                    title: const Text(
-                      "Irwan Deku",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: kBlack),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Image.asset("assets/pin.png"),
-                            const SizedBox(
-                              width: 4,
+                            LinearPercentIndicator(
+                              width: 150,
+                              lineHeight: 14,
+                              percent: 0.5,
+                              backgroundColor: kGrey,
+                              progressColor: kOrange,
+                              barRadius: const Radius.circular(12),
                             ),
-                            const Text(
-                              "Dusun Lapejang",
-                              style: TextStyle(
-                                  color: kBlack, fontWeight: FontWeight.w400),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(kGreen2)),
+                                  onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              DetailPetugasPage(
+                                                uid: document[i]['uid'],
+                                                username: document[i]
+                                                    ['username'],
+                                                fullname: document[i]
+                                                    ['nama lengkap'],
+                                                email: document[i]['email'],
+                                                idNumber: document[i]
+                                                    ['idNumber'],
+                                                nik: document[i]['email'],
+                                                nomorHp: document[i]
+                                                    ['nomor hp'],
+                                                lokasiKerja: document[i]
+                                                    ['lokasi kerja'],
+                                                jekel: document[i]
+                                                    ['jenis kelamin'],
+                                                agama: document[i]['agama'],
+                                                tglLahir: document[i]
+                                                    ['tanggal lahir'],
+                                                alamat: document[i]['alamat'],
+                                              ))),
+                                  child: const Center(
+                                      child: Text(
+                                    "Lihat Detail",
+                                    style: TextStyle(color: kWhite),
+                                  ))),
                             )
                           ],
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Container(
-                          width: 80,
-                          height: 20,
-                          decoration: BoxDecoration(
-                              color: kGreen2.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: const Center(
-                            child: Text(
-                              "0684837365",
-                              style: TextStyle(
-                                color: kBlack,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
                         )
                       ],
                     ),
-                    trailing: const Icon(
-                      Icons.create,
-                      color: kGreen,
-                    ),
-                  ),
-                );
-              });
+                  );
+                }),
+          );
         });
-  }
-
-  Widget profil() {
-    return Card(
-      child: ListTile(
-        minVerticalPadding: padding,
-        leading: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  image: const DecorationImage(image: NetworkImage("https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg"))),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-          ],
-        ),
-        title: const Text(
-          "Irwan Deku",
-          style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w600, color: kBlack),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Image.asset("assets/pin.png"),
-                const SizedBox(
-                  width: 4,
-                ),
-                const Text(
-                  "Dusun Lapejang",
-                  style: TextStyle(color: kBlack, fontWeight: FontWeight.w400),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Container(
-              width: 80,
-              height: 20,
-              decoration: BoxDecoration(
-                  color: kGreen2.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(5)),
-              child: const Center(
-                child: Text(
-                  "0684837365",
-                  style: TextStyle(
-                    color: kBlack,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-        trailing: const Icon(
-          Icons.create,
-          color: kGreen,
-        ),
-      ),
-    );
   }
 }

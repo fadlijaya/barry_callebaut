@@ -22,7 +22,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Barry Callebaut',
-      theme: ThemeData(primarySwatch: Colors.green, fontFamily: 'Poppins'),
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        fontFamily: 'Poppins'),
       routes: {
         '/loginPageKoordinator': (_) => const LoginPageKoordinator(),
         '/loginPagePetugas': (_) => const LoginPagePetugas(),

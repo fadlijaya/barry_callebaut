@@ -103,7 +103,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                   title: Text(
                                     document[i]['nama_petani'],
                                     style: const TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                         color: kBlack),
                                   ),
@@ -114,6 +114,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                           document[i]["desa_kelurahan"],
                                           style: const TextStyle(
                                               color: kGrey3,
+                                              fontSize: 12,
                                               fontWeight: FontWeight.w400),
                                         ),
                                       ),

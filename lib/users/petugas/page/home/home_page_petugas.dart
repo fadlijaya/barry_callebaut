@@ -1,4 +1,4 @@
-import 'package:barry_callebaut/users/petugas/model/m_progress_ims.dart';
+import 'package:barry_callebaut/users/petugas/models/m_progress_ims.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -150,7 +150,7 @@ class _HomePagePetugasState extends State<HomePagePetugas>
               const Text(
                 "Akumulasi 100%",
                 style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w600, color: kBlack6),
+                    fontSize: 18, fontWeight: FontWeight.w600, color: kBlack6),
               ),
               const SizedBox(
                 height: 12,
@@ -195,7 +195,7 @@ class _HomePagePetugasState extends State<HomePagePetugas>
             Text(
               "Data Sensus Petani",
               style: TextStyle(
-                  fontWeight: FontWeight.w600, fontSize: 20, color: kBlack6),
+                  fontWeight: FontWeight.w600, fontSize: 18, color: kBlack6),
             ),
           ],
         ));
