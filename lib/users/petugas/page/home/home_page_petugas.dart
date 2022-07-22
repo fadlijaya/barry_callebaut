@@ -191,14 +191,57 @@ class _HomePagePetugasState extends State<HomePagePetugas>
         top: 380,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
+          children: [
+            const Text(
               "Data Sensus Petani",
               style: TextStyle(
                   fontWeight: FontWeight.w600, fontSize: 18, color: kBlack6),
             ),
+            tabBar(),
+            tabBarView()
           ],
         ));
+  }
+
+  Widget tabBar() {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      alignment: Alignment.center,
+      child: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          indicatorColor: kOrange,
+          labelColor: kBlack,
+          unselectedLabelColor: Colors.black26,
+          labelPadding: const EdgeInsets.only(left: 40, right: 40),
+          tabs: const [Text("Belum"), Text("Sudah")]),
+    );
+  }
+
+  Widget tabBarView() {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      width: double.maxFinite,
+      height: 480,
+      child: TabBarView(
+          controller: _tabController, children: [belumSensus(), sudahSensus()]),
+    );
+  }
+
+  Widget belumSensus() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [],
+      ),
+    );
+  }
+
+  Widget sudahSensus() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [],
+      ),
+    );
   }
 
   Widget createAgenda() {

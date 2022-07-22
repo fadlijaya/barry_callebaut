@@ -1,19 +1,26 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../../theme/colors.dart';
 import '../../../../../../theme/padding.dart';
+import '../../create_agenda_page.dart';
 
 enum Pilihan { ya, tidak }
 
 class InspeksiPage extends StatefulWidget {
-  const InspeksiPage({Key? key}) : super(key: key);
+  final String docId;
+  final String docIdPetani;
+  const InspeksiPage({Key? key, required this.docId, required this.docIdPetani})
+      : super(key: key);
 
   @override
   State<InspeksiPage> createState() => _InspeksiPageState();
@@ -29,13 +36,22 @@ class _InspeksiPageState extends State<InspeksiPage> {
   DateTime _dateTime = DateTime.now();
   var _imageFile;
   String? _imageUrl;
+  String? uid;
+  String? username;
 
-  Pilihan? _pilihan1 = Pilihan.ya;
-  Pilihan? _pilihan2 = Pilihan.ya;
-  Pilihan? _pilihan3 = Pilihan.ya;
-  Pilihan? _pilihan4 = Pilihan.ya;
-  Pilihan? _pilihan5 = Pilihan.ya;
-  Pilihan? _pilihan6 = Pilihan.ya;
+  Pilihan? _pilihan1;
+  Pilihan? _pilihan2;
+  Pilihan? _pilihan3;
+  Pilihan? _pilihan4;
+  Pilihan? _pilihan5;
+  Pilihan? _pilihan6;
+
+  String? _selectedValue1;
+  String? _selectedValue2;
+  String? _selectedValue3;
+  String? _selectedValue4;
+  String? _selectedValue5;
+  String? _selectedValue6;
 
   //formInspeksi
   final TextEditingController _controllerSubjek = TextEditingController();
@@ -49,12 +65,15 @@ class _InspeksiPageState extends State<InspeksiPage> {
   final TextEditingController _controllerPenyakit = TextEditingController();
 
   Future pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      _imageFile = File(image!.path);
-      uploadImageToFirebase();
-    });
+    var status = await Permission.camera.request();
+    if (status.isGranted) {
+      final ImagePicker _picker = ImagePicker();
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+      setState(() {
+        _imageFile = File(image!.path);
+        uploadImageToFirebase();
+      });
+    }
   }
 
   Future uploadImageToFirebase() async {
@@ -75,89 +94,6 @@ class _InspeksiPageState extends State<InspeksiPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
-    return Scaffold(
-      body: SizedBox(
-        width: size.width,
-        height: size.height,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [header(), formstep()],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget header() {
-    return Container(
-      width: double.infinity,
-      height: 160,
-      margin: const EdgeInsets.only(bottom: 20),
-      color: kGreen2,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: padding),
-            child: Center(
-              child: Text(
-                titlePage,
-                style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w700, color: kWhite),
-              ),
-            ),
-          ),
-          iconStepper(),
-          const SizedBox(
-            height: 16,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget iconStepper() {
-    return IconStepper(
-      icons: const [
-        Icon(
-          Icons.check,
-          color: kGreen2,
-        ),
-        Icon(
-          Icons.check,
-          color: kGreen2,
-        ),
-      ],
-      activeStep: _activeStep,
-      onStepReached: (index) {
-        setState(() {
-          _activeStep = index;
-        });
-      },
-      activeStepBorderColor: kWhite,
-      activeStepColor: kWhite,
-      stepColor: kGrey3,
-      stepRadius: 12,
-      enableStepTapping: true,
-      lineColor: kWhite,
-      lineLength: 75.0,
-      enableNextPreviousButtons: false,
-    );
-  }
-
-  formstep() {
-    switch (_activeStep) {
-      case 0:
-        return formSensus();
-      default:
-    }
-  }
-
   Future<void> selectedDate(BuildContext context) async {
     DateTime today = DateTime.now();
     final DateTime? _datePicker = await showDatePicker(
@@ -169,6 +105,28 @@ class _InspeksiPageState extends State<InspeksiPage> {
       _dateTime = _datePicker;
       _controllerTglSubjek.text = DateFormat('dd/MM/yyyy').format(_dateTime);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Form Inspeksi"),
+        centerTitle: true,
+        backgroundColor: kGreen,
+        leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
+      ),
+      body: Container(
+        width: size.width,
+        height: size.height,
+        padding: const EdgeInsets.symmetric(vertical: padding),
+        child: SingleChildScrollView(
+          child: formSensus()
+        ),
+      ),
+    );
   }
 
   Widget formSensus() {
@@ -255,7 +213,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                     cursorColor: kGreen,
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Kakao'),
+                    decoration: const InputDecoration(hintText: 'Lokal'),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Masukkan Jumlah Kakao";
@@ -434,6 +392,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan1 = value;
+                              _selectedValue1 = Pilihan.ya.toString();
                             });
                           }),
                       const Text("Ya"),
@@ -447,6 +406,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan1 = value;
+                              _selectedValue1 = Pilihan.tidak.toString();
                             });
                           }),
                       const Text("Tidak"),
@@ -485,6 +445,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan2 = value;
+                              _selectedValue2 = Pilihan.ya.toString();
                             });
                           }),
                       const Text("Ya"),
@@ -498,6 +459,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan2 = value;
+                              _selectedValue2 = Pilihan.tidak.toString();
                             });
                           }),
                       const Text("Tidak"),
@@ -536,6 +498,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan3 = value;
+                              _selectedValue3 = Pilihan.ya.toString();
                             });
                           }),
                       const Text("Ya"),
@@ -549,6 +512,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan3 = value;
+                              _selectedValue3 = Pilihan.tidak.toString();
                             });
                           }),
                       const Text("Tidak"),
@@ -587,6 +551,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan4 = value;
+                              _selectedValue4 = Pilihan.ya.toString();
                             });
                           }),
                       const Text("Ya"),
@@ -600,6 +565,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan4 = value;
+                              _selectedValue4 = Pilihan.tidak.toString();
                             });
                           }),
                       const Text("Tidak"),
@@ -638,6 +604,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan5 = value;
+                              _selectedValue5 = Pilihan.ya.toString();
                             });
                           }),
                       const Text("Ya"),
@@ -651,6 +618,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan5 = value;
+                              _selectedValue5 = Pilihan.tidak.toString();
                             });
                           }),
                       const Text("Tidak"),
@@ -689,6 +657,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan6 = value;
+                              _selectedValue6 = Pilihan.ya.toString();
                             });
                           }),
                       const Text("Ya"),
@@ -702,6 +671,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
                           onChanged: (Pilihan? value) {
                             setState(() {
                               _pilihan6 = value;
+                              _selectedValue6 = Pilihan.tidak.toString();
                             });
                           }),
                       const Text("Tidak"),
@@ -723,9 +693,6 @@ class _InspeksiPageState extends State<InspeksiPage> {
             height: 20,
           ),
           buttonSubmit(),
-          const SizedBox(
-            height: 20,
-          ),
         ],
       ),
     );
@@ -733,15 +700,13 @@ class _InspeksiPageState extends State<InspeksiPage> {
 
   Widget viewPhoto() {
     return Container(
-      width: double.infinity,
-      height: 150,
-      padding: const EdgeInsets.all(padding),
-      child: ClipRRect(
-        child: Center(
-          child: Image.file(_imageFile)
-        ),
-      )
-    );
+        width: double.infinity,
+        height: 200,
+        padding: const EdgeInsets.all(padding),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Center(child: Image.file(_imageFile, width: double.infinity, fit: BoxFit.cover,),),
+        ));
   }
 
   Widget addPhoto() {
@@ -794,14 +759,7 @@ class _InspeksiPageState extends State<InspeksiPage> {
             backgroundColor: MaterialStateProperty.all(kGreen2),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5)))),
-        onPressed: () {
-          if (_activeStep < _upperBound) {
-            setState(() {
-              _activeStep++;
-            });
-          }
-          //createFormSensus();
-        },
+        onPressed: () => Future.delayed(const Duration(seconds: 3), () => createFormInspeksi()),
         child: const SizedBox(
           width: double.infinity,
           height: 48,
@@ -814,6 +772,48 @@ class _InspeksiPageState extends State<InspeksiPage> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> createFormInspeksi() async {
+    if (_formKey.currentState!.validate()) {
+      await FirebaseFirestore.instance
+          .collection("petugas")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("agenda_sensus")
+          .doc(widget.docId)
+          .collection("data_petani")
+          .doc(widget.docIdPetani)
+          .collection("inspeksi")
+          .add({
+        'subjek': _controllerSubjek.text,
+        'tanggal subjek': _controllerTglSubjek.text,
+
+        //jumlah buah kakao
+        'jumlah kakao lokal': _controllerJumlahKakaoLokal.text,
+        'jumlah kakao s1': _controllerJumlahKakaoS1.text,
+        'jumlah kakao s2': _controllerJumlahKakaoS2.text,
+
+        //frekuensi pemangkasan
+        'frekuensi berat': _controllerFrekuensiBerat.text,
+        'frekuensi ringan': _controllerFrekuensiRingan.text,
+
+        //hama dan penyakit
+        'hama': _controllerHama.text,
+        'penyakit': _controllerPenyakit.text,
+
+        'mempunyai kotak penyimpanan pestisida': _selectedValue1.toString(),
+        'mempunyai kotak penyimpanan khusus pupuk': _selectedValue2.toString(),
+        'membuang wadah bekas pestisida dengan benar': _selectedValue3.toString(),
+        'membuang buah yang terserang penyakit': _selectedValue4.toString(),
+        'memangkas dahan yang terserang penyakit': _selectedValue5.toString(),
+        'kulit buah yang sakit ditangani dengan cepat': _selectedValue6.toString(),
+
+        //gambar
+        'gambar': _imageUrl.toString()
+      });
+
+      alertNotif();
+    }
   }
 
   alertNotif() {
@@ -839,7 +839,13 @@ class _InspeksiPageState extends State<InspeksiPage> {
             ),
             actions: [
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateAgendaPage(
+                                uid: uid.toString(),
+                                username: username.toString(),
+                              ))),
                   style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(kGreen2),
@@ -858,5 +864,20 @@ class _InspeksiPageState extends State<InspeksiPage> {
             ],
           );
         });
+  }
+
+  Future<dynamic> getUser() async {
+    await FirebaseFirestore.instance
+        .collection('petugas')
+        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((result) {
+      if (result.docs.isNotEmpty) {
+        setState(() {
+          uid = result.docs[0].data()['uid'];
+          username = result.docs[0].data()['username'];
+        });
+      }
+    });
   }
 }

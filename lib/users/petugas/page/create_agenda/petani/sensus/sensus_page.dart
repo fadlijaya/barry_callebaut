@@ -37,32 +37,21 @@ class _SensusPageState extends State<SensusPage> {
   String? uid;
   String? username;
 
-  JenisKelamin? _jekel = JenisKelamin.pria;
+  JenisKelamin? _jekel;
 
   DateTime _dateTime = DateTime.now();
 
   final List<String> _listStatus = ['Lajang', 'Menikah', 'Duda', 'Janda'];
 
+  Map? checkList1;
+  Map? checkList2;
+  Map? checkList3;
+  Map? checkList4;
+  Map? checkList5;
+
   String? _selectedStatus;
   var _imageFile;
   String? _imageUrl;
-
-  final List<CheckBoxListTileModel1> _listTileModel1 =
-      CheckBoxListTileModel1.getInfoUmum();
-  final List<CheckBoxListTileModel2> _listTileModel2 =
-      CheckBoxListTileModel2.getInfoUmum();
-  final List<CheckBoxListTileModel3> _listTileModel3 =
-      CheckBoxListTileModel3.getInfoUmum();
-  final List<CheckBoxListTileModel4> _listTileModel4 =
-      CheckBoxListTileModel4.getInfoUmum();
-  final List<CheckBoxListTileModel5> _listTileModel5 =
-      CheckBoxListTileModel5.getInfoUmum();
-
-  var _isChecklistTileModel1;
-  var _isChecklistTileModel2;
-  var _isChecklistTileModel3;
-  var _isChecklistTileModel4;
-  var _isChecklistTileModel5;
 
   //form1
   final TextEditingController _controllerTglSensus = TextEditingController();
@@ -71,7 +60,8 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJekel = TextEditingController();
   final TextEditingController _controllerTglLahir = TextEditingController();
   final TextEditingController _controllerStatusNikah = TextEditingController();
-  final TextEditingController _controllerStatusPendidikan = TextEditingController();
+  final TextEditingController _controllerStatusPendidikan =
+      TextEditingController();
   final TextEditingController _controllerKelompok = TextEditingController();
 
   //form2
@@ -80,12 +70,16 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerDesa = TextEditingController();
   final TextEditingController _controllerKecamatan = TextEditingController();
   final TextEditingController _controllerKabupaten = TextEditingController();
-  final TextEditingController _controllerNamaSuamiIstri = TextEditingController();
-  final TextEditingController _controllerTglLahirSuamiIstri = TextEditingController();
-  final TextEditingController _controllerPendAkhirSuamiIstri = TextEditingController();
+  final TextEditingController _controllerNamaSuamiIstri =
+      TextEditingController();
+  final TextEditingController _controllerTglLahirSuamiIstri =
+      TextEditingController();
+  final TextEditingController _controllerPendAkhirSuamiIstri =
+      TextEditingController();
   final TextEditingController _controllerNamaAnak = TextEditingController();
   final TextEditingController _controllerTglLahirAnak = TextEditingController();
-  final TextEditingController _controllerPendAkhirAnak = TextEditingController();
+  final TextEditingController _controllerPendAkhirAnak =
+      TextEditingController();
 
   //form3
   final TextEditingController _controllerLuas = TextEditingController();
@@ -97,8 +91,10 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJarakTanam = TextEditingController();
 
   //form4
-  final TextEditingController _controllerPendapatanLain = TextEditingController();
-  final TextEditingController _controllerPendapatanBulan = TextEditingController();
+  final TextEditingController _controllerPendapatanLain =
+      TextEditingController();
+  final TextEditingController _controllerPendapatanBulan =
+      TextEditingController();
 
   Future pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -214,7 +210,7 @@ class _SensusPageState extends State<SensusPage> {
     );
   }
 
-  formstep() {
+  formstep() async {
     switch (_activeStep) {
       case 0:
         return formSensus();
@@ -718,7 +714,7 @@ class _SensusPageState extends State<SensusPage> {
     final DateTime? _datePicker = await showDatePicker(
         context: context,
         initialDate: _dateTime,
-        firstDate: DateTime(1990),
+        firstDate: DateTime(1930),
         lastDate: today);
     if (_datePicker != null) {
       _dateTime = _datePicker;
@@ -924,6 +920,7 @@ class _SensusPageState extends State<SensusPage> {
                   TextFormField(
                     controller: _controllerPendapatanLain,
                     cursorColor: kGreen,
+                    keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     decoration:
                         const InputDecoration(hintText: 'Pendapatan lain'),
@@ -1002,29 +999,48 @@ class _SensusPageState extends State<SensusPage> {
                           ),
                         ),
                         Container(
-                          width: double.infinity,
-                          height: 340,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: padding, vertical: padding),
-                          child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _listTileModel1.length,
-                              itemBuilder: (context, i) {
-                                _isChecklistTileModel1 =
-                                    _listTileModel1[i].isCheck;
+                            width: double.infinity,
+                            height: 340,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: padding, vertical: padding),
+                            child: Column(
+                              children: checkBoxList1.map((list1) {
+                                if (list1["isChecked"] == true) {
+                                  checkList1 = list1["name"];
+                                }
+
                                 return CheckboxListTile(
                                     title: Text(
-                                      "${_listTileModel1[i].name}",
-                                      style: const TextStyle(fontSize: 14),
+                                      list1["name"],
+                                      style: const TextStyle(
+                                          fontSize: 12, color: kBlack6),
                                     ),
-                                    value: _listTileModel1[i].isCheck,
-                                    onChanged: (bool? val) {
+                                    value: list1["isChecked"],
+                                    onChanged: (value) {
                                       setState(() {
-                                        _listTileModel1[i].isCheck = val;
+                                        list1["isChecked"] = value;
                                       });
                                     });
-                              }),
+                              }).toList(),
+                            )),
+                        Wrap(
+                          children: checkBoxList1.map((list1) {
+                            if (list1["isChecked"] == true) {
+                              return Card(
+                                elevation: 3,
+                                color: kGreen2,
+                                margin: const EdgeInsets.only(left: padding, bottom: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(list1["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
+                                ),
+                              );
+                            }
+
+                            return Container();
+                          }).toList(),
                         ),
+                      const SizedBox(height: 8,)
                       ],
                     ),
                   ),
@@ -1050,21 +1066,46 @@ class _SensusPageState extends State<SensusPage> {
                           height: 370,
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
-                          child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _listTileModel2.length,
-                              itemBuilder: (context, i) {
-                                return CheckboxListTile(
-                                    title: Text(
-                                      "${_listTileModel2[i].name}",
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    value: _listTileModel2[i].isCheck,
-                                    onChanged: (bool? val) {
-                                      itemChange2(val, i);
+                          child: Column(
+                            children: checkBoxList2.map((list2) {
+                              if (list2["isChecked"] == true) {
+                                checkList2 = list2["name"];
+                              }
+
+                              return CheckboxListTile(
+                                  title: Text(
+                                    list2["name"],
+                                    style: const TextStyle(
+                                        fontSize: 12, color: kBlack6),
+                                  ),
+                                  value: list2["isChecked"],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      list2["isChecked"] = value;
                                     });
-                              }),
+                                  });
+                            }).toList(),
+                          ),
                         ),
+                        Wrap(
+                          children: checkBoxList2.map((list2) {
+                            if (list2["isChecked"] == true) {
+                              return Card(
+                                elevation: 3,
+                                color: kGreen2,
+                                margin: const EdgeInsets.only(left: padding, bottom: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(list2["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
+                                ),
+                              );
+                            }
+
+                            return Container();
+                          }).toList(),
+                        
+                        ),
+                        const SizedBox(height: 8,)
                       ],
                     ),
                   ),
@@ -1090,21 +1131,45 @@ class _SensusPageState extends State<SensusPage> {
                           height: 320,
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
-                          child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _listTileModel3.length,
-                              itemBuilder: (context, i) {
-                                return CheckboxListTile(
-                                    title: Text(
-                                      "${_listTileModel3[i].name}",
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    value: _listTileModel3[i].isCheck,
-                                    onChanged: (bool? val) {
-                                      itemChange3(val, i);
+                          child: Column(
+                            children: checkBoxList3.map((list3) {
+                              if (list3["isChecked"] == true) {
+                                checkList3 = list3["name"];
+                              }
+
+                              return CheckboxListTile(
+                                  title: Text(
+                                    list3["name"],
+                                    style: const TextStyle(
+                                        fontSize: 12, color: kBlack6),
+                                  ),
+                                  value: list3["isChecked"],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      list3["isChecked"] = value;
                                     });
-                              }),
+                                  });
+                            }).toList(),
+                          ),
                         ),
+                        Wrap(
+                          children: checkBoxList3.map((list3) {
+                            if (list3["isChecked"] == true) {
+                              return Card(
+                                elevation: 3,
+                                color: kGreen2,
+                                 margin: const EdgeInsets.only(left: padding, bottom: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(list3["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
+                                ),
+                              );
+                            }
+
+                            return Container();
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 8,)
                       ],
                     ),
                   ),
@@ -1130,19 +1195,45 @@ class _SensusPageState extends State<SensusPage> {
                           height: 320,
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
-                          child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _listTileModel4.length,
-                              itemBuilder: (context, i) {
-                                return CheckboxListTile(
-                                    title: Text("${_listTileModel4[i].name}",
-                                        style: const TextStyle(fontSize: 14)),
-                                    value: _listTileModel4[i].isCheck,
-                                    onChanged: (bool? val) {
-                                      itemChange4(val, i);
+                          child: Column(
+                            children: checkBoxList4.map((list4) {
+                              if (list4["isChecked"] == true) {
+                                checkList4 = list4["name"];
+                              }
+
+                              return CheckboxListTile(
+                                  title: Text(
+                                    list4["name"],
+                                    style: const TextStyle(
+                                        fontSize: 12, color: kBlack6),
+                                  ),
+                                  value: list4["isChecked"],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      list4["isChecked"] = value;
                                     });
-                              }),
+                                  });
+                            }).toList(),
+                          ),
                         ),
+                        Wrap(
+                          children: checkBoxList4.map((list4) {
+                            if (list4["isChecked"] == true) {
+                              return Card(
+                                elevation: 3,
+                                color: kGreen2,
+                                 margin: const EdgeInsets.only(left: padding, bottom: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(list4["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
+                                ),
+                              );
+                            }
+
+                            return Container();
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 8,)
                       ],
                     ),
                   ),
@@ -1165,24 +1256,48 @@ class _SensusPageState extends State<SensusPage> {
                         ),
                         Container(
                           width: double.infinity,
-                          height: 300,
+                          height: 320,
                           padding: const EdgeInsets.symmetric(
                               horizontal: padding, vertical: padding),
-                          child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _listTileModel5.length,
-                              itemBuilder: (context, i) {
-                                return CheckboxListTile(
-                                    title: Text(
-                                      "${_listTileModel5[i].name}",
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    value: _listTileModel5[i].isCheck,
-                                    onChanged: (bool? val) {
-                                      itemChange5(val, i);
+                          child: Column(
+                            children: checkBoxList5.map((list5) {
+                              if (list5["isChecked"] == true) {
+                                checkList5 = list5["name"];
+                              }
+
+                              return CheckboxListTile(
+                                  title: Text(
+                                    list5["name"],
+                                    style: const TextStyle(
+                                        fontSize: 12, color: kBlack6),
+                                  ),
+                                  value: list5["isChecked"],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      list5["isChecked"] = value;
                                     });
-                              }),
+                                  });
+                            }).toList(),
+                          ),
                         ),
+                        Wrap(
+                          children: checkBoxList5.map((list5) {
+                            if (list5["isChecked"] == true) {
+                              return Card(
+                                elevation: 3,
+                                color: kGreen2,
+                                 margin: const EdgeInsets.only(left: padding, bottom: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(list5["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
+                                ),
+                              );
+                            }
+
+                            return Container();
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 8,)
                       ],
                     ),
                   ),
@@ -1207,43 +1322,14 @@ class _SensusPageState extends State<SensusPage> {
     );
   }
 
-  void itemChange1(bool? val, int i) {
-    setState(() {
-      _listTileModel1[i].isCheck = val;
-    });
-  }
-
-  void itemChange2(bool? val, int i) {
-    setState(() {
-      _listTileModel2[i].isCheck = val;
-    });
-  }
-
-  void itemChange3(bool? val, int i) {
-    setState(() {
-      _listTileModel3[i].isCheck = val;
-    });
-  }
-
-  void itemChange4(bool? val, int i) {
-    setState(() {
-      _listTileModel4[i].isCheck = val;
-    });
-  }
-
-  void itemChange5(bool? val, int i) {
-    setState(() {
-      _listTileModel5[i].isCheck = val;
-    });
-  }
-
   Widget viewPhoto() {
     return Container(
         width: double.infinity,
-        height: 150,
+        height: 200,
         padding: const EdgeInsets.all(padding),
         child: ClipRRect(
-          child: Image.file(_imageFile),
+          borderRadius: BorderRadius.circular(8),
+          child: Image.file(_imageFile, fit: BoxFit.cover,),
         ));
   }
 
@@ -1344,7 +1430,8 @@ class _SensusPageState extends State<SensusPage> {
           .collection("data_petani")
           .doc(widget.docIdPetani)
           .collection("sensus")
-          .add({
+          .doc(widget.docIdPetani)
+          .set({
         //info petani
         'tanggal sensus': _controllerTglSensus.text,
         'nama': _controllerNama.text,
@@ -1382,11 +1469,11 @@ class _SensusPageState extends State<SensusPage> {
         'pendapatan bulan': _controllerPendapatanBulan.text,
 
         //info umum
-        'alat transportasi petani': _isChecklistTileModel1,
-        'material utama rumah petani': _isChecklistTileModel2.toString(),
-        'alat petani untuk memasak': _isChecklistTileModel3.toString(),
-        'barang di rumah petani': _isChecklistTileModel4.toString(),
-        'toilet petani': _isChecklistTileModel5.toString(),
+        'alat transportasi petani': checkList1,
+        'material utama rumah petani': checkList2,
+        'alat petani untuk memasak': checkList3,
+        'barang di rumah petani': checkList4,
+        'toilet petani': checkList5,
 
         //gambar
         'gambar': _imageUrl.toString(),

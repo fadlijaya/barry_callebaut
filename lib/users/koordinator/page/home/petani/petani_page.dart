@@ -401,7 +401,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => InspeksiPage())),
+                              builder: (context) => InspeksiPage(docId: widget.docId, docIdPetani: widget.docIdPetani,))),
                       icon: const Icon(
                         Icons.add,
                         color: kWhite,

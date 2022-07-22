@@ -1,6 +1,8 @@
 import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/inspeksi/inspeksi_page.dart';
 import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/sensus/sensus_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../theme/colors.dart';
@@ -30,6 +32,8 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
 
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
+
+  bool _isExpanded = false;
 
   //form informasi kebun
   final TextEditingController _controllerLuas = TextEditingController();
@@ -95,8 +99,10 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
               ),
               Text(
                 widget.desaKelurahan,
-                style:
-                    const TextStyle(color: kBlack, fontWeight: FontWeight.w400,),
+                style: const TextStyle(
+                  color: kBlack,
+                  fontWeight: FontWeight.w400,
+                ),
               )
             ],
           ),
@@ -152,7 +158,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
       child: TabBarView(controller: _tabController, children: [
         //tabBarViewSensus(),
         addSensus(),
-        addInspeksi()
+        tabBarViewInspeksi(),
       ]),
     );
   }
@@ -162,6 +168,268 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
       child: Column(
         children: [formInformasiKebun(), formInformasiKeluarga()],
       ),
+    );
+  }
+
+  Widget tabBarViewInspeksi() {
+    final Stream<QuerySnapshot> _streamInspeksi = FirebaseFirestore.instance
+        .collection("petugas")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("agenda_sensus")
+        .doc(widget.docId)
+        .collection("data_petani")
+        .doc(widget.docIdPetani)
+        .collection("inspeksi")
+        .snapshots();
+
+    return Stack(
+      children: [
+        StreamBuilder<QuerySnapshot>(
+          stream: _streamInspeksi,
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("${snapshot.error}"),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Center(
+                child: Text("Belum ada data!"),
+              );
+            } else if (snapshot.hasData) {
+              var document = snapshot.data!.docs;
+              return ListView.builder(
+                  itemCount: document.length,
+                  itemBuilder: (context, i) {
+                    return ExpansionPanelList(
+                        expansionCallback: (context, isExpanded) {
+                          _isExpanded = !isExpanded;
+                          setState(() {
+                          });
+                        },
+                        dividerColor: kGrey,
+                        children: [
+                          ExpansionPanel(
+                              headerBuilder: (context, isExpanded) {
+                                return ListTile(
+                                  title: Text("${document[i]['subjek']}", style: const TextStyle(fontWeight: FontWeight.w600),),
+                                  subtitle:
+                                      Text("${document[i]['tanggal subjek']}"),
+                                );
+                              },
+                              body: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: padding),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(bottom: 8),
+                                      child: Text("Jumlah buah kakao",  style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text("Lokal"),
+                                        Text("${document[i]['jumlah kakao lokal']} Buah")
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text("S1"),
+                                        Text("${document[i]['jumlah kakao s1']} Buah")
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text("S1"),
+                                        Text("${document[i]['jumlah kakao s1']} Buah")
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1,),
+                                     const Padding(
+                                      padding: EdgeInsets.only(top: 8, bottom: 8),
+                                      child: Text("Frekuensi pemangkasan",  style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text("Berat"),
+                                        Text("${document[i]['frekuensi berat']} Meter")
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text("Ringan"),
+                                        Text("${document[i]['frekuensi ringan']} Meter")
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1,),
+                                     const Padding(
+                                      padding: EdgeInsets.only(top: 8, bottom: 8),
+                                      child: Text("Hama dan Penyakit",  style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text("Hama"),
+                                        Text("${document[i]['hama']}")
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text("Penyakit"),
+                                        Text("${document[i]['penyakit']}")
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1,),
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Text("Mempunyai kotak penyimpanan pestisida", style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                     document[i]['mempunyai kotak penyimpanan pestisida'] == "Pilihan.ya"
+                                     ? Row(
+                                      children: const [
+                                        Text("Ya"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.check, color: kGreen2,)
+                                      ],
+                                     )
+                                     : Row(
+                                      children: const [
+                                          Text("Tidak"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.close, color: Colors.red,)
+                                      ],
+                                     ),
+                                     const Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Text("Mempunyai kotak penyimpanan khusus pupuk", style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                    document[i]['mempunyai kotak penyimpanan khusus pupuk'] == "Pilihan.ya"
+                                     ? Row(
+                                      children: const [
+                                        Text("Ya"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.check, color: kGreen2,)
+                                      ],
+                                     )
+                                     : Row(
+                                      children: const [
+                                          Text("Tidak"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.close, color: Colors.red,)
+                                      ],
+                                     ),
+                                      const Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Text("Membuang wadah bekas pestisida dengan benar", style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                     document[i]['membuang wadah bekas pestisida dengan benar'] == "Pilihan.ya"
+                                     ? Row(
+                                      children: const [
+                                        Text("Ya"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.check, color: kGreen2,)
+                                      ],
+                                     )
+                                     : Row(
+                                      children: const [
+                                          Text("Tidak"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.close, color: Colors.red,)
+                                      ],
+                                     ),
+                                     const Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Text("Membuang buah yang terserang penyakit", style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                    document[i]['membuang buah yang terserang penyakit'] == "Pilihan.ya"
+                                     ? Row(
+                                      children: const [
+                                        Text("Ya"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.check, color: kGreen2,)
+                                      ],
+                                     )
+                                     : Row(
+                                      children: const [
+                                          Text("Tidak"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.close, color: Colors.red,)
+                                      ],
+                                     ),
+                                       const Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Text("Memangkas dahan yang terserang penyakit", style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                  document[i]['memangkas dahan yang terserang penyakit'] == "Pilihan.ya"
+                                     ? Row(
+                                      children: const [
+                                        Text("Ya"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.check, color: kGreen2,)
+                                      ],
+                                     )
+                                     : Row(
+                                      children: const [
+                                          Text("Tidak"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.close, color: Colors.red,)
+                                      ],
+                                     ),
+                                     const Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Text("Kulit buah yang sakit ditangani dengan cepat", style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                    document[i]['kulit buah yang sakit ditangani dengan cepat'] == "Pilihan.ya"
+                                     ? Row(
+                                      children: const [
+                                        Text("Ya"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.check, color: kGreen2,)
+                                      ],
+                                     )
+                                     : Row(
+                                      children: const [
+                                          Text("Tidak"),
+                                        SizedBox(width: 8,),
+                                        Icon(Icons.close, color: Colors.red,)
+                                      ],
+                                     ),
+                                    
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: padding, bottom: 8),
+                                      child: Text("Dokumentasi", style: TextStyle(fontWeight: FontWeight.w600),),
+                                    ),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 200,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(document[i]['gambar'], width: double.infinity, fit: BoxFit.cover,)),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              isExpanded: _isExpanded,
+                              canTapOnHeader: true),
+                        ]);
+                  });
+            }
+    
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
+          addInspeksi()
+      ], 
     );
   }
 
@@ -364,7 +632,9 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SensusPage(docId: widget.docId, docIdPetani: widget.docIdPetani))),
+                        builder: (context) => SensusPage(
+                            docId: widget.docId,
+                            docIdPetani: widget.docIdPetani))),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
@@ -405,7 +675,9 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => InspeksiPage())),
+                              builder: (context) => InspeksiPage(
+                                  docId: widget.docId,
+                                  docIdPetani: widget.docIdPetani))),
                       icon: const Icon(
                         Icons.add,
                         color: kWhite,
