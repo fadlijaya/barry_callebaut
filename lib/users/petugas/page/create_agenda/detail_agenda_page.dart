@@ -88,7 +88,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                               ))),
                               child: Card(
                                 margin:
-                                    const EdgeInsets.symmetric(horizontal: padding),
+                                    const EdgeInsets.symmetric(horizontal: padding, vertical: 8),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)),
                                 child: ListTile(
@@ -140,10 +140,12 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                       )
                                     ],
                                   ),
-                                  trailing: const Icon(
+                                  trailing: document[i]["sensus"] == false
+                                  ? const Icon(
                                     Icons.timelapse,
                                     color: kGreen,
-                                  ),
+                                  )
+                                  : const Icon(Icons.check_circle_rounded, color: kGreen,)
                                 ),
                               ),
                             );

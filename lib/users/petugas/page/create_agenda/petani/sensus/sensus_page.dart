@@ -28,12 +28,9 @@ class SensusPage extends StatefulWidget {
 
 class _SensusPageState extends State<SensusPage> {
   String titlePage = "Form Sensus";
-
   final _formKey = GlobalKey<FormState>();
-
   int _activeStep = 0;
-  final int _upperBound = 5;
-
+  int currStep = 0;
   String? uid;
   String? username;
 
@@ -43,11 +40,11 @@ class _SensusPageState extends State<SensusPage> {
 
   final List<String> _listStatus = ['Lajang', 'Menikah', 'Duda', 'Janda'];
 
-  Map? checkList1;
-  Map? checkList2;
-  Map? checkList3;
-  Map? checkList4;
-  Map? checkList5;
+  String? checkList1;
+  String? checkList2;
+  String? checkList3;
+  String? checkList4;
+  String? checkList5;
 
   String? _selectedStatus;
   var _imageFile;
@@ -128,287 +125,1122 @@ class _SensusPageState extends State<SensusPage> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(titlePage),
+        centerTitle: true,
+        backgroundColor: kGreen2,
+      ),
       body: SizedBox(
         width: size.width,
         height: size.height,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [header(), formstep()],
-            ),
-          ),
-        ),
+        child: SafeArea(child: formSensus()),
       ),
     );
-  }
-
-  Widget header() {
-    return Container(
-      width: double.infinity,
-      height: 140,
-      margin: const EdgeInsets.only(bottom: 20),
-      color: kGreen2,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: padding),
-            child: Center(
-              child: Text(
-                titlePage,
-                style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w700, color: kWhite),
-              ),
-            ),
-          ),
-          iconStepper(),
-          const SizedBox(
-            height: 16,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget iconStepper() {
-    return IconStepper(
-      icons: const [
-        Icon(
-          Icons.check,
-          color: kGreen2,
-        ),
-        Icon(
-          Icons.check,
-          color: kGreen2,
-        ),
-        Icon(
-          Icons.check,
-          color: kGreen2,
-        ),
-        Icon(
-          Icons.check,
-          color: kGreen2,
-        ),
-        Icon(
-          Icons.check,
-          color: kGreen2,
-        ),
-      ],
-      activeStep: _activeStep,
-      onStepReached: (index) {
-        setState(() {
-          _activeStep = index;
-        });
-      },
-      activeStepBorderColor: kWhite,
-      activeStepColor: kWhite,
-      stepColor: kGrey3,
-      stepRadius: 12,
-      enableStepTapping: true,
-      lineColor: kWhite,
-      lineLength: 40.0,
-      enableNextPreviousButtons: false,
-    );
-  }
-
-  formstep() async {
-    switch (_activeStep) {
-      case 0:
-        return formSensus();
-      case 1:
-        return formSensus2();
-      case 2:
-        return formSensus3();
-      case 3:
-        return formSensus4();
-      case 4:
-        return formSensus5();
-      default:
-    }
   }
 
   Widget formSensus() {
-    return Column(
-      children: [
-        Row(
-          children: const [
-            Padding(
-              padding: EdgeInsets.only(left: 24, bottom: 12),
-              child: Text(
-                "Info Petani",
-                style: TextStyle(
-                    color: kGreen2, fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ],
-        ),
-        Card(
-          color: kWhite,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          margin: const EdgeInsets.symmetric(
-            horizontal: padding,
-          ),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-                horizontal: padding, vertical: padding),
-            child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Data Personal",
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    TextFormField(
-                      controller: _controllerTglSensus,
-                      cursorColor: kGreen,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                          suffixIcon: Icon(Icons.today),
-                          hintText: 'Tanggal Sensus'),
-                      readOnly: true,
-                      onTap: () => selectedDateSensus(context),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Masukkan Tanggal";
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _controllerNama,
-                      cursorColor: kGreen,
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(hintText: 'Nama'),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Masukkan Nama";
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _controllerNoTelp,
-                      cursorColor: kGreen,
-                      keyboardType: TextInputType.phone,
-                      textInputAction: TextInputAction.next,
-                      decoration:
-                          const InputDecoration(hintText: 'No. Telephone'),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Masukkan No. Telephone";
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    const Text(
-                      "Jenis Kelamin",
-                      style: TextStyle(color: kBlack),
-                    ),
-                    Row(
-                      children: [
-                        Radio(
-                            activeColor: kGreen2,
-                            value: JenisKelamin.pria,
-                            groupValue: _jekel,
-                            onChanged: (JenisKelamin? value) {
-                              setState(() {
-                                _jekel = value;
-                              });
-                            }),
-                        const Text("Pria"),
-                        const SizedBox(
-                          width: 24,
+    return Form(
+      key: _formKey,
+      child: Column(children: <Widget>[
+        Expanded(
+          child: Stepper(
+            steps: [
+              Step(
+                  title: const Text(""),
+                  isActive: currStep >= 0,
+                  state:
+                      currStep >= 0 ? StepState.complete : StepState.disabled,
+                  content: Column(
+                    children: [
+                      Row(
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.only(left: 24, bottom: 12),
+                            child: Text(
+                              "Info Petani",
+                              style: TextStyle(
+                                  color: kGreen2,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Card(
+                        color: kWhite,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: padding, vertical: padding),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Data Personal",
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              TextFormField(
+                                controller: _controllerTglSensus,
+                                cursorColor: kGreen,
+                                textInputAction: TextInputAction.next,
+                                decoration: const InputDecoration(
+                                    suffixIcon: Icon(Icons.today),
+                                    hintText: 'Tanggal Sensus'),
+                                readOnly: true,
+                                onTap: () => selectedDateSensus(context),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Masukkan Tanggal";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              TextFormField(
+                                controller: _controllerNama,
+                                cursorColor: kGreen,
+                                keyboardType: TextInputType.name,
+                                textInputAction: TextInputAction.next,
+                                decoration:
+                                    const InputDecoration(hintText: 'Nama'),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Masukkan Nama";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              TextFormField(
+                                controller: _controllerNoTelp,
+                                cursorColor: kGreen,
+                                keyboardType: TextInputType.phone,
+                                textInputAction: TextInputAction.next,
+                                decoration: const InputDecoration(
+                                    hintText: 'No. Telephone'),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Masukkan No. Telephone";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              const Text(
+                                "Jenis Kelamin",
+                                style: TextStyle(color: kBlack),
+                              ),
+                              Row(
+                                children: [
+                                  Radio(
+                                      activeColor: kGreen2,
+                                      value: JenisKelamin.pria,
+                                      groupValue: _jekel,
+                                      onChanged: (JenisKelamin? value) {
+                                        setState(() {
+                                          _jekel = value;
+                                        });
+                                      }),
+                                  const Text("Pria"),
+                                  const SizedBox(
+                                    width: 24,
+                                  ),
+                                  Radio(
+                                      activeColor: kGreen2,
+                                      value: JenisKelamin.wanita,
+                                      groupValue: _jekel,
+                                      onChanged: (JenisKelamin? value) {
+                                        setState(() {
+                                          _jekel = value;
+                                        });
+                                      }),
+                                  const Text("Wanita"),
+                                ],
+                              ),
+                              TextFormField(
+                                controller: _controllerTglLahir,
+                                cursorColor: kGreen,
+                                textInputAction: TextInputAction.next,
+                                decoration: const InputDecoration(
+                                    suffixIcon: Icon(Icons.today),
+                                    hintText: 'Tanggal Lahir'),
+                                readOnly: true,
+                                onTap: () => selectedDate(context),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Masukkan Tanggal";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              DropdownButton(
+                                items: _listStatus
+                                    .map((value) => DropdownMenuItem(
+                                          child: Text(value),
+                                          value: value,
+                                        ))
+                                    .toList(),
+                                onChanged: (String? selected) {
+                                  setState(() {
+                                    _selectedStatus = selected;
+                                  });
+                                },
+                                value: _selectedStatus,
+                                isExpanded: true,
+                                hint: const Text('Status Pernikahan'),
+                              ),
+                              TextFormField(
+                                controller: _controllerStatusPendidikan,
+                                cursorColor: kGreen,
+                                textInputAction: TextInputAction.next,
+                                decoration: const InputDecoration(
+                                    hintText: 'Status Pendidikan'),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Masukkan Status Pendidikan";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              TextFormField(
+                                controller: _controllerKelompok,
+                                cursorColor: kGreen,
+                                textInputAction: TextInputAction.done,
+                                decoration:
+                                    const InputDecoration(hintText: 'Kelompok'),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Masukkan Kelompok";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                        Radio(
-                            activeColor: kGreen2,
-                            value: JenisKelamin.wanita,
-                            groupValue: _jekel,
-                            onChanged: (JenisKelamin? value) {
-                              setState(() {
-                                _jekel = value;
-                              });
-                            }),
-                        const Text("Wanita"),
+                      ),
+                    ],
+                  )),
+              Step(
+                  title: const Text(""),
+                  isActive: currStep >= 0,
+                  state:
+                      currStep >= 1 ? StepState.complete : StepState.disabled,
+                  content: Column(children: [
+                    Row(
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.only(left: 24, bottom: 12),
+                          child: Text(
+                            "Info Petani",
+                            style: TextStyle(
+                                color: kGreen2,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
                       ],
                     ),
-                    TextFormField(
-                      controller: _controllerTglLahir,
-                      cursorColor: kGreen,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                          suffixIcon: Icon(Icons.today),
-                          hintText: 'Tanggal Lahir'),
-                      readOnly: true,
-                      onTap: () => selectedDate(context),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Masukkan Tanggal";
-                        }
-                        return null;
-                      },
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: padding, vertical: padding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Alamat",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16),
+                            ),
+                            TextFormField(
+                              controller: _controllerAlamat,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration:
+                                  const InputDecoration(hintText: 'Alamat'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Alamat";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerDusun,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration:
+                                  const InputDecoration(hintText: 'Dusun'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Dusun";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerDesa,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                  hintText: 'Desa/Kelurahan'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Desa";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerKecamatan,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration:
+                                  const InputDecoration(hintText: 'Kecamatan'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Kecamatan";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerKabupaten,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration:
+                                  const InputDecoration(hintText: 'Kabupaten'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Kabupaten";
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      height: 16,
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: padding, vertical: padding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Data Istri/Suami",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16),
+                            ),
+                            TextFormField(
+                              controller: _controllerNamaSuamiIstri,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration:
+                                  const InputDecoration(hintText: 'Nama'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Nama";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerTglLahirSuamiIstri,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                  suffixIcon: Icon(Icons.today),
+                                  hintText: 'Tanggal Lahir'),
+                              readOnly: true,
+                              onTap: () => selectedDateSuamiIstri(context),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Tanggal";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerPendAkhirSuamiIstri,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                  hintText: 'Pendidikan Terakhir'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Pendidikan Terakhir";
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    DropdownButton(
-                      items: _listStatus
-                          .map((value) => DropdownMenuItem(
-                                child: Text(value),
-                                value: value,
-                              ))
-                          .toList(),
-                      onChanged: (String? selected) {
-                        setState(() {
-                          _selectedStatus = selected;
-                        });
-                      },
-                      value: _selectedStatus,
-                      isExpanded: true,
-                      hint: const Text('Status Pernikahan'),
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: padding, vertical: padding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Data Anak",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16),
+                            ),
+                            TextFormField(
+                              controller: _controllerNamaAnak,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration:
+                                  const InputDecoration(hintText: 'Nama'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Nama";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerTglLahirAnak,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                  suffixIcon: Icon(Icons.today),
+                                  hintText: 'Tanggal Lahir'),
+                              readOnly: true,
+                              onTap: () => selectedDateAnak(context),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Tanggal";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerPendAkhirAnak,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                  hintText: 'Pendidikan Terakhir'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Pendidikan Terakhir";
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    TextFormField(
-                      controller: _controllerStatusPendidikan,
-                      cursorColor: kGreen,
-                      textInputAction: TextInputAction.next,
-                      decoration:
-                          const InputDecoration(hintText: 'Status Pendidikan'),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Masukkan Status Pendidikan";
-                        }
-                        return null;
-                      },
+                  ])),
+              Step(
+                title: const Text(""),
+                isActive: currStep >= 0,
+                state: currStep >= 3 ? StepState.complete : StepState.disabled,
+                content: Column(
+                  children: [
+                    Row(
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.only(left: 24, bottom: 12),
+                          child: Text(
+                            "Info Kebun",
+                            style: TextStyle(
+                                color: kGreen2,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
                     ),
-                    TextFormField(
-                      controller: _controllerKelompok,
-                      cursorColor: kGreen,
-                      textInputAction: TextInputAction.done,
-                      decoration: const InputDecoration(hintText: 'Kelompok'),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Masukkan Kelompok";
-                        }
-                        return null;
-                      },
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: padding, vertical: padding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Kebun 1",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16),
+                            ),
+                            TextFormField(
+                              controller: _controllerLuas,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              decoration:
+                                  const InputDecoration(hintText: 'Luas (m2)'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Luas";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerKoordinat,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                  hintText: 'Letak/Koordinat'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Letak/Koordinat";
+                                }
+                                return null;
+                              },
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 24, bottom: 8),
+                              child: Text(
+                                "Kakao yang berproduksi",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500, fontSize: 16),
+                              ),
+                            ),
+                            TextFormField(
+                              controller: _controllerLokal,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration:
+                                  const InputDecoration(hintText: 'Lokal'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Lokal";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerS1,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(hintText: 'S1'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan S1";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerS2,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(hintText: 'S2'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan S2";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerLain,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              decoration:
+                                  const InputDecoration(hintText: 'Lain-lain'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Lain-lain";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerJarakTanam,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                  hintText: 'Jarak Tanam'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Jarak Tanam";
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
-                )),
+                ),
+              ),
+              Step(
+                title: const Text(""),
+                isActive: currStep >= 0,
+                state: currStep >= 4 ? StepState.complete : StepState.disabled,
+                content: Column(
+                  children: [
+                    Row(
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.only(left: 24, bottom: 12),
+                          child: Text(
+                            "Info Keuangan",
+                            style: TextStyle(
+                                color: kGreen2,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: padding, vertical: padding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Pendapatan 1",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16),
+                            ),
+                            TextFormField(
+                              controller: _controllerPendapatanLain,
+                              cursorColor: kGreen,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                  hintText: 'Pendapatan lain'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Pendapatan lain";
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _controllerPendapatanBulan,
+                              cursorColor: kGreen,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                  hintText: 'Pendapatan/Bulan'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Masukkan Pendapatan/Bulan";
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Step(
+                title: const Text(""),
+                isActive: currStep >= 0,
+                state: currStep >= 5 ? StepState.complete : StepState.disabled,
+                content: Column(
+                  children: [
+                    Row(
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.only(left: 24, bottom: 12),
+                          child: Text(
+                            "Info Umum",
+                            style: TextStyle(
+                                color: kGreen2,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Card(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: padding),
+                            child: Text(
+                              "Alat transportasi petani saat membawa kakao",
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                              width: double.infinity,
+                              height: 340,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: padding, vertical: padding),
+                              child: Column(
+                                children: checkBoxList1.map((list1) {
+                                  if (list1["isChecked"] == true) {
+                                    checkList1 = list1["name"];
+                                  }
+
+                                  return CheckboxListTile(
+                                      title: Text(
+                                        list1["name"],
+                                        style: const TextStyle(
+                                            fontSize: 12, color: kBlack6),
+                                      ),
+                                      value: list1["isChecked"],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          list1["isChecked"] = value;
+                                        });
+                                      });
+                                }).toList(),
+                              )),
+                          Wrap(
+                            children: checkBoxList1.map((list1) {
+                              if (list1["isChecked"] == true) {
+                                return Card(
+                                  elevation: 3,
+                                  color: kGreen2,
+                                  margin: const EdgeInsets.only(
+                                      left: padding, bottom: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      list1["name"],
+                                      style: const TextStyle(
+                                          color: kWhite, fontSize: 12),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return Container();
+                            }).toList(),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          )
+                        ],
+                      ),
+                    ),
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: padding),
+                            child: Text(
+                              "Material utama rumah petani",
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 370,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: padding, vertical: padding),
+                            child: Column(
+                              children: checkBoxList2.map((list2) {
+                                if (list2["isChecked"] == true) {
+                                  checkList2 = list2["name"];
+                                }
+
+                                return CheckboxListTile(
+                                    title: Text(
+                                      list2["name"],
+                                      style: const TextStyle(
+                                          fontSize: 12, color: kBlack6),
+                                    ),
+                                    value: list2["isChecked"],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        list2["isChecked"] = value;
+                                      });
+                                    });
+                              }).toList(),
+                            ),
+                          ),
+                          Wrap(
+                            children: checkBoxList2.map((list2) {
+                              if (list2["isChecked"] == true) {
+                                return Card(
+                                  elevation: 3,
+                                  color: kGreen2,
+                                  margin: const EdgeInsets.only(
+                                      left: padding, bottom: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      list2["name"],
+                                      style: const TextStyle(
+                                          color: kWhite, fontSize: 12),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return Container();
+                            }).toList(),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          )
+                        ],
+                      ),
+                    ),
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: padding),
+                            child: Text(
+                              "Alat yang digunakan petani untuk memasak",
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 320,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: padding, vertical: padding),
+                            child: Column(
+                              children: checkBoxList3.map((list3) {
+                                if (list3["isChecked"] == true) {
+                                  checkList3 = list3["name"];
+                                }
+
+                                return CheckboxListTile(
+                                    title: Text(
+                                      list3["name"],
+                                      style: const TextStyle(
+                                          fontSize: 12, color: kBlack6),
+                                    ),
+                                    value: list3["isChecked"],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        list3["isChecked"] = value;
+                                      });
+                                    });
+                              }).toList(),
+                            ),
+                          ),
+                          Wrap(
+                            children: checkBoxList3.map((list3) {
+                              if (list3["isChecked"] == true) {
+                                return Card(
+                                  elevation: 3,
+                                  color: kGreen2,
+                                  margin: const EdgeInsets.only(
+                                      left: padding, bottom: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      list3["name"],
+                                      style: const TextStyle(
+                                          color: kWhite, fontSize: 12),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return Container();
+                            }).toList(),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          )
+                        ],
+                      ),
+                    ),
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: padding),
+                            child: Text(
+                              "Barang yang ada di rumah petani",
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 320,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: padding, vertical: padding),
+                            child: Column(
+                              children: checkBoxList4.map((list4) {
+                                if (list4["isChecked"] == true) {
+                                  checkList4 = list4["name"];
+                                }
+
+                                return CheckboxListTile(
+                                    title: Text(
+                                      list4["name"],
+                                      style: const TextStyle(
+                                          fontSize: 12, color: kBlack6),
+                                    ),
+                                    value: list4["isChecked"],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        list4["isChecked"] = value;
+                                      });
+                                    });
+                              }).toList(),
+                            ),
+                          ),
+                          Wrap(
+                            children: checkBoxList4.map((list4) {
+                              if (list4["isChecked"] == true) {
+                                return Card(
+                                  elevation: 3,
+                                  color: kGreen2,
+                                  margin: const EdgeInsets.only(
+                                      left: padding, bottom: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      list4["name"],
+                                      style: const TextStyle(
+                                          color: kWhite, fontSize: 12),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return Container();
+                            }).toList(),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          )
+                        ],
+                      ),
+                    ),
+                    Card(
+                      color: kWhite,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: padding),
+                            child: Text(
+                              "Toilet yang digunakan petani",
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 320,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: padding, vertical: padding),
+                            child: Column(
+                              children: checkBoxList5.map((list5) {
+                                if (list5["isChecked"] == true) {
+                                  checkList5 = list5["name"];
+                                }
+
+                                return CheckboxListTile(
+                                    title: Text(
+                                      list5["name"],
+                                      style: const TextStyle(
+                                          fontSize: 12, color: kBlack6),
+                                    ),
+                                    value: list5["isChecked"],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        list5["isChecked"] = value;
+                                      });
+                                    });
+                              }).toList(),
+                            ),
+                          ),
+                          Wrap(
+                            children: checkBoxList5.map((list5) {
+                              if (list5["isChecked"] == true) {
+                                return Card(
+                                  elevation: 3,
+                                  color: kGreen2,
+                                  margin: const EdgeInsets.only(
+                                      left: padding, bottom: 8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      list5["name"],
+                                      style: const TextStyle(
+                                          color: kWhite, fontSize: 12),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return Container();
+                            }).toList(),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          )
+                        ],
+                      ),
+                    ),
+                    _imageFile != null ? viewPhoto() : Container(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    addPhoto(),
+                  ],
+                ),
+              )
+            ],
+            type: StepperType.horizontal,
+            physics: ScrollPhysics(),
+            currentStep: this.currStep,
+            onStepContinue: () {
+              setState(() {
+                if (currStep < 5 - 1) {
+                  currStep = currStep + 1;
+                } else {
+                  currStep = 0;
+                }
+              });
+            },
+            onStepCancel: () {
+              setState(() {
+                if (currStep > 0) {
+                  currStep = currStep - 1;
+                } else {
+                  currStep = 0;
+                }
+              });
+            },
+            onStepTapped: (step) {
+              setState(() {
+                currStep = step;
+              });
+            },
           ),
         ),
-        const SizedBox(
-          height: 20,
-        ),
-        buttonNext(),
-        const SizedBox(
-          height: 20,
-        ),
-      ],
+        ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(kGreen2)),
+            onPressed: () async {
+              if (!_formKey.currentState!.validate()) {
+                displaySnackBar("Mohon lengkapi data!");
+              } else {
+                _formKey.currentState!.save();
+                var docId = await FirebaseFirestore.instance
+                    .collection("petugas")
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection("agenda_sensus")
+                    .doc(widget.docId)
+                    .collection("data_petani")
+                    .doc(widget.docIdPetani)
+                    .collection("sensus")
+                    .doc(widget.docIdPetani)
+                    .set({
+                  //info petani
+                  'tanggal sensus': _controllerTglSensus.text,
+                  'nama': _controllerNama.text,
+                  'no.telephone': _controllerNoTelp.text,
+                  'jenis kelamin': _controllerJekel.text,
+                  'tanggal lahir': _controllerTglLahir.text,
+                  'status nikah': _controllerStatusNikah.text,
+                  'status pendidikan': _controllerStatusPendidikan.text,
+                  'kelompok': _controllerKelompok.text,
+
+                  //info petani
+                  'alamat': _controllerAlamat.text,
+                  'dusun': _controllerDusun.text,
+                  'desa': _controllerDesa.text,
+                  'kecamatan': _controllerKecamatan.text,
+                  'kabupaten': _controllerKabupaten.text,
+                  'nama suami-istri': _controllerNamaSuamiIstri.text,
+                  'tgl.lahir suami-istri': _controllerTglLahirSuamiIstri.text,
+                  'pend.akhir suami-istri': _controllerPendAkhirSuamiIstri.text,
+                  'nama anak': _controllerNamaAnak.text,
+                  'tgl.lahir anak': _controllerTglLahirAnak.text,
+                  'pend.akhir anak': _controllerPendAkhirAnak.text,
+
+                  //info kebun
+                  'luas kebun': _controllerLuas.text,
+                  'koordinat': _controllerKoordinat.text,
+                  'lokal': _controllerLokal.text,
+                  's1': _controllerS1.text,
+                  's2': _controllerS2.text,
+                  'lain-lain': _controllerLain.text,
+                  'jarak tanam': _controllerJarakTanam.text,
+
+                  //info keuangan
+                  'pendapatan lain': _controllerPendapatanLain.text,
+                  'pendapatan bulan': _controllerPendapatanBulan.text,
+
+                  //info umum
+                  'alat transportasi petani': checkList1.toString(),
+                  'material utama rumah petani': checkList2.toString(),
+                  'alat petani untuk memasak': checkList3.toString(),
+                  'barang di rumah petani': checkList4.toString(),
+                  'toilet petani': checkList5.toString(),
+
+                  //gambar
+                  'gambar': _imageUrl.toString(),
+                });
+
+                
+
+                updateStatusSensus();
+                alertNotif();
+              }
+            },
+            child: const SizedBox(
+                height: 48, child: Center(child: Text("Submit Detail"))))
+      ]),
     );
   }
 
@@ -438,277 +1270,6 @@ class _SensusPageState extends State<SensusPage> {
     }
   }
 
-  Widget buttonNext() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: padding),
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(kGreen2),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5)))),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            if (_activeStep < _upperBound) {
-              setState(() {
-                _activeStep++;
-              });
-            } else if (_activeStep > 0) {
-              setState(() {
-                setState(() {
-                  _activeStep--;
-                });
-              });
-            }
-          }
-        },
-        child: const SizedBox(
-          width: double.infinity,
-          height: 48,
-          child: Center(
-            child: Text(
-              'Next',
-              style: TextStyle(color: kWhite, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget formSensus2() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          Row(
-            children: const [
-              Padding(
-                padding: EdgeInsets.only(left: 24, bottom: 12),
-                child: Text(
-                  "Info Petani",
-                  style: TextStyle(
-                      color: kGreen2,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
-          Card(
-            margin: const EdgeInsets.symmetric(
-                horizontal: padding, vertical: padding),
-            color: kWhite,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: padding, vertical: padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Alamat",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  TextFormField(
-                    controller: _controllerAlamat,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Alamat'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Alamat";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerDusun,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Dusun'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Dusun";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerDesa,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration:
-                        const InputDecoration(hintText: 'Desa/Kelurahan'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Desa";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerKecamatan,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Kecamatan'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Kecamatan";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerKabupaten,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Kabupaten'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Kabupaten";
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Card(
-            margin: const EdgeInsets.symmetric(
-                horizontal: padding, vertical: padding),
-            color: kWhite,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: padding, vertical: padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Data Istri/Suami",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  TextFormField(
-                    controller: _controllerNamaSuamiIstri,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Nama'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Nama";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerTglLahirSuamiIstri,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                        suffixIcon: Icon(Icons.today),
-                        hintText: 'Tanggal Lahir'),
-                    readOnly: true,
-                    onTap: () => selectedDateSuamiIstri(context),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Tanggal";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerPendAkhirSuamiIstri,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration:
-                        const InputDecoration(hintText: 'Pendidikan Terakhir'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Pendidikan Terakhir";
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Card(
-            margin: const EdgeInsets.symmetric(
-                horizontal: padding, vertical: padding),
-            color: kWhite,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: padding, vertical: padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Data Anak",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  TextFormField(
-                    controller: _controllerNamaAnak,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Nama'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Nama";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerTglLahirAnak,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                        suffixIcon: Icon(Icons.today),
-                        hintText: 'Tanggal Lahir'),
-                    readOnly: true,
-                    onTap: () => selectedDateAnak(context),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Tanggal";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerPendAkhirAnak,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration:
-                        const InputDecoration(hintText: 'Pendidikan Terakhir'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Pendidikan Terakhir";
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          buttonNext(),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> selectedDateSuamiIstri(BuildContext context) async {
     DateTime today = DateTime.now();
     final DateTime? _datePicker = await showDatePicker(
@@ -736,592 +1297,6 @@ class _SensusPageState extends State<SensusPage> {
     }
   }
 
-  Widget formSensus3() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          Row(
-            children: const [
-              Padding(
-                padding: EdgeInsets.only(left: 24, bottom: 12),
-                child: Text(
-                  "Info Kebun",
-                  style: TextStyle(
-                      color: kGreen2,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
-          Card(
-            margin: const EdgeInsets.symmetric(horizontal: padding),
-            color: kWhite,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: padding, vertical: padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Kebun 1",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  TextFormField(
-                    controller: _controllerLuas,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: 'Luas (m2)'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Luas";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerKoordinat,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration:
-                        const InputDecoration(hintText: 'Letak/Koordinat'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Letak/Koordinat";
-                      }
-                      return null;
-                    },
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 24, bottom: 8),
-                    child: Text(
-                      "Kakao yang berproduksi",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _controllerLokal,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Lokal'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Lokal";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerS1,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'S1'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan S1";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerS2,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'S2'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan S2";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerLain,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(hintText: 'Lain-lain'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Lain-lain";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerJarakTanam,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: 'Jarak Tanam'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Jarak Tanam";
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          buttonNext(),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget formSensus4() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          Row(
-            children: const [
-              Padding(
-                padding: EdgeInsets.only(left: 24, bottom: 12),
-                child: Text(
-                  "Info Keuangan",
-                  style: TextStyle(
-                      color: kGreen2,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
-          Card(
-            margin: const EdgeInsets.symmetric(horizontal: padding),
-            color: kWhite,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: padding, vertical: padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Pendapatan 1",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  TextFormField(
-                    controller: _controllerPendapatanLain,
-                    cursorColor: kGreen,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.next,
-                    decoration:
-                        const InputDecoration(hintText: 'Pendapatan lain'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Pendapatan lain";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _controllerPendapatanBulan,
-                    cursorColor: kGreen,
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(hintText: 'Pendapatan/Bulan'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Masukkan Pendapatan/Bulan";
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          buttonNext(),
-          const SizedBox(
-            height: 40,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget formSensus5() {
-    return Form(
-      key: _formKey,
-      child: Stack(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Row(
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.only(left: 24, bottom: 12),
-                        child: Text(
-                          "Info Umum",
-                          style: TextStyle(
-                              color: kGreen2,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Card(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: padding * 2, vertical: padding / 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: padding),
-                          child: Text(
-                            "Alat transportasi petani saat membawa kakao",
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Container(
-                            width: double.infinity,
-                            height: 340,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: padding, vertical: padding),
-                            child: Column(
-                              children: checkBoxList1.map((list1) {
-                                if (list1["isChecked"] == true) {
-                                  checkList1 = list1["name"];
-                                }
-
-                                return CheckboxListTile(
-                                    title: Text(
-                                      list1["name"],
-                                      style: const TextStyle(
-                                          fontSize: 12, color: kBlack6),
-                                    ),
-                                    value: list1["isChecked"],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        list1["isChecked"] = value;
-                                      });
-                                    });
-                              }).toList(),
-                            )),
-                        Wrap(
-                          children: checkBoxList1.map((list1) {
-                            if (list1["isChecked"] == true) {
-                              return Card(
-                                elevation: 3,
-                                color: kGreen2,
-                                margin: const EdgeInsets.only(left: padding, bottom: 8),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(list1["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
-                                ),
-                              );
-                            }
-
-                            return Container();
-                          }).toList(),
-                        ),
-                      const SizedBox(height: 8,)
-                      ],
-                    ),
-                  ),
-                  Card(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: padding * 2, vertical: padding / 2),
-                    color: kWhite,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: padding),
-                          child: Text(
-                            "Material utama rumah petani",
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 370,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: padding, vertical: padding),
-                          child: Column(
-                            children: checkBoxList2.map((list2) {
-                              if (list2["isChecked"] == true) {
-                                checkList2 = list2["name"];
-                              }
-
-                              return CheckboxListTile(
-                                  title: Text(
-                                    list2["name"],
-                                    style: const TextStyle(
-                                        fontSize: 12, color: kBlack6),
-                                  ),
-                                  value: list2["isChecked"],
-                                  onChanged: (value) {
-                                    setState(() {
-                                      list2["isChecked"] = value;
-                                    });
-                                  });
-                            }).toList(),
-                          ),
-                        ),
-                        Wrap(
-                          children: checkBoxList2.map((list2) {
-                            if (list2["isChecked"] == true) {
-                              return Card(
-                                elevation: 3,
-                                color: kGreen2,
-                                margin: const EdgeInsets.only(left: padding, bottom: 8),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(list2["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
-                                ),
-                              );
-                            }
-
-                            return Container();
-                          }).toList(),
-                        
-                        ),
-                        const SizedBox(height: 8,)
-                      ],
-                    ),
-                  ),
-                  Card(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: padding * 2, vertical: padding / 2),
-                    color: kWhite,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: padding),
-                          child: Text(
-                            "Alat yang digunakan petani untuk memasak",
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 320,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: padding, vertical: padding),
-                          child: Column(
-                            children: checkBoxList3.map((list3) {
-                              if (list3["isChecked"] == true) {
-                                checkList3 = list3["name"];
-                              }
-
-                              return CheckboxListTile(
-                                  title: Text(
-                                    list3["name"],
-                                    style: const TextStyle(
-                                        fontSize: 12, color: kBlack6),
-                                  ),
-                                  value: list3["isChecked"],
-                                  onChanged: (value) {
-                                    setState(() {
-                                      list3["isChecked"] = value;
-                                    });
-                                  });
-                            }).toList(),
-                          ),
-                        ),
-                        Wrap(
-                          children: checkBoxList3.map((list3) {
-                            if (list3["isChecked"] == true) {
-                              return Card(
-                                elevation: 3,
-                                color: kGreen2,
-                                 margin: const EdgeInsets.only(left: padding, bottom: 8),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(list3["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
-                                ),
-                              );
-                            }
-
-                            return Container();
-                          }).toList(),
-                        ),
-                        const SizedBox(height: 8,)
-                      ],
-                    ),
-                  ),
-                  Card(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: padding * 2, vertical: padding / 2),
-                    color: kWhite,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: padding),
-                          child: Text(
-                            "Barang yang ada di rumah petani",
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 320,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: padding, vertical: padding),
-                          child: Column(
-                            children: checkBoxList4.map((list4) {
-                              if (list4["isChecked"] == true) {
-                                checkList4 = list4["name"];
-                              }
-
-                              return CheckboxListTile(
-                                  title: Text(
-                                    list4["name"],
-                                    style: const TextStyle(
-                                        fontSize: 12, color: kBlack6),
-                                  ),
-                                  value: list4["isChecked"],
-                                  onChanged: (value) {
-                                    setState(() {
-                                      list4["isChecked"] = value;
-                                    });
-                                  });
-                            }).toList(),
-                          ),
-                        ),
-                        Wrap(
-                          children: checkBoxList4.map((list4) {
-                            if (list4["isChecked"] == true) {
-                              return Card(
-                                elevation: 3,
-                                color: kGreen2,
-                                 margin: const EdgeInsets.only(left: padding, bottom: 8),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(list4["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
-                                ),
-                              );
-                            }
-
-                            return Container();
-                          }).toList(),
-                        ),
-                        const SizedBox(height: 8,)
-                      ],
-                    ),
-                  ),
-                  Card(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: padding * 2, vertical: padding / 2),
-                    color: kWhite,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: padding),
-                          child: Text(
-                            "Toilet yang digunakan petani",
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 320,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: padding, vertical: padding),
-                          child: Column(
-                            children: checkBoxList5.map((list5) {
-                              if (list5["isChecked"] == true) {
-                                checkList5 = list5["name"];
-                              }
-
-                              return CheckboxListTile(
-                                  title: Text(
-                                    list5["name"],
-                                    style: const TextStyle(
-                                        fontSize: 12, color: kBlack6),
-                                  ),
-                                  value: list5["isChecked"],
-                                  onChanged: (value) {
-                                    setState(() {
-                                      list5["isChecked"] = value;
-                                    });
-                                  });
-                            }).toList(),
-                          ),
-                        ),
-                        Wrap(
-                          children: checkBoxList5.map((list5) {
-                            if (list5["isChecked"] == true) {
-                              return Card(
-                                elevation: 3,
-                                color: kGreen2,
-                                 margin: const EdgeInsets.only(left: padding, bottom: 8),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(list5["name"], style: const TextStyle(color: kWhite, fontSize: 12),),
-                                ),
-                              );
-                            }
-
-                            return Container();
-                          }).toList(),
-                        ),
-                        const SizedBox(height: 8,)
-                      ],
-                    ),
-                  ),
-                  _imageFile != null ? viewPhoto() : Container(),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  addPhoto(),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  buttonSubmit(),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget viewPhoto() {
     return Container(
         width: double.infinity,
@@ -1329,7 +1304,10 @@ class _SensusPageState extends State<SensusPage> {
         padding: const EdgeInsets.all(padding),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.file(_imageFile, fit: BoxFit.cover,),
+          child: Image.file(
+            _imageFile,
+            fit: BoxFit.cover,
+          ),
         ));
   }
 
@@ -1375,36 +1353,6 @@ class _SensusPageState extends State<SensusPage> {
     );
   }
 
-  Widget buttonSubmit() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: padding),
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(kGreen2),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5)))),
-        onPressed: () {
-          if (_activeStep < _upperBound) {
-            setState(() {
-              _activeStep++;
-            });
-          }
-          createFormSensus();
-        },
-        child: const SizedBox(
-          width: double.infinity,
-          height: 48,
-          child: Center(
-            child: Text(
-              'Simpan',
-              style: TextStyle(color: kWhite, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Future<dynamic> getUser() async {
     await FirebaseFirestore.instance
         .collection('petugas')
@@ -1420,67 +1368,31 @@ class _SensusPageState extends State<SensusPage> {
     });
   }
 
-  Future<dynamic> createFormSensus() async {
-    if (_formKey.currentState!.validate()) {
-      await FirebaseFirestore.instance
-          .collection("petugas")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection("agenda_sensus")
-          .doc(widget.docId)
-          .collection("data_petani")
-          .doc(widget.docIdPetani)
-          .collection("sensus")
-          .doc(widget.docIdPetani)
-          .set({
-        //info petani
-        'tanggal sensus': _controllerTglSensus.text,
-        'nama': _controllerNama.text,
-        'no.telephone': _controllerNoTelp.text,
-        'jenis kelamin': _controllerJekel.text,
-        'tanggal lahir': _controllerTglLahir.text,
-        'status nikah': _controllerStatusNikah.text,
-        'status pendidikan': _controllerStatusPendidikan.text,
-        'kelompok': _controllerKelompok.text,
+  displaySnackBar(text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
 
-        //info petani
-        'alamat': _controllerAlamat.text,
-        'dusun': _controllerDusun.text,
-        'desa': _controllerDesa.text,
-        'kecamatan': _controllerKecamatan.text,
-        'kabupaten': _controllerKabupaten.text,
-        'nama suami/istri': _controllerNamaSuamiIstri.text,
-        'tgl.lahir suami/istri': _controllerTglLahirSuamiIstri.text,
-        'pend.akhir suami/istri': _controllerPendAkhirSuamiIstri.text,
-        'nama anak': _controllerNamaAnak.text,
-        'tgl.lahir anak': _controllerTglLahirAnak.text,
-        'pend.akhir anak': _controllerPendAkhirAnak.text,
+  createFormSensus() async {}
 
-        //info kebun
-        'luas kebun': _controllerLuas.text,
-        'koordinat': _controllerKoordinat.text,
-        'lokal': _controllerLokal.text,
-        's1': _controllerS1.text,
-        's2': _controllerS2.text,
-        'lain-lain': _controllerLain.text,
-        'jarak tanam': _controllerJarakTanam.text,
+  Future<dynamic> updateStatusSensus() async {
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection('petugas')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("agenda_sensus")
+        .doc(widget.docId)
+        .collection("data_petani")
+        .doc(widget.docIdPetani);
 
-        //info keuangan
-        'pendapatan lain': _controllerPendapatanLain.text,
-        'pendapatan bulan': _controllerPendapatanBulan.text,
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot documentSnapshot =
+          await transaction.get(documentReference);
 
-        //info umum
-        'alat transportasi petani': checkList1,
-        'material utama rumah petani': checkList2,
-        'alat petani untuk memasak': checkList3,
-        'barang di rumah petani': checkList4,
-        'toilet petani': checkList5,
-
-        //gambar
-        'gambar': _imageUrl.toString(),
-      });
-
-      alertNotif();
-    }
+      if (documentSnapshot.exists) {
+        transaction.update(documentReference, <String, dynamic>{
+          'status': true,
+        });
+      }
+    });
   }
 
   alertNotif() {

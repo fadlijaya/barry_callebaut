@@ -46,8 +46,8 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
   final TextEditingController _controllerAnak1 = TextEditingController();
   final TextEditingController _controllerAnak2 = TextEditingController();
 
-  late final TabController _tabController =
-      TabController(length: 2, vsync: this);
+  late final TabController _tabController = TabController(length: 2, vsync: this);
+
 
   @override
   Widget build(BuildContext context) {
@@ -128,10 +128,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
           )
         ],
       ),
-      trailing: const Icon(
-        Icons.create,
-        color: kGreen,
-      ),
+      trailing: IconButton(onPressed: (){}, icon: const Icon(Icons.create, color: kGreen,))
     );
   }
 
@@ -156,19 +153,172 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
       width: double.maxFinite,
       height: 480,
       child: TabBarView(controller: _tabController, children: [
-        //tabBarViewSensus(),
-        addSensus(),
+        tabBarViewSensus(), 
         tabBarViewInspeksi(),
       ]),
     );
   }
 
   Widget tabBarViewSensus() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [formInformasiKebun(), formInformasiKeluarga()],
-      ),
-    );
+    final Stream<QuerySnapshot> _streamSensus = FirebaseFirestore.instance
+        .collection("petugas")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("agenda_sensus")
+        .doc(widget.docId)
+        .collection("data_petani")
+        .doc(widget.docIdPetani)
+        .collection("sensus")
+        .snapshots();
+
+    return StreamBuilder<QuerySnapshot>(
+        stream: _streamSensus,
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("${snapshot.hasError}"),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return addSensus();
+          } else if (snapshot.hasData) {
+            var document = snapshot.data!.docs;
+
+            return ListView.builder(
+                itemCount: document.length,
+                itemBuilder: (context, i) {
+                  return Column(
+                    children: [
+                      Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical:8, horizontal: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: padding),
+                                child: Text(
+                                  "Informasi Kebun 1",
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Luas"),
+                                  Text("${document[i]['luas kebun']} m2", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                ],
+                              ),
+                              const Divider(thickness: 1,),
+                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Lokasi"),
+                                  Text("${document[i]['koordinat']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                ],
+                              ),
+                              const Divider(thickness: 1,),
+                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Tanaman Pokok"),
+                                  Text("${document[i]['lokal']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                ],
+                              ),
+                              const Divider(thickness: 1,),
+                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Tanaman Lain"),
+                                  Text("${document[i]['lain-lain']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                ],
+                              ),
+                              const Divider(thickness: 1,),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical:8, horizontal: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: padding),
+                                child: Text(
+                                  "Informasi Keluarga",
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Nama Istri"),
+                                  Text("${document[i]['nama suami-istri']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                ],
+                              ),
+                              const Divider(thickness: 1,),
+                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Anak Pertama"),
+                                  Text("${document[i]['nama anak']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                ],
+                              ),
+                              const Divider(thickness: 1,),
+                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Anak Kedua"),
+                                  Text("${document[i]['nama anak']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                ],
+                              ),
+                              const Divider(thickness: 1,),
+                              
+                            ],
+                          ),
+                        ),
+                      ),
+                      Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical:8, horizontal: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: padding),
+                                child: Text(
+                                  "Dokumentasi",
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 200,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(document[i]['gambar'], fit: BoxFit.cover,),
+                                ),
+                              )
+                              
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  );
+                });
+          }
+
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 
   Widget tabBarViewInspeksi() {
@@ -185,251 +335,395 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
     return Stack(
       children: [
         StreamBuilder<QuerySnapshot>(
-          stream: _streamInspeksi,
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text("${snapshot.error}"),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(
-                child: Text("Belum ada data!"),
-              );
-            } else if (snapshot.hasData) {
-              var document = snapshot.data!.docs;
-              return ListView.builder(
-                  itemCount: document.length,
-                  itemBuilder: (context, i) {
-                    return ExpansionPanelList(
-                        expansionCallback: (context, isExpanded) {
-                          _isExpanded = !isExpanded;
-                          setState(() {
-                          });
-                        },
-                        dividerColor: kGrey,
-                        children: [
-                          ExpansionPanel(
-                              headerBuilder: (context, isExpanded) {
-                                return ListTile(
-                                  title: Text("${document[i]['subjek']}", style: const TextStyle(fontWeight: FontWeight.w600),),
-                                  subtitle:
-                                      Text("${document[i]['tanggal subjek']}"),
-                                );
-                              },
-                              body: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: padding),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(bottom: 8),
-                                      child: Text("Jumlah buah kakao",  style: TextStyle(fontWeight: FontWeight.w600),),
+            stream: _streamInspeksi,
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("${snapshot.error}"),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Center(
+                  child: Text("Belum ada data!"),
+                );
+              } else if (snapshot.hasData) {
+                var document = snapshot.data!.docs;
+                return ListView.builder(
+                    itemCount: document.length,
+                    itemBuilder: (context, i) {
+                      return ExpansionPanelList(
+                          expansionCallback: (context, isExpanded) {
+                            _isExpanded = !isExpanded;
+                            setState(() {});
+                          },
+                          dividerColor: kGrey,
+                          children: [
+                            ExpansionPanel(
+                                headerBuilder: (context, isExpanded) {
+                                  return ListTile(
+                                    title: Text(
+                                      "${document[i]['subjek']}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600),
                                     ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Lokal"),
-                                        Text("${document[i]['jumlah kakao lokal']} Buah")
-                                      ],
-                                    ),
-                                    const Divider(thickness: 1,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("S1"),
-                                        Text("${document[i]['jumlah kakao s1']} Buah")
-                                      ],
-                                    ),
-                                    const Divider(thickness: 1,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("S1"),
-                                        Text("${document[i]['jumlah kakao s1']} Buah")
-                                      ],
-                                    ),
-                                    const Divider(thickness: 1,),
-                                     const Padding(
-                                      padding: EdgeInsets.only(top: 8, bottom: 8),
-                                      child: Text("Frekuensi pemangkasan",  style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Berat"),
-                                        Text("${document[i]['frekuensi berat']} Meter")
-                                      ],
-                                    ),
-                                    const Divider(thickness: 1,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Ringan"),
-                                        Text("${document[i]['frekuensi ringan']} Meter")
-                                      ],
-                                    ),
-                                    const Divider(thickness: 1,),
-                                     const Padding(
-                                      padding: EdgeInsets.only(top: 8, bottom: 8),
-                                      child: Text("Hama dan Penyakit",  style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Hama"),
-                                        Text("${document[i]['hama']}")
-                                      ],
-                                    ),
-                                    const Divider(thickness: 1,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Penyakit"),
-                                        Text("${document[i]['penyakit']}")
-                                      ],
-                                    ),
-                                    const Divider(thickness: 1,),
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: 8),
-                                      child: Text("Mempunyai kotak penyimpanan pestisida", style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                     document[i]['mempunyai kotak penyimpanan pestisida'] == "Pilihan.ya"
-                                     ? Row(
-                                      children: const [
-                                        Text("Ya"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.check, color: kGreen2,)
-                                      ],
-                                     )
-                                     : Row(
-                                      children: const [
-                                          Text("Tidak"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.close, color: Colors.red,)
-                                      ],
-                                     ),
-                                     const Padding(
-                                      padding: EdgeInsets.only(top: 8),
-                                      child: Text("Mempunyai kotak penyimpanan khusus pupuk", style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                    document[i]['mempunyai kotak penyimpanan khusus pupuk'] == "Pilihan.ya"
-                                     ? Row(
-                                      children: const [
-                                        Text("Ya"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.check, color: kGreen2,)
-                                      ],
-                                     )
-                                     : Row(
-                                      children: const [
-                                          Text("Tidak"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.close, color: Colors.red,)
-                                      ],
-                                     ),
+                                    subtitle: Text(
+                                        "${document[i]['tanggal subjek']}"),
+                                  );
+                                },
+                                body: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: padding),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
                                       const Padding(
-                                      padding: EdgeInsets.only(top: 8),
-                                      child: Text("Membuang wadah bekas pestisida dengan benar", style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                     document[i]['membuang wadah bekas pestisida dengan benar'] == "Pilihan.ya"
-                                     ? Row(
-                                      children: const [
-                                        Text("Ya"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.check, color: kGreen2,)
-                                      ],
-                                     )
-                                     : Row(
-                                      children: const [
-                                          Text("Tidak"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.close, color: Colors.red,)
-                                      ],
-                                     ),
-                                     const Padding(
-                                      padding: EdgeInsets.only(top: 8),
-                                      child: Text("Membuang buah yang terserang penyakit", style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                    document[i]['membuang buah yang terserang penyakit'] == "Pilihan.ya"
-                                     ? Row(
-                                      children: const [
-                                        Text("Ya"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.check, color: kGreen2,)
-                                      ],
-                                     )
-                                     : Row(
-                                      children: const [
-                                          Text("Tidak"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.close, color: Colors.red,)
-                                      ],
-                                     ),
-                                       const Padding(
-                                      padding: EdgeInsets.only(top: 8),
-                                      child: Text("Memangkas dahan yang terserang penyakit", style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                  document[i]['memangkas dahan yang terserang penyakit'] == "Pilihan.ya"
-                                     ? Row(
-                                      children: const [
-                                        Text("Ya"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.check, color: kGreen2,)
-                                      ],
-                                     )
-                                     : Row(
-                                      children: const [
-                                          Text("Tidak"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.close, color: Colors.red,)
-                                      ],
-                                     ),
-                                     const Padding(
-                                      padding: EdgeInsets.only(top: 8),
-                                      child: Text("Kulit buah yang sakit ditangani dengan cepat", style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                    document[i]['kulit buah yang sakit ditangani dengan cepat'] == "Pilihan.ya"
-                                     ? Row(
-                                      children: const [
-                                        Text("Ya"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.check, color: kGreen2,)
-                                      ],
-                                     )
-                                     : Row(
-                                      children: const [
-                                          Text("Tidak"),
-                                        SizedBox(width: 8,),
-                                        Icon(Icons.close, color: Colors.red,)
-                                      ],
-                                     ),
-                                    
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: padding, bottom: 8),
-                                      child: Text("Dokumentasi", style: TextStyle(fontWeight: FontWeight.w600),),
-                                    ),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      height: 200,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(document[i]['gambar'], width: double.infinity, fit: BoxFit.cover,)),
-                                    )
-                                  ],
+                                        padding: EdgeInsets.only(bottom: 8),
+                                        child: Text(
+                                          "Jumlah buah kakao",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Lokal"),
+                                          Text(
+                                              "${document[i]['jumlah kakao lokal']} Buah")
+                                        ],
+                                      ),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("S1"),
+                                          Text(
+                                              "${document[i]['jumlah kakao s1']} Buah")
+                                        ],
+                                      ),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("S1"),
+                                          Text(
+                                              "${document[i]['jumlah kakao s1']} Buah")
+                                        ],
+                                      ),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                      const Padding(
+                                        padding:
+                                            EdgeInsets.only(top: 8, bottom: 8),
+                                        child: Text(
+                                          "Frekuensi pemangkasan",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Berat"),
+                                          Text(
+                                              "${document[i]['frekuensi berat']} Meter")
+                                        ],
+                                      ),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Ringan"),
+                                          Text(
+                                              "${document[i]['frekuensi ringan']} Meter")
+                                        ],
+                                      ),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                      const Padding(
+                                        padding:
+                                            EdgeInsets.only(top: 8, bottom: 8),
+                                        child: Text(
+                                          "Hama dan Penyakit",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Hama"),
+                                          Text("${document[i]['hama']}")
+                                        ],
+                                      ),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Penyakit"),
+                                          Text("${document[i]['penyakit']}")
+                                        ],
+                                      ),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          "Mempunyai kotak penyimpanan pestisida",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      document[i]['mempunyai kotak penyimpanan pestisida'] ==
+                                              "Pilihan.ya"
+                                          ? Row(
+                                              children: const [
+                                                Text("Ya"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: kGreen2,
+                                                )
+                                              ],
+                                            )
+                                          : Row(
+                                              children: const [
+                                                Text("Tidak"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                )
+                                              ],
+                                            ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          "Mempunyai kotak penyimpanan khusus pupuk",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      document[i]['mempunyai kotak penyimpanan khusus pupuk'] ==
+                                              "Pilihan.ya"
+                                          ? Row(
+                                              children: const [
+                                                Text("Ya"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: kGreen2,
+                                                )
+                                              ],
+                                            )
+                                          : Row(
+                                              children: const [
+                                                Text("Tidak"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                )
+                                              ],
+                                            ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          "Membuang wadah bekas pestisida dengan benar",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      document[i]['membuang wadah bekas pestisida dengan benar'] ==
+                                              "Pilihan.ya"
+                                          ? Row(
+                                              children: const [
+                                                Text("Ya"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: kGreen2,
+                                                )
+                                              ],
+                                            )
+                                          : Row(
+                                              children: const [
+                                                Text("Tidak"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                )
+                                              ],
+                                            ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          "Membuang buah yang terserang penyakit",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      document[i]['membuang buah yang terserang penyakit'] ==
+                                              "Pilihan.ya"
+                                          ? Row(
+                                              children: const [
+                                                Text("Ya"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: kGreen2,
+                                                )
+                                              ],
+                                            )
+                                          : Row(
+                                              children: const [
+                                                Text("Tidak"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                )
+                                              ],
+                                            ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          "Memangkas dahan yang terserang penyakit",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      document[i]['memangkas dahan yang terserang penyakit'] ==
+                                              "Pilihan.ya"
+                                          ? Row(
+                                              children: const [
+                                                Text("Ya"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: kGreen2,
+                                                )
+                                              ],
+                                            )
+                                          : Row(
+                                              children: const [
+                                                Text("Tidak"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                )
+                                              ],
+                                            ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          "Kulit buah yang sakit ditangani dengan cepat",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      document[i]['kulit buah yang sakit ditangani dengan cepat'] ==
+                                              "Pilihan.ya"
+                                          ? Row(
+                                              children: const [
+                                                Text("Ya"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: kGreen2,
+                                                )
+                                              ],
+                                            )
+                                          : Row(
+                                              children: const [
+                                                Text("Tidak"),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                )
+                                              ],
+                                            ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            top: padding, bottom: 8),
+                                        child: Text(
+                                          "Dokumentasi",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        height: 200,
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Image.network(
+                                              document[i]['gambar'],
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            )),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              isExpanded: _isExpanded,
-                              canTapOnHeader: true),
-                        ]);
-                  });
-            }
-    
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
-          addInspeksi()
-      ], 
+                                isExpanded: _isExpanded,
+                                canTapOnHeader: true),
+                          ]);
+                    });
+              }
+
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }),
+        addInspeksi()
+      ],
     );
   }
 
@@ -611,7 +905,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget addSensus() {
+  addSensus() {
     return Column(
       children: [
         Padding(

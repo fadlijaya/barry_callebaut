@@ -138,7 +138,8 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
       "docId": docId,
       "nama_petani": namaPetani,
       "desa_kelurahan": desaKelurahan,
-      "no_hp": noHp
+      "no_hp": noHp,
+      "sensus": false,
     }).then((_) {
       alertDialogSukses();
       //deleteToFirebase(docId);
