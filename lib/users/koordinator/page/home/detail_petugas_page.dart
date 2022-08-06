@@ -314,7 +314,7 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
   }
 
   Widget tabBarViewBelum() {
-    return Center(
+    return const Center(
       child: Text("Belum"),
     );
   }

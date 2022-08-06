@@ -14,7 +14,6 @@ class DetailAgendaPage extends StatefulWidget {
   const DetailAgendaPage(
       {Key? key, required this.lokasiSensus, required this.docId})
       : super(key: key);
-
   @override
   _DetailAgendaPageState createState() => _DetailAgendaPageState();
 }
@@ -122,7 +121,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                         width: 4,
                                       ),
                                       Container(
-                                        width: 80,
+                                        width: 100,
                                         height: 20,
                                         decoration: BoxDecoration(
                                             color: kGreen2.withOpacity(0.3),
@@ -140,7 +139,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                       )
                                     ],
                                   ),
-                                  trailing: document[i]["sensus"] == false
+                                  trailing: document[i]["status_sensus"] == false
                                   ? const Icon(
                                     Icons.timelapse,
                                     color: kGreen,

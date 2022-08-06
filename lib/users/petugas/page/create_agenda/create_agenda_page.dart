@@ -127,14 +127,25 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
           return Form(
             key: _formKey,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(padding),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextFormField(
-                    controller: _lokasiController,
-                    decoration: const InputDecoration(
-                        hintText: 'Masukkan Lokasi Sensus'),
+                  Container(
+                    width: 70,
+                    height: 9,
+                    decoration: BoxDecoration(
+                      color: kGrey3,
+                      borderRadius: BorderRadius.circular(12)
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: TextFormField(
+                      controller: _lokasiController,
+                      decoration: const InputDecoration(
+                          hintText: 'Masukkan Lokasi Sensus'),
+                    ),
                   ),
                   const SizedBox(
                     height: 8,
@@ -304,7 +315,7 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
   Future<dynamic> createAgendaToFirebase() async {
     final docId = FirebaseFirestore.instance
         .collection("petugas")
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("agenda_sensus")
         .doc()
         .id;

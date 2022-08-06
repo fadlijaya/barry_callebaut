@@ -39,6 +39,13 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
   }
 
   @override
+  void dispose() {
+    _controllerIdPetugas.dispose();
+    _controllerPassword.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
@@ -116,8 +123,8 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
                   controller: _controllerIdPetugas,
                   cursorColor: kGreen,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration.collapsed(
-                      hintText: '34restuwidya'),
+                  decoration:
+                      const InputDecoration.collapsed(hintText: '34restuwidya'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Masukkan Id Petugas";
@@ -241,7 +248,7 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
 
     if (!_isLoading) {
       if (_formKey.currentState!.validate()) {
-        displaySnackBar('Mohon Tunggu..');
+        displaySnackBar('Loading...');
 
         try {
           UserCredential user = await FirebaseAuth.instance
@@ -256,10 +263,10 @@ class _LoginPagePetugasState extends State<LoginPagePetugas> {
                 (route) => false);
           }
         } on FirebaseAuthException catch (e) {
-          if (e.code == 'user-not-found') {
-            //print('No user found for that email.');
-          } else if (e.code == 'wrong-password') {
-            //print('Wrong password provided for that user.');
+          if (e.code == 'Pengguna Tidak Ditemukan') {
+            displaySnackBar('${e.message}');
+          } else if (e.code == 'Id Petugas atau Password Salah') {
+            displaySnackBar('${e.message}');
           }
         }
       }

@@ -107,7 +107,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
                       ),
                       trailing: ElevatedButton(
                         onPressed: () => createToFirebase(
-                              docId, namaPetani, desaKelurahan, noHp),
+                            docId, namaPetani, desaKelurahan, noHp),
                         child: const Text(
                           "Tambah",
                           style: TextStyle(
@@ -139,10 +139,18 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
       "nama_petani": namaPetani,
       "desa_kelurahan": desaKelurahan,
       "no_hp": noHp,
-      "sensus": false,
+      "status_sensus": false,
+    });
+
+    await FirebaseFirestore.instance.collection("data_sensus").doc(docId).set({
+      "docId": docId,
+      "nama_petani": namaPetani,
+      "desa_kelurahan": desaKelurahan,
+      "no_hp": noHp,
+      "status_sensus": false,
     }).then((_) {
+      deleteDocument(docId);
       alertDialogSukses();
-      //deleteToFirebase(docId);
     });
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -150,8 +158,11 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
     });
   }
 
-  Future deleteToFirebase(String docId) async {
-    await FirebaseFirestore.instance.collection("data_petani").doc(docId).delete();
+  Future deleteDocument(String docId) async {
+    await FirebaseFirestore.instance
+        .collection("data_petani")
+        .doc(docId)
+        .delete();
   }
 
   alertDialogSukses() {

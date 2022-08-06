@@ -1,3 +1,4 @@
+import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/detail_petani_page.dart';
 import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/inspeksi/inspeksi_page.dart';
 import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/sensus/sensus_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,9 +47,9 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
   final TextEditingController _controllerAnak1 = TextEditingController();
   final TextEditingController _controllerAnak2 = TextEditingController();
 
-  late final TabController _tabController = TabController(length: 2, vsync: this);
-
-
+  late final TabController _tabController =
+      TabController(length: 2, vsync: this);
+      
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -73,63 +74,76 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
 
   Widget profil() {
     return ListTile(
-      minVerticalPadding: padding,
-      leading: Container(
-        width: 117,
-        height: 117,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            image: const DecorationImage(
-                image: NetworkImage(
-                    "http://learnyzen.com/wp-content/uploads/2017/08/test1-481x385.png"))),
-      ),
-      title: Text(
-        widget.namaPetani,
-        style: const TextStyle(
-            fontSize: 16, fontWeight: FontWeight.w600, color: kBlack),
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Image.asset("assets/pin.png"),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                widget.desaKelurahan,
-                style: const TextStyle(
-                  color: kBlack,
-                  fontWeight: FontWeight.w400,
-                ),
-              )
-            ],
+        minVerticalPadding: padding,
+        leading: const Padding(
+          padding: EdgeInsets.only(left: padding),
+          child: CircleAvatar(
+            radius: 48,
+            backgroundColor: kGreen2,
+            backgroundImage: NetworkImage(
+                "http://learnyzen.com/wp-content/uploads/2017/08/test1-481x385.png"),
           ),
-          const SizedBox(
-            height: 8,
-          ),
-          Container(
-            width: 80,
-            height: 20,
-            decoration: BoxDecoration(
-                color: kGreen2.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(5)),
-            child: Center(
-              child: Text(
-                widget.noHp,
-                style: const TextStyle(
-                  color: kBlack,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+        ),
+        title: Text(
+          widget.namaPetani,
+          style: const TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w600, color: kBlack),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Image.asset("assets/pin.png"),
+                const SizedBox(
+                  width: 4,
                 ),
-              ),
+                Text(
+                  widget.desaKelurahan,
+                  style: const TextStyle(
+                    color: kBlack,
+                    fontWeight: FontWeight.w400,
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-      trailing: IconButton(onPressed: (){}, icon: const Icon(Icons.create, color: kGreen,))
-    );
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: 100,
+              height: 20,
+              decoration: BoxDecoration(
+                  color: kGreen2.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Center(
+                child: Text(
+                  widget.noHp,
+                  style: const TextStyle(
+                    color: kBlack,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        trailing: IconButton(
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailPetaniPage(
+                        isEdit: true,
+                        docId: widget.docId,
+                        docIdPetani: widget.docIdPetani,
+                        namaPetani: widget.namaPetani,
+                        desaKelurahan: widget.desaKelurahan,
+                        noHp: widget.noHp))),
+            icon: const Icon(
+              Icons.create,
+              color: kGreen,
+            )));
   }
 
   Widget tabBar() {
@@ -153,7 +167,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
       width: double.maxFinite,
       height: 480,
       child: TabBarView(controller: _tabController, children: [
-        tabBarViewSensus(), 
+        tabBarViewSensus(),
         tabBarViewInspeksi(),
       ]),
     );
@@ -188,9 +202,11 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                   return Column(
                     children: [
                       Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 8),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical:8, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -199,49 +215,80 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                                 child: Text(
                                   "Informasi Kebun 1",
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.w600),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("Luas"),
-                                  Text("${document[i]['luas kebun']} m2", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                  Text(
+                                    "${document[i]['luas kebun']} m2",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
+                                  )
                                 ],
                               ),
-                              const Divider(thickness: 1,),
-                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              const Divider(
+                                thickness: 1,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("Lokasi"),
-                                  Text("${document[i]['koordinat']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                  Text(
+                                    "${document[i]['koordinat'].latitude}, ${document[i]['koordinat'].longitude}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
+                                  )
                                 ],
                               ),
-                              const Divider(thickness: 1,),
-                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              const Divider(
+                                thickness: 1,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("Tanaman Pokok"),
-                                  Text("${document[i]['lokal']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                  Text(
+                                    "${document[i]['lokal']}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
+                                  )
                                 ],
                               ),
-                              const Divider(thickness: 1,),
-                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              const Divider(
+                                thickness: 1,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("Tanaman Lain"),
-                                  Text("${document[i]['lain-lain']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                  Text(
+                                    "${document[i]['lain-lain']}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
+                                  )
                                 ],
                               ),
-                              const Divider(thickness: 1,),
+                              const Divider(
+                                thickness: 1,
+                              ),
                             ],
                           ),
                         ),
                       ),
                       Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 8),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical:8, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -250,42 +297,50 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                                 child: Text(
                                   "Informasi Keluarga",
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.w600),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("Nama Istri"),
-                                  Text("${document[i]['nama suami-istri']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                  Text(
+                                    "${document[i]['nama suami-istri']}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
+                                  )
                                 ],
                               ),
-                              const Divider(thickness: 1,),
-                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              const Divider(
+                                thickness: 1,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("Anak Pertama"),
-                                  Text("${document[i]['nama anak']}", style: const TextStyle(fontWeight: FontWeight.w600),)
+                                  Text(
+                                    "${document[i]['nama anak']}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600),
+                                  )
                                 ],
                               ),
-                              const Divider(thickness: 1,),
-                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("Anak Kedua"),
-                                  Text("${document[i]['nama anak']}", style: const TextStyle(fontWeight: FontWeight.w600),)
-                                ],
+                              const Divider(
+                                thickness: 1,
                               ),
-                              const Divider(thickness: 1,),
-                              
                             ],
                           ),
                         ),
                       ),
                       Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 8),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical:8, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -294,18 +349,36 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                                 child: Text(
                                   "Dokumentasi",
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.w600),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
                               SizedBox(
-                                width: double.infinity,
-                                height: 200,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(document[i]['gambar'], fit: BoxFit.cover,),
-                                ),
-                              )
-                              
+                                  width: double.infinity,
+                                  height: 200,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      document[i]['gambar'],
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return SizedBox(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: const [
+                                              Icon(
+                                                Icons.error,
+                                                size: 48,
+                                              ),
+                                              Text("Upss, Gambar Error!")
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ))
                             ],
                           ),
                         ),

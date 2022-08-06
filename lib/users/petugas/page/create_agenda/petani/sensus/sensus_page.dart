@@ -6,6 +6,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -33,12 +35,17 @@ class _SensusPageState extends State<SensusPage> {
   int currStep = 0;
   String? uid;
   String? username;
+  var _currentPosition;
+  var _currentAddress;
 
   JenisKelamin? _jekel;
 
   DateTime _dateTime = DateTime.now();
 
   final List<String> _listStatus = ['Lajang', 'Menikah', 'Duda', 'Janda'];
+  final List<String> _listStatusPend1 = ['SD', 'SMP', 'SMA', 'S1'];
+  final List<String> _listStatusPend2 = ['SD', 'SMP', 'SMA', 'S1'];
+  final List<String> _listStatusPend3 = ['SD', 'SMP', 'SMA', 'S1'];
 
   String? checkList1;
   String? checkList2;
@@ -47,6 +54,9 @@ class _SensusPageState extends State<SensusPage> {
   String? checkList5;
 
   String? _selectedStatus;
+  String? _selectedStatusPend1;
+  String? _selectedStatusPend2;
+  String? _selectedStatusPend3;
   var _imageFile;
   String? _imageUrl;
 
@@ -120,9 +130,52 @@ class _SensusPageState extends State<SensusPage> {
     }
   }
 
+  getCurrentLocation() {
+    Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.best,
+            forceAndroidLocationManager: true)
+        .then((Position position) => {
+              setState(() {
+                _currentPosition = position;
+                getAddressFromLatLong();
+              })
+            })
+        .catchError((e) {
+      print(e);
+    });
+  }
+
+  getAddressFromLatLong() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+      Placemark place = placemarks[0];
+
+      setState(() {
+        _currentAddress = "${place.street}, ${place.subLocality}";
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentLocation();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    if (_currentPosition == null) {
+      return const Scaffold(
+          body: Center(
+        child: CircularProgressIndicator(),
+      ));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -294,18 +347,21 @@ class _SensusPageState extends State<SensusPage> {
                                 isExpanded: true,
                                 hint: const Text('Status Pernikahan'),
                               ),
-                              TextFormField(
-                                controller: _controllerStatusPendidikan,
-                                cursorColor: kGreen,
-                                textInputAction: TextInputAction.next,
-                                decoration: const InputDecoration(
-                                    hintText: 'Status Pendidikan'),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Masukkan Status Pendidikan";
-                                  }
-                                  return null;
+                              DropdownButton(
+                                items: _listStatusPend1
+                                    .map((value) => DropdownMenuItem(
+                                          child: Text(value),
+                                          value: value,
+                                        ))
+                                    .toList(),
+                                onChanged: (String? selected) {
+                                  setState(() {
+                                    _selectedStatusPend1 = selected;
+                                  });
                                 },
+                                value: _selectedStatusPend1,
+                                isExpanded: true,
+                                hint: const Text('Status Pendidikan'),
                               ),
                               TextFormField(
                                 controller: _controllerKelompok,
@@ -476,18 +532,21 @@ class _SensusPageState extends State<SensusPage> {
                                 return null;
                               },
                             ),
-                            TextFormField(
-                              controller: _controllerPendAkhirSuamiIstri,
-                              cursorColor: kGreen,
-                              textInputAction: TextInputAction.next,
-                              decoration: const InputDecoration(
-                                  hintText: 'Pendidikan Terakhir'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Masukkan Pendidikan Terakhir";
-                                }
-                                return null;
+                            DropdownButton(
+                              items: _listStatusPend2
+                                  .map((value) => DropdownMenuItem(
+                                        child: Text(value),
+                                        value: value,
+                                      ))
+                                  .toList(),
+                              onChanged: (String? selected) {
+                                setState(() {
+                                  _selectedStatusPend2 = selected;
+                                });
                               },
+                              value: _selectedStatusPend2,
+                              isExpanded: true,
+                              hint: const Text('Pendidikan Terakhir'),
                             ),
                           ],
                         ),
@@ -538,18 +597,21 @@ class _SensusPageState extends State<SensusPage> {
                                 return null;
                               },
                             ),
-                            TextFormField(
-                              controller: _controllerPendAkhirAnak,
-                              cursorColor: kGreen,
-                              textInputAction: TextInputAction.next,
-                              decoration: const InputDecoration(
-                                  hintText: 'Pendidikan Terakhir'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Masukkan Pendidikan Terakhir";
-                                }
-                                return null;
+                            DropdownButton(
+                              items: _listStatusPend3
+                                  .map((value) => DropdownMenuItem(
+                                        child: Text(value),
+                                        value: value,
+                                      ))
+                                  .toList(),
+                              onChanged: (String? selected) {
+                                setState(() {
+                                  _selectedStatusPend3 = selected;
+                                });
                               },
+                              value: _selectedStatusPend3,
+                              isExpanded: true,
+                              hint: const Text('Pendidikan Terakhir'),
                             ),
                           ],
                         ),
@@ -608,16 +670,10 @@ class _SensusPageState extends State<SensusPage> {
                             ),
                             TextFormField(
                               controller: _controllerKoordinat,
-                              cursorColor: kGreen,
-                              textInputAction: TextInputAction.next,
-                              decoration: const InputDecoration(
-                                  hintText: 'Letak/Koordinat'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Masukkan Letak/Koordinat";
-                                }
-                                return null;
-                              },
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                  hintText:
+                                      'Lat: ${_currentPosition.latitude}, Long: ${_currentPosition.longitude}'),
                             ),
                             const Padding(
                               padding: EdgeInsets.only(top: 24, bottom: 8),
@@ -1167,79 +1223,83 @@ class _SensusPageState extends State<SensusPage> {
             },
           ),
         ),
-        ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(kGreen2)),
-            onPressed: () async {
-              if (!_formKey.currentState!.validate()) {
-                displaySnackBar("Mohon lengkapi data!");
-              } else {
-                _formKey.currentState!.save();
-                var docId = await FirebaseFirestore.instance
-                    .collection("petugas")
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .collection("agenda_sensus")
-                    .doc(widget.docId)
-                    .collection("data_petani")
-                    .doc(widget.docIdPetani)
-                    .collection("sensus")
-                    .doc(widget.docIdPetani)
-                    .set({
-                  //info petani
-                  'tanggal sensus': _controllerTglSensus.text,
-                  'nama': _controllerNama.text,
-                  'no.telephone': _controllerNoTelp.text,
-                  'jenis kelamin': _controllerJekel.text,
-                  'tanggal lahir': _controllerTglLahir.text,
-                  'status nikah': _controllerStatusNikah.text,
-                  'status pendidikan': _controllerStatusPendidikan.text,
-                  'kelompok': _controllerKelompok.text,
+        currStep == 4
+            ? ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(kGreen2)),
+                onPressed: () async {
+                  final GeoPoint koordinate = GeoPoint(_currentPosition.latitude, _currentPosition.longitude);
+                  if (!_formKey.currentState!.validate()) {
+                    displaySnackBar("Mohon lengkapi data!");
+                  } else {
+                    _formKey.currentState!.save();
+                    await FirebaseFirestore.instance
+                        .collection("petugas")
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .collection("agenda_sensus")
+                        .doc(widget.docId)
+                        .collection("data_petani")
+                        .doc(widget.docIdPetani)
+                        .collection("sensus")
+                        .doc(widget.docIdPetani)
+                        .set({
+                      //info petani
+                      'tanggal sensus': _controllerTglSensus.text,
+                      'nama': _controllerNama.text,
+                      'no.telephone': _controllerNoTelp.text,
+                      'jenis kelamin': _controllerJekel.text,
+                      'tanggal lahir': _controllerTglLahir.text,
+                      'status nikah': _selectedStatus.toString(),
+                      'status pendidikan': _selectedStatusPend1.toString(),
+                      'kelompok': _controllerKelompok.text,
 
-                  //info petani
-                  'alamat': _controllerAlamat.text,
-                  'dusun': _controllerDusun.text,
-                  'desa': _controllerDesa.text,
-                  'kecamatan': _controllerKecamatan.text,
-                  'kabupaten': _controllerKabupaten.text,
-                  'nama suami-istri': _controllerNamaSuamiIstri.text,
-                  'tgl.lahir suami-istri': _controllerTglLahirSuamiIstri.text,
-                  'pend.akhir suami-istri': _controllerPendAkhirSuamiIstri.text,
-                  'nama anak': _controllerNamaAnak.text,
-                  'tgl.lahir anak': _controllerTglLahirAnak.text,
-                  'pend.akhir anak': _controllerPendAkhirAnak.text,
+                      //info petani
+                      'alamat': _controllerAlamat.text,
+                      'dusun': _controllerDusun.text,
+                      'desa': _controllerDesa.text,
+                      'kecamatan': _controllerKecamatan.text,
+                      'kabupaten': _controllerKabupaten.text,
+                      'nama suami-istri': _controllerNamaSuamiIstri.text,
+                      'tgl.lahir suami-istri':
+                          _controllerTglLahirSuamiIstri.text,
+                      'pend.akhir suami-istri': _selectedStatusPend2.toString(),
+                      'nama anak': _controllerNamaAnak.text,
+                      'tgl.lahir anak': _controllerTglLahirAnak.text,
+                      'pend.akhir anak': _selectedStatusPend3.toString(),
 
-                  //info kebun
-                  'luas kebun': _controllerLuas.text,
-                  'koordinat': _controllerKoordinat.text,
-                  'lokal': _controllerLokal.text,
-                  's1': _controllerS1.text,
-                  's2': _controllerS2.text,
-                  'lain-lain': _controllerLain.text,
-                  'jarak tanam': _controllerJarakTanam.text,
+                      //info kebun
+                      'luas kebun': _controllerLuas.text,
+                      'koordinat': koordinate,
+                      'lokal': _controllerLokal.text,
+                      's1': _controllerS1.text,
+                      's2': _controllerS2.text,
+                      'lain-lain': _controllerLain.text,
+                      'jarak tanam': _controllerJarakTanam.text,
 
-                  //info keuangan
-                  'pendapatan lain': _controllerPendapatanLain.text,
-                  'pendapatan bulan': _controllerPendapatanBulan.text,
+                      //info keuangan
+                      'pendapatan lain': _controllerPendapatanLain.text,
+                      'pendapatan bulan': _controllerPendapatanBulan.text,
 
-                  //info umum
-                  'alat transportasi petani': checkList1.toString(),
-                  'material utama rumah petani': checkList2.toString(),
-                  'alat petani untuk memasak': checkList3.toString(),
-                  'barang di rumah petani': checkList4.toString(),
-                  'toilet petani': checkList5.toString(),
+                      //info umum
+                      'alat transportasi petani': checkList1.toString(),
+                      'material utama rumah petani': checkList2.toString(),
+                      'alat petani untuk memasak': checkList3.toString(),
+                      'barang di rumah petani': checkList4.toString(),
+                      'toilet petani': checkList5.toString(),
 
-                  //gambar
-                  'gambar': _imageUrl.toString(),
-                });
+                      //gambar
+                      'gambar': _imageUrl.toString(),
+                    });
 
-                
-
-                updateStatusSensus();
-                alertNotif();
-              }
-            },
-            child: const SizedBox(
-                height: 48, child: Center(child: Text("Submit Detail"))))
+                    updateStatusSensus1();
+                    updateStatusSensus2();
+                    Future.delayed(
+                        const Duration(seconds: 2), () => alertNotif());
+                  }
+                },
+                child: const SizedBox(
+                    height: 48, child: Center(child: Text("Submit Detail"))))
+            : Container()
       ]),
     );
   }
@@ -1307,6 +1367,15 @@ class _SensusPageState extends State<SensusPage> {
           child: Image.file(
             _imageFile,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                alignment: Alignment.center,
+                child: const Icon(
+                  Icons.image_not_supported_rounded,
+                  color: kGrey,
+                ),
+              );
+            },
           ),
         ));
   }
@@ -1374,7 +1443,7 @@ class _SensusPageState extends State<SensusPage> {
 
   createFormSensus() async {}
 
-  Future<dynamic> updateStatusSensus() async {
+  Future<dynamic> updateStatusSensus1() async {
     DocumentReference documentReference = FirebaseFirestore.instance
         .collection('petugas')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -1389,7 +1458,24 @@ class _SensusPageState extends State<SensusPage> {
 
       if (documentSnapshot.exists) {
         transaction.update(documentReference, <String, dynamic>{
-          'status': true,
+          'status_sensus': true,
+        });
+      }
+    });
+  }
+
+  Future<dynamic> updateStatusSensus2() async {
+    DocumentReference documentReference = FirebaseFirestore.instance
+        .collection('data_sensus')
+        .doc(widget.docIdPetani);
+
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot documentSnapshot =
+          await transaction.get(documentReference);
+
+      if (documentSnapshot.exists) {
+        transaction.update(documentReference, <String, dynamic>{
+          'status_sensus': true,
         });
       }
     });

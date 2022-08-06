@@ -1,7 +1,10 @@
 import 'package:barry_callebaut/users/petugas/models/m_progress_ims.dart';
+import 'package:barry_callebaut/users/petugas/page/create_agenda/petani/petani_page.dart';
+import 'package:barry_callebaut/users/petugas/page/notifikasi.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../../../theme/colors.dart';
@@ -21,15 +24,16 @@ class _HomePagePetugasState extends State<HomePagePetugas>
   late TabController _tabController;
 
   List<ModelProgressIms> data = [
-    ModelProgressIms('Jan', 35),
-    ModelProgressIms('Feb', 28),
-    ModelProgressIms('Mar', 34),
-    ModelProgressIms('Apr', 32),
-    ModelProgressIms('May', 40)
+    ModelProgressIms('Juni', 20),
+    ModelProgressIms('Juli', 23),
+    ModelProgressIms('Aug', 15),
+    ModelProgressIms('Sept', 20),
+    ModelProgressIms('Okt', 13)
   ];
 
   String? uid;
   String? username;
+  String? docId;
 
   Future<dynamic> getUserPetugas() async {
     await FirebaseFirestore.instance
@@ -46,10 +50,47 @@ class _HomePagePetugasState extends State<HomePagePetugas>
     });
   }
 
+  Future<dynamic> getDocIdAgendaSensus() async {
+    await FirebaseFirestore.instance
+        .collection('petugas')
+        .doc(uid)
+        .collection("agenda_sensus")
+        .where('docId')
+        .get()
+        .then((result) {
+      if (result.docs.isNotEmpty) {
+        setState(() {
+          docId = result.docs[0].data()['docId'];
+        });
+      }
+    });
+  }
+
+  checkPermissions() async {
+    var status = await Permission.location.status;
+    if (status.isDenied) {
+      var status = await Permission.location.request();
+      if (status.isGranted) {
+        var status = await Permission.storage.status;
+        if (status.isDenied) {
+          var status = await Permission.storage.request();
+          if (status.isGranted) {
+            var status = await Permission.camera.status;
+            if (status.isDenied) {
+              await Permission.camera.request();
+            }
+          }
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     getUserPetugas();
+    getDocIdAgendaSensus();
+    checkPermissions();
     super.initState();
   }
 
@@ -103,7 +144,7 @@ class _HomePagePetugasState extends State<HomePagePetugas>
                                 color: kWhite),
                           ),
                           const Text(
-                            "Internal Management",
+                            "Petugas",
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: kWhite,
@@ -111,12 +152,12 @@ class _HomePagePetugasState extends State<HomePagePetugas>
                           )
                         ]),
                   ),
-                  actions: const [
+                  actions: [
                     Padding(
-                      padding: EdgeInsets.only(right: padding, top: padding),
-                      child: Icon(
-                        Icons.notifications,
-                        color: kWhite,
+                      padding: const EdgeInsets.only(right: padding, top: padding),
+                      child: IconButton(
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const NotifikasiPage())),
+                        icon: const Icon(Icons.notifications),
                       ),
                     )
                   ],
@@ -148,7 +189,7 @@ class _HomePagePetugasState extends State<HomePagePetugas>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Akumulasi 100%",
+                "Akumulasi",
                 style: TextStyle(
                     fontSize: 18, fontWeight: FontWeight.w600, color: kBlack6),
               ),
@@ -229,19 +270,225 @@ class _HomePagePetugasState extends State<HomePagePetugas>
   }
 
   Widget belumSensus() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [],
-      ),
-    );
+    final Stream<QuerySnapshot> _streamBelumSensus =
+        FirebaseFirestore.instance.collection("data_sensus").snapshots();
+    return StreamBuilder<QuerySnapshot>(
+        stream: _streamBelumSensus,
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text("Error!"),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Container(
+              padding: const EdgeInsets.only(top: 100),
+              child: Column(
+                children: const [
+                  Text("Belum ada data!"),
+                ],
+              ),
+            );
+          }
+
+          var document = snapshot.data!.docs;
+
+          return ListView.builder(
+              itemCount: document.length,
+              itemBuilder: (context, i) {
+                return document[i]['status_sensus'] == false
+                    ? GestureDetector(
+                        onTap: () {},
+                        /*=> Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PetaniPage(
+                                    docId: docId.toString(),
+                                    docIdPetani: document[i]["docId"],
+                                    namaPetani: document[i]["nama_petani"],
+                                    desaKelurahan: document[i]["desa_kelurahan"],
+                                    noHp: document[i]["no_hp"]))),*/
+                        child: Card(
+                          margin: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          child: ListTile(
+                              leading: ClipOval(
+                                clipBehavior: Clip.antiAlias,
+                                child: Image.network(
+                                  "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
+                                  width: 32,
+                                  height: 32,
+                                ),
+                              ),
+                              title: Text(
+                                document[i]['nama_petani'],
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: kBlack),
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      document[i]["desa_kelurahan"],
+                                      style: const TextStyle(
+                                          color: kGrey3,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Container(
+                                    width: 100,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                        color: kGreen2.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Center(
+                                      child: Text(
+                                        document[i]["no_hp"],
+                                        style: const TextStyle(
+                                          color: kBlack,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              trailing: document[i]["status_sensus"] == false
+                                  ? const Icon(
+                                      Icons.timelapse,
+                                      color: kGreen,
+                                    )
+                                  : const Icon(
+                                      Icons.check_circle_rounded,
+                                      color: kGreen,
+                                    )),
+                        ),
+                      )
+                    : Container();
+              });
+        });
   }
 
   Widget sudahSensus() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [],
-      ),
-    );
+    final Stream<QuerySnapshot> _streamSudahSensus =
+        FirebaseFirestore.instance.collection("data_sensus").snapshots();
+    return StreamBuilder<QuerySnapshot>(
+        stream: _streamSudahSensus,
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text("Error!"),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Container(
+              padding: const EdgeInsets.only(top: 100),
+              child: Column(
+                children: const [
+                  Text("Belum ada data!"),
+                ],
+              ),
+            );
+          }
+
+          var document = snapshot.data!.docs;
+
+          return ListView.builder(
+              itemCount: document.length,
+              itemBuilder: (context, i) {
+                return document[i]['status_sensus'] == true
+                    ? GestureDetector(
+                        onTap: () {},
+                        /*=> Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PetaniPage(
+                                    docId: docId.toString(),
+                                    docIdPetani: document[i]["docId"],
+                                    namaPetani: document[i]["nama_petani"],
+                                    desaKelurahan: document[i]["desa_kelurahan"],
+                                    noHp: document[i]["no_hp"]))),*/
+                        child: Card(
+                          margin: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          child: ListTile(
+                              leading: ClipOval(
+                                clipBehavior: Clip.antiAlias,
+                                child: Image.network(
+                                  "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
+                                  width: 32,
+                                  height: 32,
+                                ),
+                              ),
+                              title: Text(
+                                document[i]['nama_petani'],
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: kBlack),
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      document[i]["desa_kelurahan"],
+                                      style: const TextStyle(
+                                          color: kGrey3,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Container(
+                                    width: 100,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                        color: kGreen2.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Center(
+                                      child: Text(
+                                        document[i]["no_hp"],
+                                        style: const TextStyle(
+                                          color: kBlack,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              trailing: document[i]["status_sensus"] == false
+                                  ? const Icon(
+                                      Icons.timelapse,
+                                      color: kGreen,
+                                    )
+                                  : const Icon(
+                                      Icons.check_circle_rounded,
+                                      color: kGreen,
+                                    )),
+                        ),
+                      )
+                    : Container();
+              });
+        });
   }
 
   Widget createAgenda() {

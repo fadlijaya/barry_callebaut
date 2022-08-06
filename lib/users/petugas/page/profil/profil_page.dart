@@ -53,7 +53,6 @@ class _ProfilPageState extends State<ProfilPage> {
     });
   }
 
-
   @override
   void initState() {
     getUserPetugas();
@@ -69,10 +68,17 @@ class _ProfilPageState extends State<ProfilPage> {
         width: size.width,
         height: size.height,
         child: Stack(
-          children: [backgroundHeader(), profil(), buttonOpsi()],
+          children: [backgroundHeader(), iconBackPage(), profil(), buttonOpsi()],
         ),
       ),
     );
+  }
+
+  Widget iconBackPage() {
+    return Positioned(
+      top: 30,
+      left: 8,
+      child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back, color: kWhite,)));
   }
 
   Widget backgroundHeader() {
