@@ -18,7 +18,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
   String titlePage = "Tambah Petani";
 
   final Stream<QuerySnapshot> _streamDataPetani =
-      FirebaseFirestore.instance.collection("data_petani").snapshots();
+      FirebaseFirestore.instance.collection("petani").snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +65,18 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
           return ListView.builder(
               itemCount: document.length,
               itemBuilder: (context, i) {
-                String docId = document[i]["docId"];
-                String namaPetani = document[i]["nama_petani"];
-                String desaKelurahan = document[i]["desa_kelurahan"];
-                String noHp = document[i]["no_hp"];
+                String docId = document[i]["uid"];
+                String namaPetani = document[i]["nama lengkap"];
+                String alamat = document[i]["alamat"];
+                String noHp = document[i]["nomor hp"];
+                String jekel = document[i]["jenis kelamin"];
+                String statusNikah = document[i]["status pernikahan"];
+                String tanggalLahir = document[i]["tanggal lahir"];
+                String kelompok = document[i]["kelompok"];
+                String dusun = document[i]["dusun"];
+                //String desaKelurahan = document[i]["desa""/""kelurahan"];
+                String kecamatan = document[i]["kecamatan"];
+                String kabupaten = document[i]["kabupaten"];
 
                 return Card(
                   shape: RoundedRectangleBorder(
@@ -93,7 +101,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
                         children: [
                           Flexible(
                             child: Text(
-                              desaKelurahan,
+                              alamat,
                               style: const TextStyle(
                                 color: kGrey3,
                                 fontWeight: FontWeight.w400,
@@ -107,7 +115,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
                       ),
                       trailing: ElevatedButton(
                         onPressed: () => createToFirebase(
-                            docId, namaPetani, desaKelurahan, noHp),
+                            docId, namaPetani, alamat, noHp, jekel, statusNikah, tanggalLahir, kelompok, dusun, /*desaKelurahan,*/ kecamatan, kabupaten),
                         child: const Text(
                           "Tambah",
                           style: TextStyle(
@@ -125,8 +133,8 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
         });
   }
 
-  Future createToFirebase(String docId, String namaPetani, String desaKelurahan,
-      String noHp) async {
+  Future createToFirebase(String docId, String namaPetani, String alamat, String noHp, String jekel, String statusNikah,  String tanggalLahir, String kelompok,
+      String dusun, /*String desaKelurahan,*/ String kecamatan, String kabupaten) async {
     await FirebaseFirestore.instance
         .collection("petugas")
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -137,16 +145,32 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
         .set({
       "docId": docId,
       "nama_petani": namaPetani,
-      "desa_kelurahan": desaKelurahan,
+      "alamat": alamat,
       "no_hp": noHp,
+      "jenis_kelamin": jekel,
+      "status_pernikahan": statusNikah,
+      "tanggal_lahir": tanggalLahir,
+      "kelompok": kelompok,
+      "dusun": dusun,
+      //"desa_kelurahan": desaKelurahan,
+      "kecamatan": kecamatan,
+      "kabupaten": kabupaten,
       "status_sensus": false,
     });
 
     await FirebaseFirestore.instance.collection("data_sensus").doc(docId).set({
-      "docId": docId,
+       "docId": docId,
       "nama_petani": namaPetani,
-      "desa_kelurahan": desaKelurahan,
+      "alamat": alamat,
       "no_hp": noHp,
+      "jenis_kelamin": jekel,
+      "status_pernikahan": statusNikah,
+      "tanggal_lahir": tanggalLahir,
+      "kelompok": kelompok,
+      "dusun": dusun,
+      //"desa_kelurahan": desaKelurahan,
+      "kecamatan": kecamatan,
+      "kabupaten": kabupaten,
       "status_sensus": false,
     }).then((_) {
       deleteDocument(docId);
@@ -160,7 +184,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
 
   Future deleteDocument(String docId) async {
     await FirebaseFirestore.instance
-        .collection("data_petani")
+        .collection("petani")
         .doc(docId)
         .delete();
   }

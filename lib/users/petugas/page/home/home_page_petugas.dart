@@ -335,7 +335,7 @@ class _HomePagePetugasState extends State<HomePagePetugas>
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      document[i]["desa_kelurahan"],
+                                      document[i]["alamat"],
                                       style: const TextStyle(
                                           color: kGrey3,
                                           fontSize: 12,
@@ -446,7 +446,7 @@ class _HomePagePetugasState extends State<HomePagePetugas>
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      document[i]["desa_kelurahan"],
+                                      document[i]["alamat"],
                                       style: const TextStyle(
                                           color: kGrey3,
                                           fontSize: 12,

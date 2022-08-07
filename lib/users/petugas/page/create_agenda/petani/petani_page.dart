@@ -8,21 +8,36 @@ import 'package:flutter/material.dart';
 
 import '../../../../../theme/colors.dart';
 import '../../../../../theme/padding.dart';
+import 'sensus/cetak_sensus_page.dart';
 
 class PetaniPage extends StatefulWidget {
   final String docId;
   final String docIdPetani;
   final String namaPetani;
-  final String desaKelurahan;
+  final String alamat;
   final String noHp;
-  const PetaniPage(
-      {Key? key,
-      required this.docId,
-      required this.docIdPetani,
-      required this.namaPetani,
-      required this.desaKelurahan,
-      required this.noHp})
-      : super(key: key);
+  final String jekel;
+  final String statusNikah;
+  final String tanggalLahir;
+  final String kelompok;
+  final String dusun;
+  final String kecamatan;
+  final String kabupaten;
+  const PetaniPage({
+    Key? key,
+    required this.docId,
+    required this.docIdPetani,
+    required this.namaPetani,
+    required this.alamat,
+    required this.noHp,
+    required this.jekel,
+    required this.statusNikah,
+    required this.tanggalLahir,
+    required this.kelompok,
+    required this.dusun,
+    required this.kecamatan,
+    required this.kabupaten,
+  }) : super(key: key);
 
   @override
   _PetaniPageState createState() => _PetaniPageState();
@@ -49,7 +64,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
 
   late final TabController _tabController =
       TabController(length: 2, vsync: this);
-      
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -85,7 +100,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
           ),
         ),
         title: Text(
-          widget.namaPetani,
+          " ${widget.namaPetani}",
           style: const TextStyle(
               fontSize: 16, fontWeight: FontWeight.w600, color: kBlack),
         ),
@@ -98,11 +113,14 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                 const SizedBox(
                   width: 4,
                 ),
-                Text(
-                  widget.desaKelurahan,
-                  style: const TextStyle(
-                    color: kBlack,
-                    fontWeight: FontWeight.w400,
+                Flexible(
+                  child: Text(
+                    " ${widget.alamat}",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: kBlack,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 )
               ],
@@ -118,7 +136,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(5)),
               child: Center(
                 child: Text(
-                  widget.noHp,
+                  " ${widget.noHp}",
                   style: const TextStyle(
                     color: kBlack,
                     fontSize: 12,
@@ -138,8 +156,16 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                         docId: widget.docId,
                         docIdPetani: widget.docIdPetani,
                         namaPetani: widget.namaPetani,
-                        desaKelurahan: widget.desaKelurahan,
-                        noHp: widget.noHp))),
+                        alamat: widget.alamat,
+                        noHp: widget.noHp,
+                        jekel: widget.jekel,
+                        statusNikah: widget.statusNikah,
+                        tanggalLahir: widget.tanggalLahir,
+                        kelompok: widget.kelompok,
+                        dusun: widget.dusun,
+                        kecamatan: widget.kecamatan,
+                        kabupaten: widget.kabupaten,
+                        ))),
             icon: const Icon(
               Icons.create,
               color: kGreen,
@@ -378,10 +404,18 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                                         );
                                       },
                                     ),
-                                  ))
+                                  )),
                             ],
                           ),
                         ),
+                      ),
+                      cetakSensus(
+                        document[i]['luas kebun'],
+                        document[i]['koordinat'],
+                        document[i]['lokal'],
+                        document[i]['lain-lain'],
+                        document[i]['nama suami-istri'],
+                        document[i]['nama anak'],
                       )
                     ],
                   );
@@ -392,6 +426,36 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
             child: CircularProgressIndicator(),
           );
         });
+  }
+
+  Widget cetakSensus(String luasKebun, GeoPoint koordinat, String tanamanPokok,
+      String tanamanLain, String namaIstri, String namaAnak) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: padding),
+      child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(kGreen2),
+          ),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CetakSensusPage(
+                        luasKebun: luasKebun,
+                        koordinat: koordinat,
+                        tanamanPokok: tanamanPokok,
+                        tanamanLain: tanamanLain,
+                        namaIstri: namaIstri,
+                        namaAnak: namaAnak,
+                      ))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.print),
+              SizedBox(width: 12),
+              Text("Cetak")
+            ],
+          )),
+    );
   }
 
   Widget tabBarViewInspeksi() {

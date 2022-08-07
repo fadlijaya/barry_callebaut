@@ -78,74 +78,89 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                           itemCount: document.length,
                           itemBuilder: (context, i) {
                             return GestureDetector(
-                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PetaniPage(
-                                docId: widget.docId,
-                                docIdPetani: document[i]["docId"],
-                                namaPetani: document[i]["nama_petani"],
-                                desaKelurahan: document[i]["desa_kelurahan"],
-                                noHp: document[i]["no_hp"]
-                              ))),
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PetaniPage(
+                                          docId: widget.docId,
+                                          docIdPetani: document[i]["docId"],
+                                          namaPetani: document[i]["nama_petani"],
+                                          alamat: document[i]["alamat"],
+                                          noHp: document[i]["no_hp"],
+                                          jekel: document[i]["jenis_kelamin"],
+                                          statusNikah: document[i]["status_pernikahan"],
+                                          tanggalLahir: document[i]["tanggal_lahir"],
+                                          kelompok: document[i]["kelompok"],
+                                          dusun: document[i]["dusun"],
+                                          //desaKelurahan: document[i]["desa_kelurahan"],
+                                          kecamatan: document[i]["kecamatan"],
+                                          kabupaten: document[i]["kabupaten"]
+                                          ))),
                               child: Card(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: padding, vertical: 8),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: padding, vertical: 8),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)),
                                 child: ListTile(
-                                  leading: ClipOval(
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Image.network(
-                                      "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
-                                      width: 32,
-                                      height: 32,
+                                    leading: ClipOval(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Image.network(
+                                        "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg",
+                                        width: 32,
+                                        height: 32,
+                                      ),
                                     ),
-                                  ),
-                                  title: Text(
-                                    document[i]['nama_petani'],
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: kBlack),
-                                  ),
-                                  subtitle: Row(
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          document[i]["desa_kelurahan"],
-                                          style: const TextStyle(
-                                              color: kGrey3,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      Container(
-                                        width: 100,
-                                        height: 20,
-                                        decoration: BoxDecoration(
-                                            color: kGreen2.withOpacity(0.3),
-                                            borderRadius: BorderRadius.circular(5)),
-                                        child: Center(
+                                    title: Text(
+                                      document[i]['nama_petani'],
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: kBlack),
+                                    ),
+                                    subtitle: Row(
+                                      children: [
+                                        Flexible(
                                           child: Text(
-                                            document[i]["no_hp"],
+                                            document[i]["alamat"],
                                             style: const TextStyle(
-                                              color: kBlack,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                                color: kGrey3,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400),
                                           ),
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                  trailing: document[i]["status_sensus"] == false
-                                  ? const Icon(
-                                    Icons.timelapse,
-                                    color: kGreen,
-                                  )
-                                  : const Icon(Icons.check_circle_rounded, color: kGreen,)
-                                ),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        Container(
+                                          width: 100,
+                                          height: 20,
+                                          decoration: BoxDecoration(
+                                              color: kGreen2.withOpacity(0.3),
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          child: Center(
+                                            child: Text(
+                                              document[i]["no_hp"],
+                                              style: const TextStyle(
+                                                color: kBlack,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    trailing:
+                                        document[i]["status_sensus"] == false
+                                            ? const Icon(
+                                                Icons.timelapse,
+                                                color: kGreen,
+                                              )
+                                            : const Icon(
+                                                Icons.check_circle_rounded,
+                                                color: kGreen,
+                                              )),
                               ),
                             );
                           }),
@@ -176,7 +191,8 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddPetaniPage(docId: widget.docId))),
+                      builder: (context) =>
+                          AddPetaniPage(docId: widget.docId))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [

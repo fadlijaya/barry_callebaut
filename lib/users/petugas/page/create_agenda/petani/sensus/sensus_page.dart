@@ -1260,8 +1260,7 @@ class _SensusPageState extends State<SensusPage> {
                       'kecamatan': _controllerKecamatan.text,
                       'kabupaten': _controllerKabupaten.text,
                       'nama suami-istri': _controllerNamaSuamiIstri.text,
-                      'tgl.lahir suami-istri':
-                          _controllerTglLahirSuamiIstri.text,
+                      'tgl.lahir suami-istri': _controllerTglLahirSuamiIstri.text,
                       'pend.akhir suami-istri': _selectedStatusPend2.toString(),
                       'nama anak': _controllerNamaAnak.text,
                       'tgl.lahir anak': _controllerTglLahirAnak.text,
