@@ -1,5 +1,6 @@
 import 'package:barry_callebaut/users/koordinator/page/login_page.dart';
 import 'package:barry_callebaut/users/petugas/page/agenda/agenda_page.dart';
+import 'package:barry_callebaut/users/petugas/page/home/home_page_petugas.dart';
 import 'package:barry_callebaut/users/petugas/page/login_page.dart';
 import 'package:barry_callebaut/users/petugas/page/initial_page.dart';
 import 'package:barry_callebaut/users/petugas/page/register_page.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/registerPagePetugas': (_) => const RegisterPagePetugas(),
         '/initialPage': (_) => const InitialPage(),
         '/agendaPage': (_) => const AgendaPage(),
+        '/homePetugas': (_) => const HomePagePetugas()
       },
       home: const OpsiLoginUsers(),
     );

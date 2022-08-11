@@ -77,8 +77,9 @@ class _CreateAgendaPageState extends State<CreateAgendaPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => DetailAgendaPage(
+                                    uid: document[i]['uid'],
                                     lokasiSensus: document[i]['lokasi sensus'],
-                                    docId: document[i]["docId"]))),
+                                    docIdAgendaSensus: document[i]["docId"]))),
                         child: Card(
                           child: ListTile(
                             title: Text(document[i]['lokasi sensus']),

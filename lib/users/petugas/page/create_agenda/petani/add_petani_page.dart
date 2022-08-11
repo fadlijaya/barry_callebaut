@@ -7,8 +7,9 @@ import '../../../../../theme/padding.dart';
 import 'petani_page.dart';
 
 class AddPetaniPage extends StatefulWidget {
-  final String docId;
-  const AddPetaniPage({Key? key, required this.docId}) : super(key: key);
+  final String uid;
+  final String docIdAgendaSensus;
+  const AddPetaniPage({Key? key, required this.docIdAgendaSensus, required this.uid}) : super(key: key);
 
   @override
   _AddPetaniPageState createState() => _AddPetaniPageState();
@@ -65,7 +66,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
           return ListView.builder(
               itemCount: document.length,
               itemBuilder: (context, i) {
-                String docId = document[i]["uid"];
+                String docIdDataPetani = document[i]["uid"];
                 String namaPetani = document[i]["nama lengkap"];
                 String alamat = document[i]["alamat"];
                 String noHp = document[i]["nomor hp"];
@@ -115,7 +116,17 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
                       ),
                       trailing: ElevatedButton(
                         onPressed: () => createToFirebase(
-                            docId, namaPetani, alamat, noHp, jekel, statusNikah, tanggalLahir, kelompok, dusun, /*desaKelurahan,*/ kecamatan, kabupaten),
+                            docIdDataPetani,
+                            namaPetani,
+                            alamat,
+                            noHp,
+                            jekel,
+                            statusNikah,
+                            tanggalLahir,
+                            kelompok,
+                            dusun,
+                            /*desaKelurahan,*/ kecamatan,
+                            kabupaten),
                         child: const Text(
                           "Tambah",
                           style: TextStyle(
@@ -133,17 +144,28 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
         });
   }
 
-  Future createToFirebase(String docId, String namaPetani, String alamat, String noHp, String jekel, String statusNikah,  String tanggalLahir, String kelompok,
-      String dusun, /*String desaKelurahan,*/ String kecamatan, String kabupaten) async {
+  Future createToFirebase(
+      String docIdDataPetani,
+      String namaPetani,
+      String alamat,
+      String noHp,
+      String jekel,
+      String statusNikah,
+      String tanggalLahir,
+      String kelompok,
+      String dusun,
+      /*String desaKelurahan,*/ String kecamatan,
+      String kabupaten) async {
     await FirebaseFirestore.instance
         .collection("petugas")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("agenda_sensus")
-        .doc(widget.docId)
+        .doc(widget.docIdAgendaSensus)
         .collection("data_petani")
-        .doc(docId)
+        .doc(docIdDataPetani)
         .set({
-      "docId": docId,
+      "uid": widget.uid,
+      "docId": docIdDataPetani,
       "nama_petani": namaPetani,
       "alamat": alamat,
       "no_hp": noHp,
@@ -158,8 +180,9 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
       "status_sensus": false,
     });
 
-    await FirebaseFirestore.instance.collection("data_sensus").doc(docId).set({
-       "docId": docId,
+    await FirebaseFirestore.instance.collection("data_sensus").doc(docIdDataPetani).set({
+      "uid": widget.uid,
+      "docId": docIdDataPetani,
       "nama_petani": namaPetani,
       "alamat": alamat,
       "no_hp": noHp,
@@ -173,7 +196,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
       "kabupaten": kabupaten,
       "status_sensus": false,
     }).then((_) {
-      deleteDocument(docId);
+      deleteDocument(docIdDataPetani);
       alertDialogSukses();
     });
 
@@ -183,10 +206,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
   }
 
   Future deleteDocument(String docId) async {
-    await FirebaseFirestore.instance
-        .collection("petani")
-        .doc(docId)
-        .delete();
+    await FirebaseFirestore.instance.collection("petani").doc(docId).delete();
   }
 
   alertDialogSukses() {

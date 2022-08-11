@@ -19,9 +19,34 @@ import '../../create_agenda_page.dart';
 enum JenisKelamin { pria, wanita }
 
 class SensusPage extends StatefulWidget {
-  final String docId;
-  final String docIdPetani;
-  const SensusPage({Key? key, required this.docId, required this.docIdPetani})
+  final String uid;
+  final String docIdAgendaSensus;
+  final String docIdDataPetani;
+  final String namaPetani;
+  final String alamat;
+  final String noHp;
+  final String jekel;
+  final String statusNikah;
+  final String tanggalLahir;
+  final String kelompok;
+  final String dusun;
+  final String kecamatan;
+  final String kabupaten;
+  const SensusPage(
+      {Key? key,
+      required this.uid,
+      required this.docIdAgendaSensus,
+      required this.docIdDataPetani,
+      required this.namaPetani,
+      required this.alamat,
+      required this.noHp,
+      required this.jekel,
+      required this.statusNikah,
+      required this.tanggalLahir,
+      required this.kelompok,
+      required this.dusun,
+      required this.kecamatan,
+      required this.kabupaten})
       : super(key: key);
 
   @override
@@ -53,7 +78,6 @@ class _SensusPageState extends State<SensusPage> {
   String? checkList4;
   String? checkList5;
 
-  String? _selectedStatus;
   String? _selectedStatusPend1;
   String? _selectedStatusPend2;
   String? _selectedStatusPend3;
@@ -67,8 +91,6 @@ class _SensusPageState extends State<SensusPage> {
   final TextEditingController _controllerJekel = TextEditingController();
   final TextEditingController _controllerTglLahir = TextEditingController();
   final TextEditingController _controllerStatusNikah = TextEditingController();
-  final TextEditingController _controllerStatusPendidikan =
-      TextEditingController();
   final TextEditingController _controllerKelompok = TextEditingController();
 
   //form2
@@ -164,6 +186,22 @@ class _SensusPageState extends State<SensusPage> {
   void initState() {
     super.initState();
     getCurrentLocation();
+    setState(() {
+      _controllerNama.text = widget.namaPetani;
+      _controllerAlamat.text = widget.alamat;
+      _controllerNoTelp.text = widget.noHp;
+      _controllerJekel.text = widget.jekel;
+      _controllerTglLahir.text = widget.tanggalLahir;
+      _controllerKelompok.text = widget.kelompok;
+      _controllerDusun.text = widget.dusun;
+      _controllerKecamatan.text = widget.kecamatan;
+      _controllerKabupaten.text = widget.kabupaten;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -331,21 +369,27 @@ class _SensusPageState extends State<SensusPage> {
                               const SizedBox(
                                 height: 16,
                               ),
-                              DropdownButton(
-                                items: _listStatus
-                                    .map((value) => DropdownMenuItem(
-                                          child: Text(value),
-                                          value: value,
-                                        ))
-                                    .toList(),
-                                onChanged: (String? selected) {
-                                  setState(() {
-                                    _selectedStatus = selected;
-                                  });
-                                },
-                                value: _selectedStatus,
-                                isExpanded: true,
-                                hint: const Text('Status Pernikahan'),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 4),
+                                    child: Text(
+                                      "Status Nikah",
+                                      style: TextStyle(
+                                          fontSize: 12, color: kBlack6),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: TextFormField(
+                                      controller: _controllerStatusNikah,
+                                      readOnly: true,
+                                      decoration: InputDecoration(
+                                          hintText: widget.statusNikah),
+                                    ),
+                                  ),
+                                ],
                               ),
                               DropdownButton(
                                 items: _listStatusPend1
@@ -1228,7 +1272,8 @@ class _SensusPageState extends State<SensusPage> {
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(kGreen2)),
                 onPressed: () async {
-                  final GeoPoint koordinate = GeoPoint(_currentPosition.latitude, _currentPosition.longitude);
+                  final GeoPoint koordinate = GeoPoint(
+                      _currentPosition.latitude, _currentPosition.longitude);
                   if (!_formKey.currentState!.validate()) {
                     displaySnackBar("Mohon lengkapi data!");
                   } else {
@@ -1237,19 +1282,19 @@ class _SensusPageState extends State<SensusPage> {
                         .collection("petugas")
                         .doc(FirebaseAuth.instance.currentUser!.uid)
                         .collection("agenda_sensus")
-                        .doc(widget.docId)
+                        .doc(widget.docIdAgendaSensus)
                         .collection("data_petani")
-                        .doc(widget.docIdPetani)
+                        .doc(widget.docIdDataPetani)
                         .collection("sensus")
-                        .doc(widget.docIdPetani)
+                        .doc(widget.docIdDataPetani)
                         .set({
                       //info petani
                       'tanggal sensus': _controllerTglSensus.text,
                       'nama': _controllerNama.text,
                       'no.telephone': _controllerNoTelp.text,
-                      'jenis kelamin': _controllerJekel.text,
+                      'jenis kelamin': widget.jekel,
                       'tanggal lahir': _controllerTglLahir.text,
-                      'status nikah': _selectedStatus.toString(),
+                      'status nikah': widget.statusNikah,
                       'status pendidikan': _selectedStatusPend1.toString(),
                       'kelompok': _controllerKelompok.text,
 
@@ -1260,7 +1305,8 @@ class _SensusPageState extends State<SensusPage> {
                       'kecamatan': _controllerKecamatan.text,
                       'kabupaten': _controllerKabupaten.text,
                       'nama suami-istri': _controllerNamaSuamiIstri.text,
-                      'tgl.lahir suami-istri': _controllerTglLahirSuamiIstri.text,
+                      'tgl.lahir suami-istri':
+                          _controllerTglLahirSuamiIstri.text,
                       'pend.akhir suami-istri': _selectedStatusPend2.toString(),
                       'nama anak': _controllerNamaAnak.text,
                       'tgl.lahir anak': _controllerTglLahirAnak.text,
@@ -1447,9 +1493,9 @@ class _SensusPageState extends State<SensusPage> {
         .collection('petugas')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("agenda_sensus")
-        .doc(widget.docId)
+        .doc(widget.docIdAgendaSensus)
         .collection("data_petani")
-        .doc(widget.docIdPetani);
+        .doc(widget.docIdDataPetani);
 
     FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentSnapshot documentSnapshot =
@@ -1466,7 +1512,7 @@ class _SensusPageState extends State<SensusPage> {
   Future<dynamic> updateStatusSensus2() async {
     DocumentReference documentReference = FirebaseFirestore.instance
         .collection('data_sensus')
-        .doc(widget.docIdPetani);
+        .doc(widget.docIdDataPetani);
 
     FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentSnapshot documentSnapshot =
@@ -1475,6 +1521,8 @@ class _SensusPageState extends State<SensusPage> {
       if (documentSnapshot.exists) {
         transaction.update(documentReference, <String, dynamic>{
           'status_sensus': true,
+          'uid': widget.uid,
+          'docIdAgendaSensus': widget.docIdAgendaSensus
         });
       }
     });

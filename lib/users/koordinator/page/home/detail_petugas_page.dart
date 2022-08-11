@@ -322,8 +322,7 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
   Widget tabBarViewSudah() {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection("data_petani")
-            .where("status", isEqualTo: "sudah")
+            .collection("data_sensus")
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -348,28 +347,38 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
               itemBuilder: (context, i) {
                 return widget.uid == document[i]['uid']
                     ? GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PetaniPage(
-                              docId: document[i]['docId'],
-                              docIdPetani: document[i]['docId'],
-                              namaPetani: document[i]['nama_petani'],
-                              desaKelurahan: document[i]['desa_kelurahan'],
-                              noHp: document[i]['no_hp'],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PetaniPage(
+                                uid: document[i]['uid'],
+                                docIdAgendaSensus: document[i]['docIdAgendaSensus'],
+                                docIdDataPetani: document[i]['docId'],
+                                namaPetani: document[i]['nama lengkap'],
+                                alamat: document[i]['alamat'],
+                                noHp: document[i]['nomor hp'],
+                                jekel: document[i]["jenis kelamin"],
+                                statusNikah: document[i]["status pernikahan"],
+                                tanggalLahir: document[i]["tanggal lahir"],
+                                kelompok: document[i]["kelompok"],
+                                dusun: document[i]["dusun"],
+                                //desaKelurahan = document[i]["desa""/""kelurahan"],
+                                kecamatan: document[i]["kecamatan"],
+                                kabupaten: document[i]["kabupaten"],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: Card(
+                          );
+                        },
+                        child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5)),
                           child: Column(
                             children: [
                               ListTile(
                                   leading: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         width: 48,
@@ -395,7 +404,8 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
                                         color: kBlack),
                                   ),
                                   subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -441,7 +451,7 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
                             ],
                           ),
                         ),
-                    )
+                      )
                     : Container();
               });
         });

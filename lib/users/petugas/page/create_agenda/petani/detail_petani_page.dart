@@ -8,8 +8,8 @@ import '../../../../../theme/padding.dart';
 
 class DetailPetaniPage extends StatefulWidget {
   final bool isEdit;
+  final String uid;
   final String docId;
-  final String docIdPetani;
   final String namaPetani;
   final String alamat;
   final String noHp;
@@ -23,8 +23,8 @@ class DetailPetaniPage extends StatefulWidget {
   const DetailPetaniPage(
       {Key? key,
       required this.isEdit,
+      required this.uid,
       required this.docId,
-      required this.docIdPetani,
       required this.namaPetani,
       required this.alamat,
       required this.noHp,
@@ -44,8 +44,8 @@ class DetailPetaniPage extends StatefulWidget {
 class _DetailPetaniPageState extends State<DetailPetaniPage> {
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController _controllerUid = TextEditingController();
   final TextEditingController _controllerDocId = TextEditingController();
-  final TextEditingController _controllerDocIdPetani = TextEditingController();
   final TextEditingController _controllerNamaPetani = TextEditingController();
   final TextEditingController _controllerAlamat = TextEditingController();
   final TextEditingController _controllerNoHp = TextEditingController();
@@ -61,8 +61,8 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
   void initState() {
     if (widget.isEdit) {
       setState(() {
+        _controllerUid.text = widget.uid;
         _controllerDocId.text = widget.docId;
-        _controllerDocIdPetani.text = widget.docIdPetani;
         _controllerNamaPetani.text = widget.namaPetani;
         _controllerAlamat.text = widget.alamat;
         _controllerNoHp.text = widget.noHp;
@@ -107,14 +107,14 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "DocID",
+                "Uid",
                 style: TextStyle(color: kBlack, fontSize: 12),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   readOnly: true,
-                  controller: _controllerDocId,
+                  controller: _controllerUid,
                   style: const TextStyle(color: kBlack6),
                   decoration: const InputDecoration(
                       focusedBorder: UnderlineInputBorder(
@@ -123,14 +123,14 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
                 ),
               ),
               const Text(
-                "DocID Petani",
+                "DocID",
                 style: TextStyle(color: kBlack, fontSize: 12),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   readOnly: true,
-                  controller: _controllerDocIdPetani,
+                  controller: _controllerDocId,
                   style: const TextStyle(color: kBlack6),
                   decoration: const InputDecoration(
                       focusedBorder: UnderlineInputBorder(
@@ -199,6 +199,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   controller: _controllerJekel,
+                  readOnly: true,
                   cursorColor: kGreen2,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
@@ -216,6 +217,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   controller: _controllerStatusNikah,
+                  readOnly: true,
                   cursorColor: kGreen2,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
@@ -233,6 +235,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   controller: _controllerTanggalLahir,
+                  readOnly: true,
                   cursorColor: kGreen2,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
@@ -250,6 +253,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   controller: _controllerKelompok,
+                  readOnly: true,
                   cursorColor: kGreen2,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
@@ -267,6 +271,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   controller: _controllerDusun,
+                  readOnly: true,
                   cursorColor: kGreen2,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
@@ -284,6 +289,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   controller: _controllerKecamatan,
+                  readOnly: true,
                   cursorColor: kGreen2,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
@@ -301,6 +307,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextFormField(
                   controller: _controllerKabupaten,
+                  readOnly: true,
                   cursorColor: kGreen2,
                   textInputAction: TextInputAction.done,
                   decoration: const InputDecoration(
@@ -343,7 +350,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
           .collection("agenda_sensus")
           .doc(widget.docId)
           .collection("data_petani")
-          .doc(widget.docIdPetani);
+          .doc(widget.docId);
 
       FirebaseFirestore.instance.runTransaction((transaction) async {
         DocumentSnapshot documentSnapshot =
@@ -371,7 +378,7 @@ class _DetailPetaniPageState extends State<DetailPetaniPage> {
       FirebaseFirestore.instance.collection('data_sensus');
 
   Future updateDataSensus() {
-    return dataSensus.doc(widget.docIdPetani).update({
+    return dataSensus.doc(widget.docId).update({
       'nama_petani': _controllerNamaPetani.text,
       'alamat': _controllerAlamat.text,
       'no_hp': _controllerNoHp.text,

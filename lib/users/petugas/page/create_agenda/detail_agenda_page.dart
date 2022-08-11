@@ -9,10 +9,11 @@ import '../../../../theme/padding.dart';
 import 'petani/add_petani_page.dart';
 
 class DetailAgendaPage extends StatefulWidget {
+  final String uid;
   final String lokasiSensus;
-  final String docId;
+  final String docIdAgendaSensus;
   const DetailAgendaPage(
-      {Key? key, required this.lokasiSensus, required this.docId})
+      {Key? key, required this.lokasiSensus, required this.docIdAgendaSensus, required this.uid})
       : super(key: key);
   @override
   _DetailAgendaPageState createState() => _DetailAgendaPageState();
@@ -27,7 +28,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
         .collection("petugas")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("agenda_sensus")
-        .doc(widget.docId)
+        .doc(widget.docIdAgendaSensus)
         .collection("data_petani")
         .snapshots();
 
@@ -82,8 +83,9 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => PetaniPage(
-                                          docId: widget.docId,
-                                          docIdPetani: document[i]["docId"],
+                                          uid: widget.uid,
+                                          docIdAgendaSensus: widget.docIdAgendaSensus,
+                                          docIdDataPetani: document[i]["docId"],
                                           namaPetani: document[i]["nama_petani"],
                                           alamat: document[i]["alamat"],
                                           noHp: document[i]["no_hp"],
@@ -94,8 +96,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                           dusun: document[i]["dusun"],
                                           //desaKelurahan: document[i]["desa_kelurahan"],
                                           kecamatan: document[i]["kecamatan"],
-                                          kabupaten: document[i]["kabupaten"]
-                                          ))),
+                                          kabupaten: document[i]["kabupaten"]))),
                               child: Card(
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: padding, vertical: 8),
@@ -124,7 +125,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                             document[i]["alamat"],
                                             style: const TextStyle(
                                                 color: kGrey3,
-                                                fontSize: 12,
+                                                fontSize: 10,
                                                 fontWeight: FontWeight.w400),
                                           ),
                                         ),
@@ -192,7 +193,9 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          AddPetaniPage(docId: widget.docId))),
+                          AddPetaniPage(
+                            uid: widget.uid,
+                            docIdAgendaSensus: widget.docIdAgendaSensus))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [

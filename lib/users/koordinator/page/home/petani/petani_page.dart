@@ -7,19 +7,35 @@ import '../../../../petugas/page/create_agenda/petani/inspeksi/inspeksi_page.dar
 import '../../../../petugas/page/create_agenda/petani/sensus/sensus_page.dart';
 
 class PetaniPage extends StatefulWidget {
-  final String docId;
-  final String docIdPetani;
+  final String uid;
+  final String docIdAgendaSensus;
+  final String docIdDataPetani;
   final String namaPetani;
-  final String desaKelurahan;
+  final String alamat;
   final String noHp;
-  const PetaniPage(
-      {Key? key,
-      required this.docId,
-      required this.docIdPetani,
-      required this.namaPetani,
-      required this.desaKelurahan,
-      required this.noHp})
-      : super(key: key);
+  final String jekel;
+  final String statusNikah;
+  final String tanggalLahir;
+  final String kelompok;
+  final String dusun;
+  final String kecamatan;
+  final String kabupaten;
+  const PetaniPage({
+    Key? key,
+    required this.docIdDataPetani,
+    required this.docIdAgendaSensus,
+    required this.namaPetani,
+    required this.alamat,
+    required this.noHp,
+    required this.jekel,
+    required this.statusNikah,
+    required this.tanggalLahir,
+    required this.kelompok,
+    required this.dusun,
+    required this.kecamatan,
+    required this.kabupaten,
+    required this.uid,
+  }) : super(key: key);
 
   @override
   _PetaniPageState createState() => _PetaniPageState();
@@ -94,9 +110,11 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                 width: 4,
               ),
               Text(
-                widget.desaKelurahan,
-                style:
-                    const TextStyle(color: kBlack, fontWeight: FontWeight.w400,),
+                widget.alamat,
+                style: const TextStyle(
+                  color: kBlack,
+                  fontWeight: FontWeight.w400,
+                ),
               )
             ],
           ),
@@ -360,7 +378,21 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SensusPage(docId: widget.docId, docIdPetani: widget.docIdPetani))),
+                        builder: (context) => SensusPage(
+                              uid: widget.uid,
+                              docIdAgendaSensus: widget.docIdAgendaSensus,
+                              docIdDataPetani: widget.docIdDataPetani,
+                              namaPetani: widget.namaPetani,
+                              alamat: widget.alamat,
+                              noHp: widget.noHp,
+                              jekel: widget.jekel,
+                              statusNikah: widget.statusNikah,
+                              tanggalLahir: widget.tanggalLahir,
+                              kelompok: widget.kelompok,
+                              dusun: widget.dusun,
+                              kecamatan: widget.kecamatan,
+                              kabupaten: widget.kabupaten,
+                            ))),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
@@ -401,7 +433,10 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => InspeksiPage(docId: widget.docId, docIdPetani: widget.docIdPetani,))),
+                              builder: (context) => InspeksiPage(
+                                    docIdAgendaSensus: widget.docIdAgendaSensus,
+                                    docIdDataPetani: widget.docIdDataPetani,
+                                  ))),
                       icon: const Icon(
                         Icons.add,
                         color: kWhite,

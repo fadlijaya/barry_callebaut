@@ -17,9 +17,9 @@ import '../../create_agenda_page.dart';
 enum Pilihan { ya, tidak }
 
 class InspeksiPage extends StatefulWidget {
-  final String docId;
-  final String docIdPetani;
-  const InspeksiPage({Key? key, required this.docId, required this.docIdPetani})
+  final String docIdAgendaSensus;
+  final String docIdDataPetani;
+  const InspeksiPage({Key? key, required this.docIdAgendaSensus, required this.docIdDataPetani})
       : super(key: key);
 
   @override
@@ -780,9 +780,9 @@ class _InspeksiPageState extends State<InspeksiPage> {
           .collection("petugas")
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection("agenda_sensus")
-          .doc(widget.docId)
+          .doc(widget.docIdAgendaSensus)
           .collection("data_petani")
-          .doc(widget.docIdPetani)
+          .doc(widget.docIdDataPetani)
           .collection("inspeksi")
           .add({
         'subjek': _controllerSubjek.text,
