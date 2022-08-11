@@ -355,12 +355,12 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
                                 uid: document[i]['uid'],
                                 docIdAgendaSensus: document[i]['docIdAgendaSensus'],
                                 docIdDataPetani: document[i]['docId'],
-                                namaPetani: document[i]['nama lengkap'],
+                                namaPetani: document[i]['nama_petani'],
                                 alamat: document[i]['alamat'],
-                                noHp: document[i]['nomor hp'],
-                                jekel: document[i]["jenis kelamin"],
-                                statusNikah: document[i]["status pernikahan"],
-                                tanggalLahir: document[i]["tanggal lahir"],
+                                noHp: document[i]['no_hp'],
+                                jekel: document[i]["jenis_kelamin"],
+                                statusNikah: document[i]["status nikah"],
+                                tanggalLahir: document[i]["tanggal_lahir"],
                                 kelompok: document[i]["kelompok"],
                                 dusun: document[i]["dusun"],
                                 //desaKelurahan = document[i]["desa""/""kelurahan"],
@@ -411,7 +411,7 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
                                         children: [
                                           Flexible(
                                             child: Text(
-                                              "${document[i]['desa_kelurahan']}",
+                                              "${document[i]['alamat']}",
                                               style: const TextStyle(
                                                   color: kBlack,
                                                   fontWeight: FontWeight.w400,
@@ -422,7 +422,7 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
                                             width: 8,
                                           ),
                                           Container(
-                                            width: 80,
+                                            width: 100,
                                             height: 20,
                                             decoration: BoxDecoration(
                                                 color: kGreen2.withOpacity(0.3),

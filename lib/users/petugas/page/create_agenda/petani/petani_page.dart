@@ -259,7 +259,6 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                                   )
                                 ],
                               ),
-                              Text(widget.docIdAgendaSensus),
                               const Divider(
                                 thickness: 1,
                               ),
