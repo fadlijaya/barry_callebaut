@@ -94,7 +94,7 @@ class _DetailAgendaPageState extends State<DetailAgendaPage> {
                                           tanggalLahir: document[i]["tanggal_lahir"],
                                           kelompok: document[i]["kelompok"],
                                           dusun: document[i]["dusun"],
-                                          //desaKelurahan: document[i]["desa_kelurahan"],
+                                          desaKelurahan: document[i]["desa_kelurahan"],
                                           kecamatan: document[i]["kecamatan"],
                                           kabupaten: document[i]["kabupaten"]))),
                               child: Card(

@@ -314,9 +314,141 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
   }
 
   Widget tabBarViewBelum() {
-    return const Center(
-      child: Text("Belum"),
-    );
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("data_sensus")
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text("Error!"),
+            );
+          } else if (!snapshot.hasData && snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text("Data is Empty!"),
+            );
+          }
+
+          var document = snapshot.data!.docs;
+          print("Data : ${document.length}");
+
+          return ListView.builder(
+              itemCount: document.length,
+              itemBuilder: (context, i) {
+                return document[i]['status_sensus'] == false
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PetaniPage(
+                                uid: document[i]['uid'],
+                                docIdAgendaSensus: document[i]['docIdAgendaSensus'],
+                                docIdDataPetani: document[i]['docId'],
+                                namaPetani: document[i]['nama_petani'],
+                                alamat: document[i]['alamat'],
+                                noHp: document[i]['no_hp'],
+                                jekel: document[i]["jenis_kelamin"],
+                                statusNikah: document[i]["status_pernikahan"],
+                                tanggalLahir: document[i]["tanggal_lahir"],
+                                kelompok: document[i]["kelompok"],
+                                dusun: document[i]["dusun"],
+                                desaKelurahan: document[i]["desa_kelurahan"],
+                                kecamatan: document[i]["kecamatan"],
+                                kabupaten: document[i]["kabupaten"],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                  leading: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 48,
+                                        height: 48,
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            image: const DecorationImage(
+                                                image: NetworkImage(
+                                                    "https://bidinnovacion.org/economiacreativa/wp-content/uploads/2014/10/speaker-3.jpg"))),
+                                      ),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                    ],
+                                  ),
+                                  title: Text(
+                                    "${document[i]['nama_petani']}",
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: kBlack),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "${document[i]['alamat']}",
+                                              style: const TextStyle(
+                                                  color: kBlack,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          Container(
+                                            width: 100,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                                color: kGreen2.withOpacity(0.3),
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            child: Center(
+                                              child: Text(
+                                                "${document[i]['no_hp']}",
+                                                style: const TextStyle(
+                                                  color: kBlack,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: const Icon(
+                                    Icons.timelapse,
+                                    color: kGreen2,
+                                    size: 16,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container();
+              });
+        });
   }
 
   Widget tabBarViewSudah() {
@@ -345,7 +477,7 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
           return ListView.builder(
               itemCount: document.length,
               itemBuilder: (context, i) {
-                return widget.uid == document[i]['uid']
+                return document[i]['status_sensus'] == true
                     ? GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -359,11 +491,11 @@ class _DetailPetugasPageState extends State<DetailPetugasPage>
                                 alamat: document[i]['alamat'],
                                 noHp: document[i]['no_hp'],
                                 jekel: document[i]["jenis_kelamin"],
-                                statusNikah: document[i]["status nikah"],
+                                statusNikah: document[i]["status_pernikahan"],
                                 tanggalLahir: document[i]["tanggal_lahir"],
                                 kelompok: document[i]["kelompok"],
                                 dusun: document[i]["dusun"],
-                                //desaKelurahan = document[i]["desa""/""kelurahan"],
+                                desaKelurahan: document[i]["desa_kelurahan"],
                                 kecamatan: document[i]["kecamatan"],
                                 kabupaten: document[i]["kabupaten"],
                               ),

@@ -20,6 +20,7 @@ class PetaniPage extends StatefulWidget {
   final String tanggalLahir;
   final String kelompok;
   final String dusun;
+  final String desaKelurahan;
   final String kecamatan;
   final String kabupaten;
   const PetaniPage({
@@ -34,6 +35,7 @@ class PetaniPage extends StatefulWidget {
     required this.tanggalLahir,
     required this.kelompok,
     required this.dusun,
+    required this.desaKelurahan,
     required this.kecamatan,
     required this.kabupaten,
     required this.uid,
@@ -126,7 +128,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
             height: 8,
           ),
           Container(
-            width: 100,
+            width: 120,
             height: 20,
             decoration: BoxDecoration(
                 color: kGreen2.withOpacity(0.3),
@@ -167,10 +169,9 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
       margin: const EdgeInsets.only(top: 16),
       width: double.maxFinite,
       height: 480,
-      child: TabBarView(controller: _tabController, children: [
-        tabBarViewSensus(),
-        tabBarViewInspeksi()
-      ]),
+      child: TabBarView(
+          controller: _tabController,
+          children: [tabBarViewSensus(), tabBarViewInspeksi()]),
     );
   }
 
@@ -193,7 +194,9 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
               child: Text("${snapshot.hasError}"),
             );
           } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text("Data belum ada!"),);
+            return const Center(
+              child: Text("Data belum ada!"),
+            );
           } else if (snapshot.hasData) {
             var document = snapshot.data!.docs;
 
@@ -895,6 +898,4 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
       ),
     );
   }
-
-  
 }

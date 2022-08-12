@@ -22,6 +22,7 @@ class PetaniPage extends StatefulWidget {
   final String tanggalLahir;
   final String kelompok;
   final String dusun;
+  final String desaKelurahan;
   final String kecamatan;
   final String kabupaten;
   const PetaniPage({
@@ -37,6 +38,7 @@ class PetaniPage extends StatefulWidget {
     required this.tanggalLahir,
     required this.kelompok,
     required this.dusun,
+    required this.desaKelurahan,
     required this.kecamatan,
     required this.kabupaten,
   }) : super(key: key);
@@ -131,7 +133,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
               height: 8,
             ),
             Container(
-              width: 100,
+              width: 120,
               height: 20,
               decoration: BoxDecoration(
                   color: kGreen2.withOpacity(0.3),
@@ -1077,6 +1079,7 @@ class _PetaniPageState extends State<PetaniPage> with TickerProviderStateMixin {
                               tanggalLahir: widget.tanggalLahir,
                               kelompok: widget.kelompok,
                               dusun: widget.dusun,
+                              desaKelurahan: widget.desaKelurahan,
                               kecamatan: widget.kecamatan,
                               kabupaten: widget.kabupaten,
                             ))),

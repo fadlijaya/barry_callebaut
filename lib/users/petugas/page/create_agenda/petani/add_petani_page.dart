@@ -9,7 +9,9 @@ import 'petani_page.dart';
 class AddPetaniPage extends StatefulWidget {
   final String uid;
   final String docIdAgendaSensus;
-  const AddPetaniPage({Key? key, required this.docIdAgendaSensus, required this.uid}) : super(key: key);
+  const AddPetaniPage(
+      {Key? key, required this.docIdAgendaSensus, required this.uid})
+      : super(key: key);
 
   @override
   _AddPetaniPageState createState() => _AddPetaniPageState();
@@ -66,7 +68,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
           return ListView.builder(
               itemCount: document.length,
               itemBuilder: (context, i) {
-                String docIdDataPetani = document[i]["uid"];
+                String docIdDataPetani = document[i]["docId"];
                 String namaPetani = document[i]["nama lengkap"];
                 String alamat = document[i]["alamat"];
                 String noHp = document[i]["nomor hp"];
@@ -75,7 +77,7 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
                 String tanggalLahir = document[i]["tanggal lahir"];
                 String kelompok = document[i]["kelompok"];
                 String dusun = document[i]["dusun"];
-                //String desaKelurahan = document[i]["desa""/""kelurahan"];
+                String desaKelurahan = document[i]["desa_kelurahan"];
                 String kecamatan = document[i]["kecamatan"];
                 String kabupaten = document[i]["kabupaten"];
 
@@ -114,31 +116,35 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
                           ),
                         ],
                       ),
-                      trailing: ElevatedButton(
-                        onPressed: () => createToFirebase(
-                            docIdDataPetani,
-                            namaPetani,
-                            alamat,
-                            noHp,
-                            jekel,
-                            statusNikah,
-                            tanggalLahir,
-                            kelompok,
-                            dusun,
-                            /*desaKelurahan,*/ kecamatan,
-                            kabupaten),
-                        child: const Text(
-                          "Tambah",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 12),
-                        ),
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(kGreen2),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)))),
-                      )),
+                      trailing: document[i]['status ditambahkan'] == false
+                          ? ElevatedButton(
+                              onPressed: () => createToFirebase(
+                                  docIdDataPetani,
+                                  namaPetani,
+                                  alamat,
+                                  noHp,
+                                  jekel,
+                                  statusNikah,
+                                  tanggalLahir,
+                                  kelompok,
+                                  dusun,
+                                  desaKelurahan,
+                                  kecamatan,
+                                  kabupaten),
+                              child: Text(
+                                "Tambah",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 12),
+                              ),
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(kGreen2),
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)))),
+                            )
+                          : const Text("Telah Ditambahkan", style: TextStyle(fontSize: 12), textAlign: TextAlign.center,)),
                 );
               });
         });
@@ -154,7 +160,8 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
       String tanggalLahir,
       String kelompok,
       String dusun,
-      /*String desaKelurahan,*/ String kecamatan,
+      String desaKelurahan,
+      String kecamatan,
       String kabupaten) async {
     await FirebaseFirestore.instance
         .collection("petugas")
@@ -174,14 +181,18 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
       "tanggal_lahir": tanggalLahir,
       "kelompok": kelompok,
       "dusun": dusun,
-      //"desa_kelurahan": desaKelurahan,
+      "desa_kelurahan": desaKelurahan,
       "kecamatan": kecamatan,
       "kabupaten": kabupaten,
       "status_sensus": false,
     });
 
-    await FirebaseFirestore.instance.collection("data_sensus").doc(docIdDataPetani).set({
+    await FirebaseFirestore.instance
+        .collection("data_sensus")
+        .doc(docIdDataPetani)
+        .set({
       "uid": widget.uid,
+      "docIdAgendaSensus": widget.docIdAgendaSensus,
       "docId": docIdDataPetani,
       "nama_petani": namaPetani,
       "alamat": alamat,
@@ -191,12 +202,13 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
       "tanggal_lahir": tanggalLahir,
       "kelompok": kelompok,
       "dusun": dusun,
-      //"desa_kelurahan": desaKelurahan,
+      "desa_kelurahan": desaKelurahan,
       "kecamatan": kecamatan,
       "kabupaten": kabupaten,
       "status_sensus": false,
     }).then((_) {
-      deleteDocument(docIdDataPetani);
+      //deleteDocument(docIdDataPetani);
+      updateDataPetani(docIdDataPetani);
       alertDialogSukses();
     });
 
@@ -205,8 +217,17 @@ class _AddPetaniPageState extends State<AddPetaniPage> {
     });
   }
 
-  Future deleteDocument(String docId) async {
-    await FirebaseFirestore.instance.collection("petani").doc(docId).delete();
+  /*Future deleteDocument(String docIdDataPetani) async {
+    await FirebaseFirestore.instance.collection("petani").doc(docIdDataPetani).delete();
+  }*/
+
+  CollectionReference dataSensus =
+      FirebaseFirestore.instance.collection("petani");
+
+  Future updateDataPetani(String docIdDataPetani) {
+    return dataSensus.doc(docIdDataPetani).update({
+      'status ditambahkan': true,
+    });
   }
 
   alertDialogSukses() {

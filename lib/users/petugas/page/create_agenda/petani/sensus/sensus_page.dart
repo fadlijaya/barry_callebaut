@@ -30,6 +30,7 @@ class SensusPage extends StatefulWidget {
   final String tanggalLahir;
   final String kelompok;
   final String dusun;
+  final String desaKelurahan;
   final String kecamatan;
   final String kabupaten;
   const SensusPage(
@@ -45,6 +46,7 @@ class SensusPage extends StatefulWidget {
       required this.tanggalLahir,
       required this.kelompok,
       required this.dusun,
+      required this.desaKelurahan,
       required this.kecamatan,
       required this.kabupaten})
       : super(key: key);
@@ -194,6 +196,7 @@ class _SensusPageState extends State<SensusPage> {
       _controllerTglLahir.text = widget.tanggalLahir;
       _controllerKelompok.text = widget.kelompok;
       _controllerDusun.text = widget.dusun;
+      _controllerDesa.text = widget.desaKelurahan;
       _controllerKecamatan.text = widget.kecamatan;
       _controllerKabupaten.text = widget.kabupaten;
     });
@@ -496,7 +499,7 @@ class _SensusPageState extends State<SensusPage> {
                                   hintText: 'Desa/Kelurahan'),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return "Masukkan Desa";
+                                  return "Masukkan Desa/Kelurahan";
                                 }
                                 return null;
                               },
